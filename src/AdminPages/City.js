@@ -3,11 +3,12 @@ import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import {postData,citypostapi,loadData,getstates,getcities,getcitybyid, cityupdateapi,getcitybystate, getstatebyid} from '../Shared/Services'
+import {postData,citypostapi,loadData,getstates,getcities,getcitybyid, cityupdateapi,getcitybystate, getstatebyid,POST_CITY,PUT_CITY} from '../Shared/Services'
 import Sidebar from './Sidebar'
 import AdminHeader from'./AdminHeader'
 import { connect } from 'react-redux';
-import {getCities,getStates,getCitybyid,getCitybystate} from '../Adminstore/actions/goAdvActions';
+import {getCities,getStates,getCitybyid,getCitybystate,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
  var valuefromurl
 class City extends Component {
@@ -110,25 +111,28 @@ this.props.getStates()
     async postEditedData()
     {
         debugger
-        
-        const obj={
+         const obj={
          cityId:this.state.editData.cityId,
           cityName:this.state.cityname,
           cityCode:this.state.citycode,
           cityDesc:this.state.citydescription,
           stateId:2
             }
+            let url=PUT_CITY+this.state.editData.cityId;
 
-        let editurl=cityupdateapi+this.state.editData.cityId;
+            this.props.putData1(action.PUT_CITY,url,obj)
+
+      /*   let editurl=cityupdateapi+this.state.editData.cityId;
         let editeddata=await postData(obj,editurl,'Put')
 
-        alert(editeddata)
-        window.location.reload();//page refresh
+        alert(editeddata) */
+       // window.location.reload();//page refresh
     }
 
 
    async postDatatoApi()
     {
+      debugger
       const obj={
         cityId: 0,
         cityName:this.state.cityname,
@@ -136,9 +140,11 @@ this.props.getStates()
         cityDesc:this.state.citydescription,
         stateId:parseInt(this.state.stateid)
            }
-             let message=await  postData(obj,citypostapi,'Post');
-             alert (message);
-             window.location.reload();//page refresh
+
+           this.props.postData1(action.POST_CITY,POST_CITY,obj)
+            /*  let message=await  postData(obj,citypostapi,'Post');
+             alert (message); */
+             //window.location.reload();//page refresh
     }
 
     async handleSubmit(event)
@@ -419,7 +425,8 @@ this.props.getStates()
       return {
           states: state.goAdvStore.states,
           cities:state.goAdvStore.cities,
-          citybyid:state.goAdvStore.citybyid
+          citybyid:state.goAdvStore.citybyid,
+          postcity:state.goAdvStore.postcity
           
           
           
@@ -427,7 +434,7 @@ this.props.getStates()
           //cities:state.goAdvStore.citybyid
       }
   }
-  export default connect(mapStateToProps, {getStates,getCities,getCitybystate,getCitybyid })(City);
+  export default connect(mapStateToProps, {getStates,getCities,getCitybystate,getCitybyid,postData1,putData1})(City);
   
 
     //export default City

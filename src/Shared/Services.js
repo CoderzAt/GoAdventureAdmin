@@ -82,6 +82,10 @@ export const cityupdateapi="https://ga-api.azurewebsites.net/api/v1/updateMdCity
 export const getcitybystate="https://ga-api.azurewebsites.net/api/v1/GetCityByState?stateId=";
 
 
+export const POST_CITY="createMdCity";
+export const PUT_CITY="updateMdCity?id=";
+
+
 export const GET_CITIES="getAllMdCitys";
 export const GET_CITY_BYID="getMdCityById?id=";
 export const GET_CITY_STATEID="GetCityByState?stateId=";

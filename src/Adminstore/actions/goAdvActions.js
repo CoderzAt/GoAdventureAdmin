@@ -63,6 +63,48 @@ export const getData =(actiontype,url)=>
 
 }
 
+export const postData1 =(actiontype,url,obj)=>
+{
+    debugger
+   const svcconfig = {
+      headers: { Pragma: 'no-cache' }
+   }
+   return dispatch => {
+      dispatch({
+         type:actiontype,
+           payload:axios.post(`${services.BASE_URL}${url}`,obj)
+          .then(response=>{
+             console.log("postdata",response)
+             return response;
+          })
+          .catch(error=>
+            {
+               return { data: { errors: [error.toString()], isSuccess: false }};
+            })
+      });
+   }
+}
+export const putData1 =(actiontype,url,obj)=>
+{
+    debugger
+   const svcconfig = {
+      headers: { Pragma: 'no-cache' }
+   }
+   return dispatch => {
+      dispatch({
+         type:actiontype,
+           payload:axios.put(`${services.BASE_URL}${url}`,obj)
+          .then(response=>{
+             console.log("putdata",response)
+             return response;
+          })
+          .catch(error=>
+            {
+               return { data: { errors: [error.toString()], isSuccess: false }};
+            })
+      });
+   }
+}
 
 
 export const getCalendar = () => {

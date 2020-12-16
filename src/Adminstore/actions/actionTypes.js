@@ -17,3 +17,12 @@ export const GET_COUPON_BYID="GET_COUPON_BYID";
 export const GET_ALL_DESTINATION="GET_ALL_DESTINATION";
 
 
+
+//post
+export const POST_CITY="POST_CITY";
+
+
+
+//put
+export const PUT_CITY="PUT_CITY";
+

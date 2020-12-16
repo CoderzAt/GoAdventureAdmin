@@ -17,7 +17,9 @@ const initalState ={
     citybystate:[],
     getcountrybyid:[],
     coupons:[],
-    couponbyid:[]
+    couponbyid:[],
+    postcity:[],
+    putcity:[]
 
 }
 const goAdvReducer = (state =initalState, action) => {
@@ -317,7 +319,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.GET_COUPON_BYID}_FULFILLED` : {
             return{
                 ...state,
-                isCitybystateLoading: false,
+                isCouponLoading: false,
                 couponbyid: action.payload.data
             }
         }
@@ -325,6 +327,44 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isCouponLoading: false,
+            }
+        }
+        case `${actions.POST_CITY}_PENDING` : {
+            return{
+                ...state,
+                ispostCityLoading: true
+            }
+        }
+        case `${actions.POST_CITY}_FULFILLED` : {
+            return{
+                ...state,
+                ispostCityLoading: false,
+                postcity: action.payload.data
+            }
+        }
+        case `${actions.POST_CITY}_REJECTED` : {
+            return{
+                ...state,
+                ispostCityLoading: false,
+            }
+        }
+        case `${actions.PUT_CITY}_PENDING` : {
+            return{
+                ...state,
+                isputCityLoading: true
+            }
+        }
+        case `${actions.PUT_CITY}_FULFILLED` : {
+            return{
+                ...state,
+                isputCityLoading: false,
+                putcity: action.payload.data
+            }
+        }
+        case `${actions.PUT_CITY}_REJECTED` : {
+            return{
+                ...state,
+                isputCityLoading: false,
             }
         }
         default: return state;
