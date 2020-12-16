@@ -5,7 +5,7 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
+
 import {gettingMultiselectValues} from '../Shared/ReauasbleFunctions'
 /* import './assets/vendors/mdi/css/materialdesignicons.min.css'
 import './assets/vendors/css/vendor.bundle.base.css'
@@ -219,9 +219,7 @@ console.log("stays",staytypenames1)
     render() {
 	    return (
          <div>
-             <div class="container-scroller">
-        </div>
-       <AdminHeader/>
+            
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
             

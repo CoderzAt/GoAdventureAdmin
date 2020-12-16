@@ -40,12 +40,19 @@ export const accessorybyid="https://ga-api.azurewebsites.net/api/v1/GetAccessory
 export const accessoryupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateAccessories?id=";
 
 export const GET_ALL_ACCESSORIES="GetAllAccessories";
-
+export const POST_ACCESSORIES="CreateAccessory";
+export const PUT_ACCESSORIES="UpdateAccessories?id=";
+export const GET_ACCESSORIES_BYID="GetAccessoryById?id=";
 //costCentre
 export const costcentrepostapi="https://ga-api.azurewebsites.net/api/v1/createMdCostCenter";
 export const getallcostcentreapi="https://ga-api.azurewebsites.net/api/v1/getAllMdCostCenter";
 export const costcentreupdteapi="https://ga-api.azurewebsites.net/api/v1/updateMdCostCenter?id=";
 export const getcostcentrebyid="https://ga-api.azurewebsites.net/api/v1/getMdCostCenterBy?id=";
+
+export const GET_COSTCENTRE="getAllMdCostCenter";
+export const GET_COSTCENTRE_BYID="getMdCostCenterBy?id=";
+export const POST_COSTCENTRE="createMdCostCenter";
+export const PUT_COSTCENTRE="updateMdCostCenter?id=";
 
 //destination
 export const destinationpostapi="https://ga-api.azurewebsites.net/api/v1/createDestination";
@@ -166,6 +173,9 @@ export const activitybyid="https://ga-api.azurewebsites.net/api/v1/getMdActivity
 export const activityupdateapi="https://ga-api.azurewebsites.net/api/v1/updateMdActivity?id=";
 
 export const GET_ACTIVITIES="getAllMdActivitys";
+export const POST_ACTIVITY="createMdActivity";
+export const PUT_ACTIVITY="updateMdActivity?id=";
+export const GET_ACTIVITY_BYID="getMdActivityById?id=";
 
 //eventlevel
 export const eventlevelpostapi="https://ga-api.azurewebsites.net/api/v1/createMdEventLevel";

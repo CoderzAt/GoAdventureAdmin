@@ -5,7 +5,7 @@ import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
 import {postData,packagepostapi,getdestinations,loadData,getpackages,getpackagebyid,packageupdateapi} from '../Shared/Services'
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
+
 
 class Package extends Component {
     constructor(props) {
@@ -223,9 +223,7 @@ class Package extends Component {
 	    return (
 
         <div>
-        <div class="container-scroller">
-   </div>
-  <AdminHeader/>
+        
    <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
        <Sidebar/>
        

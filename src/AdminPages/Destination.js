@@ -5,7 +5,7 @@ import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
 import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid, destinationupdateapi} from '../Shared/Services'
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
+
 
 
 class Destination extends Component {
@@ -150,9 +150,7 @@ debugger
 	    return (
 
         <div>
-        <div class="container-scroller">
-   </div>
-  <AdminHeader/>
+       
    <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
        <Sidebar/>
        

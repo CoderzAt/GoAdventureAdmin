@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,loadData,getaccessories,accessorybyid,accessoryupdateapi,accessorypostapi,GET_ALL_ACCESSORIES} from '../Shared/Services'
+import {postData,loadData,getaccessories,accessorybyid,accessoryupdateapi,accessorypostapi,GET_ALL_ACCESSORIES,POST_ACCESSORIES,PUT_ACCESSORIES,GET_ACCESSORIES_BYID} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -16,10 +16,9 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
 import TextInput from'../Shared/TextInput';
-
 import * as validation from '../Shared/Validations'
 import { connect } from 'react-redux';
-import {getAccessories,getData} from '../Adminstore/actions/goAdvActions';
+import {getAccessories,getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 /* import './assets/images/favicon.ico'
 import './assets/vendors/js/vendor.bundle.base.js'
@@ -42,7 +41,7 @@ class Accessories extends Component {
         salePrice: 0,
         rentPrice: 0,
        // accessories:[],
-        editData:[],
+        //editData:[],
         saledisbale:"",
         rentdisable:"",
         errors:{
@@ -131,11 +130,16 @@ class Accessories extends Component {
         debugger
         alert(id)
         
-        let url=accessorybyid+id;
-        let editdata=await loadData(url)
-        this.setState({
+        let url=GET_ACCESSORIES_BYID+id;
+        this.props.getData(action.GET_ACCESSORIES_BYID,url)
+        let editdata=this.props. getaccessorybyid
+
+        
+        /*this.setState({
             editData:editdata
-        })
+        }) */
+
+        console.log("datata",this.props.getaccessorybyid)
         this.setState({
             accessoryName:editdata.accessoryName,
             saleOrRent:editdata.saleOrRent,
@@ -144,26 +148,28 @@ class Accessories extends Component {
          })
 
 } 
-    /* async postEditedData()
+     async postEditedData()
     {
         debugger
-        
         const obj={
-            countryId:this.state.viewData.countryId,
-            countryName:this.state.countryname,
-            countryCode:this.state.countrycode,
-            countryDesc:this.state.countrydescription,
-                  }
+            accessoriesId:this.props.getaccessorybyid.accessoriesId,
+            accessoryName:this.state.accessoryName,
+            saleOrRent:this.state.saleOrRent,
+            salePrice:parseInt(this.state.salePrice),
+            rentPrice:parseInt(this.state.rentPrice)
+           }
 
-        let editurl=countryupdateapi+this.state.viewData.countryId;
-        let editeddata=await postData(obj,editurl,'Put')
+        let editurl=PUT_ACCESSORIES+this.props.getaccessorybyid.accessoriesId;
+
+        this.props.putData1(action.PUT_ACCESSORIES,editurl,obj)
+        /* let editeddata=await postData(obj,editurl,'Put')
 
         alert(editeddata)
-
-        window.location.reload();//page refresh
+ */
+        //window.location.reload();//page refresh
 
     }
- */     async postDatatoApi()
+     async postDatatoApi()
     {
         debugger
         condition=true;
@@ -174,16 +180,19 @@ class Accessories extends Component {
             salePrice:parseInt(this.state.salePrice),
             rentPrice:parseInt(this.state.rentPrice)
               }
-             let message=await  postData(obj,accessorypostapi,'Post');
-             alert (message);
-             window.location.reload();//page refresh
+
+              this.props.postData1(action.POST_ACCESSORIES,POST_ACCESSORIES,obj)
+            /*  let message=await  postData(obj,accessorypostapi,'Post');
+             alert (message); */
+             //window.location.reload();//page refresh
     }
     handlevalidation()
     {
+
         this.setState({
             errors:{
-                saleOrrent:validation.selectvalidation(this.state.saleOrRent),
-                accessoryName:validation.namevalidation(this.state.accessoryName)
+                //saleOrrent:validation.selectvalidation(this.state.saleOrRent),
+                //accessoryName:validation.namevalidation(this.state.accessoryName)
                    }
         })
         }
@@ -202,7 +211,7 @@ class Accessories extends Component {
         else
         {
             event.preventDefault();
-            if(this.state.editData.accessoriesId == undefined)
+            if(this.props.getaccessorybyid.accessoriesId == undefined)
             {
               this.postDatatoApi()
             }
@@ -232,9 +241,7 @@ class Accessories extends Component {
     render() {
 	    return (
          <div>
-             <div class="container-scroller">
-        </div>
-       <AdminHeader/>
+            
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
             
@@ -272,7 +279,7 @@ class Accessories extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.accessoryName} class="form-control" onChange={(e)=>this.accessorynamenameOperation(e)}/>
+                                                        <input required type="text" defaultValue={this.props.getaccessorybyid.accessoryName} class="form-control" onChange={(e)=>this.accessorynamenameOperation(e)}/>
                                                         <div style={{color:"red"}}>{this.state.errors.accessoryName}</div>
                                                     </div>
                                                 </div>
@@ -295,7 +302,7 @@ class Accessories extends Component {
                                                 <div class="form-group row" >
                                                     <label class="col-sm-3 col-form-label">SalePrice</label>
                                                     <div class="col-sm-9" >
-                                                        <input required  disabled={this.state.saledisbale} type="number" defaultValue={this.state.editData.salePrice} class="form-control" onChange={(e)=>this.salepriceOpearation(e)} />
+                                                        <input required  disabled={this.state.saledisbale} type="number" defaultValue={this.props.getaccessorybyid.salePrice} class="form-control" onChange={(e)=>this.salepriceOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -303,7 +310,7 @@ class Accessories extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">RentPrice</label>
                                                     <div class="col-sm-9">
-                                                        <input required disabled={this.state.rentdisable} type="number" defaultValue={this.state.editData.rentPrice} class="form-control" onChange={(e)=>this.rentpriceOpearation(e)} />
+                                                        <input required disabled={this.state.rentdisable} type="number" defaultValue={this.props.getaccessorybyid.rentPrice} class="form-control" onChange={(e)=>this.rentpriceOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -396,10 +403,11 @@ class Accessories extends Component {
     }
     const mapStateToProps = (state) => {
         return {
-            accessories: state.goAdvStore.accessories
+            accessories: state.goAdvStore.accessories,
+            getaccessorybyid:state.goAdvStore.getaccessorybyid
         }
     }
-    export default connect(mapStateToProps, {getData})(Accessories);
+    export default connect(mapStateToProps, {getData,postData1,putData1})(Accessories);
     
 
     //export default Accessories

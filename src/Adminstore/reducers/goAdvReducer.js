@@ -19,8 +19,13 @@ const initalState ={
     coupons:[],
     couponbyid:[],
     postcity:[],
-    putcity:[]
-
+    putcity:[],
+    postaccesory:[],
+    putaccessory:[],
+    getaccessorybyid:[],
+    postactivity:[],
+    putactivity:[],
+    getactivitybyid:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -365,6 +370,120 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isputCityLoading: false,
+            }
+        }
+        case `${actions.POST_ACCESSORIES}_PENDING` : {
+            return{
+                ...state,
+                ispostAccessoryLoading: true
+            }
+        }
+        case `${actions.POST_ACCESSORIES}_FULFILLED` : {
+            return{
+                ...state,
+                ispostAccessoryLoading: false,
+                postaccesory: action.payload.data
+            }
+        }
+        case `${actions.POST_ACCESSORIES}_REJECTED` : {
+            return{
+                ...state,
+                ispostAccessoryLoading: false,
+            }
+        }
+        case `${actions.PUT_ACCESSORIES}_PENDING` : {
+            return{
+                ...state,
+                isputAccessoryLoading: true
+            }
+        }
+        case `${actions.PUT_ACCESSORIES}_FULFILLED` : {
+            return{
+                ...state,
+                isputAccessoryLoading: false,
+                putaccessory: action.payload.data
+            }
+        }
+        case `${actions.PUT_ACCESSORIES}_REJECTED` : {
+            return{
+                ...state,
+                isputAccessoryLoading: false,
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetAccbyidLoading: true
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetAccbyidLoading: false,
+                getaccessorybyid: action.payload.data
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetAccbyidLoading: false,
+            }
+        }
+        case `${actions.POST_ACTIVITY}_PENDING` : {
+            return{
+                ...state,
+                ispostAactivityLoading: true
+            }
+        }
+        case `${actions.POST_ACTIVITY}_FULFILLED` : {
+            return{
+                ...state,
+                ispostAactivityLoading: false,
+                postactivity: action.payload.data
+            }
+        }
+        case `${actions.POST_ACTIVITY}_REJECTED` : {
+            return{
+                ...state,
+                ispostAactivityLoading: false,
+            }
+        }
+        case `${actions.PUT_ACTIVITY}_PENDING` : {
+            return{
+                ...state,
+                isputAactivityLoading: true
+            }
+        }
+        case `${actions.PUT_ACTIVITY}_FULFILLED` : {
+            return{
+                ...state,
+                isputAactivityLoading: false,
+                putactivity: action.payload.data
+            }
+        }
+        case `${actions.PUT_ACTIVITY}_REJECTED` : {
+            return{
+                ...state,
+                isputAactivityLoading: false,
+            }
+        }
+        case `${actions.GET_ACTIVITY_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetActbyidLoading: true
+            }
+        }
+        case `${actions.GET_ACTIVITY_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetActbyidLoading: false,
+                getactivitybyid: action.payload.data
+            }
+        }
+        case `${actions.GET_ACTIVITY_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isputgetActbyidLoading: false,
             }
         }
         default: return state;

@@ -5,7 +5,7 @@ import {postData,countrypostapi,deletecountry,itenarypostapi,getpackages,loadDat
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
+
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import parse from 'html-react-parser'
@@ -229,9 +229,7 @@ class Itenary extends Component {
     render() {
 	    return (
          <div>
-             <div class="container-scroller">
-        </div>
-       <AdminHeader/>
+            
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
             

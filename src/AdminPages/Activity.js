@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,loadData,postactivityapi,activitybyid,activityupdateapi,getactivities} from '../Shared/Services'
+import {postData,loadData,postactivityapi,activitybyid,activityupdateapi,getactivities,GET_ACTIVITY_BYID,GE,GET_ACTIVITIES,PUT_ACTIVITY,POST_ACTIVITY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import parse from 'html-react-parser'
@@ -18,7 +17,8 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import { act } from 'react-dom/test-utils';
 import { connect } from 'react-redux';
-import {getActivity} from '../Adminstore/actions/goAdvActions';
+import {getActivity,getData,putData1,postData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 /* import './assets/images/favicon.ico'
 import './assets/vendors/js/vendor.bundle.base.js'
 import './assets/vendors/chart.js/Chart.min.js'
@@ -37,7 +37,7 @@ class Activity extends Component {
        this.state = {
         activityName:null,
         activityGenre:null,
-        editData:[],
+        editData:[]
         //activities:[]
            }
     }
@@ -89,11 +89,14 @@ class Activity extends Component {
    async editReacord(id)
     {
         
-        let url=activitybyid+id;
-        let editdata=await loadData(url)
-        this.setState({
+        let url=GET_ACTIVITY_BYID+id;
+
+        this.props.getData(action.GET_ACTIVITY_BYID,url)
+
+        let editdata=this.props.getactivitybyid;
+      /*   this.setState({
             editData:editdata
-        })
+        }) */
 
         this.setState({
             activityName:editdata.activityName,
@@ -110,7 +113,8 @@ class Activity extends Component {
             activityGenre:this.state.activityGenre,
                   }
 
-        let editurl=activityupdateapi+this.state.editData.activityId;
+        let editurl=PUT_ACTIVITY+this.state.editData.activityId;
+        //this.props.putData1(action)
         let editeddata=await postData(obj,editurl,'Put')
 
         alert(editeddata)
@@ -127,10 +131,12 @@ class Activity extends Component {
             activityName:this.state.activityName,
             activityGenre:this.state.activityGenre
               }
-             let message=await  postData(obj,postactivityapi,'Post');
              
-             alert (message);
-             window.location.reload();//page refresh
+     this.props.postData1(action.POST_ACTIVITY,POST_ACTIVITY,obj)
+            /*  let message=await  postData(obj,postactivityapi,'Post');
+             
+             alert (message); */
+             //window.location.reload();//page refresh
     }
 
     async handleSubmit(event)
@@ -171,9 +177,7 @@ class Activity extends Component {
     render() {
 	    return (
          <div>
-             <div class="container-scroller">
-        </div>
-       <AdminHeader/>
+            
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
             
@@ -207,7 +211,7 @@ class Activity extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.activityName}  class="form-control" onChange={(e)=>this.activitynamenameOperation(e)}/>
+                                                        <input required type="text" defaultValue={this.props.getactivitybyid.activityName}  class="form-control" onChange={(e)=>this.activitynamenameOperation(e)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -215,7 +219,7 @@ class Activity extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Genre</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.activityGenre} class="form-control" onChange={(e)=>this.activitygenreOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.getactivitybyid.activityGenre} class="form-control" onChange={(e)=>this.activitygenreOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -290,10 +294,11 @@ class Activity extends Component {
 
     const mapStateToProps = (state) => {
         return {
-            activities: state.goAdvStore.activities
-        }
+            activities: state.goAdvStore.activities,
+            getactivitybyid:state.goAdvStore.getactivitybyid
+         }
     }
-    export default connect(mapStateToProps, {getActivity})(Activity);
+    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1})(Activity);
     
 
    // export default Activity

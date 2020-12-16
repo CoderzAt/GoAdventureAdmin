@@ -5,11 +5,10 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import {postData,citypostapi,loadData,getstates,getcities,getcitybyid, cityupdateapi,getcitybystate, getstatebyid,POST_CITY,PUT_CITY} from '../Shared/Services'
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
 import { connect } from 'react-redux';
 import {getCities,getStates,getCitybyid,getCitybystate,postData1,putData1} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
-
+import './admin.scss'
  var valuefromurl
 class City extends Component {
     constructor(props) {
@@ -22,7 +21,7 @@ class City extends Component {
            citycode:null,
            stateid:1,
            cities:[],
-           editData:[]
+           //editData:[]
        }
     }
     
@@ -86,19 +85,19 @@ this.props.getStates()
     {
       alert("in delete"+id)
     }
-    async editReacord(id)
+    editReacord(id)
     {
       debugger
       
         let url=getcitybyid+id;
-       await this.props.getCitybyid(id)
+        this.props.getCitybyid(id)
 
       let editdata=  this.props.citybyid;
 
 
-       this.setState({
+       /* this.setState({
             editData:this.props.citybyid
-        })
+        }) */
 
         this.setState({
            cityname:editdata.cityName,
@@ -112,13 +111,13 @@ this.props.getStates()
     {
         debugger
          const obj={
-         cityId:this.state.editData.cityId,
+         cityId:this.props.citybyid.cityId,
           cityName:this.state.cityname,
           cityCode:this.state.citycode,
           cityDesc:this.state.citydescription,
           stateId:2
             }
-            let url=PUT_CITY+this.state.editData.cityId;
+            let url=PUT_CITY+this.props.citybyid.cityId;
 
             this.props.putData1(action.PUT_CITY,url,obj)
 
@@ -160,7 +159,7 @@ this.props.getStates()
         else
         {
             event.preventDefault();
-            if(this.state.editData.cityId == undefined)
+            if(this.props.citybyid.cityId == undefined)
             {
           this.postDatatoApi()
             }
@@ -176,7 +175,9 @@ this.props.getStates()
     }
     handleReset()
     {
-      this.setState({
+
+      //this.props.citybyid=[];
+       this.setState({
         editData:[]
       })
     }
@@ -194,11 +195,8 @@ this.props.getStates()
     }
     render() {
 	    return (
-
-        <div>
-        <div class="container-scroller">
-   </div>
-  <AdminHeader/>
+      <div>
+        
    <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
        <Sidebar/>
        
@@ -243,7 +241,7 @@ this.props.getStates()
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" defaultValue={this.state.editData.cityName} class="form-control" onChange={(e)=>this.citynamenameOperation(e)}/>
+                                                        <input type="text" defaultValue={this.props.citybyid.cityName} class="form-control" onChange={(e)=>this.citynamenameOperation(e)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -253,7 +251,7 @@ this.props.getStates()
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Code</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" defaultValue={this.state.editData.cityCode} class="form-control" onChange={(e)=>this.citycodeOpearation(e)}/>
+                                                        <input type="text" defaultValue={this.props.citybyid.cityCode} class="form-control" onChange={(e)=>this.citycodeOpearation(e)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -261,7 +259,7 @@ this.props.getStates()
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <textarea class="form-control" defaultValue={this.state.editData.cityDesc} id="placeTypeDescription" rows="4" onChange={(e)=>this.citydescriptionOperation(e)}></textarea>
+                                                        <textarea class="form-control" defaultValue={this.props.citybyid.cityDesc} id="placeTypeDescription" rows="4" onChange={(e)=>this.citydescriptionOperation(e)}></textarea>
                                                     </div>
                                                 </div>
                                             </div>

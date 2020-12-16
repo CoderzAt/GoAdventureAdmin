@@ -4,7 +4,7 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import {postData,placetovisitpostapi,loadData,getcities,getdestinations,getplacetypes,getplacetovisit,getplacetovisitbyid,placetovisitupdateapi,getplacetovisitbycity,getplacetovisitbydestination} from '../Shared/Services'
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
+
 
 
 class PlacestoVisit extends Component {
@@ -248,9 +248,7 @@ handleReset()
 	    return (
 
         <div>
-        <div class="container-scroller">
-   </div>
-  <AdminHeader/>
+       
    <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
        <Sidebar/>
        

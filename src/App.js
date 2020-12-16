@@ -15,11 +15,6 @@ import "./assets/js/hoverable-collapse.js"
 import "./assets/js/misc.js"
 import "./assets/js/dashboard.js"
 import "./assets/js/todolist.js" */
-
-
-
-
-
 import logo from './logo.svg';
 import Package from './AdminPages/Package'
 import Dsetinatiom from'./AdminPages/Destination'
@@ -42,6 +37,7 @@ import Eventlevel from './AdminPages/Eventlevel';
 import EventType from './AdminPages/EventType';
 import Accessories from './AdminPages/Accesories';
 import Costcentre from './AdminPages/Costcentre';
+import AdminHeader from'./AdminPages/AdminHeader';
 
 //import './App.scss'
 //import AppRoutes from './AppRoutes'
@@ -55,7 +51,7 @@ class App extends Component {
     return(
       <div>
       <Router>
-
+<AdminHeader/>
          <Switch>
             
             <Route exact path="/admin/package" component={Package}/>

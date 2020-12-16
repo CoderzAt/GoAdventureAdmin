@@ -4,7 +4,6 @@ import {postData,loadData,getallcoupons, getcouponbyid, couponpostapi, couponupd
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
 import { connect } from 'react-redux';
 import {getData} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
@@ -182,9 +181,7 @@ class Coupon extends Component {
     render() {
 	    return (
          <div>
-             <div class="container-scroller">
-        </div>
-       <AdminHeader/>
+             
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
             

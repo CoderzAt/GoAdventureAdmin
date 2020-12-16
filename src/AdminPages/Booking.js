@@ -4,7 +4,6 @@ import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupda
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
 import * as validation from '../Shared/Validations'
 
 /* import './assets/vendors/mdi/css/materialdesignicons.min.css'
@@ -351,9 +350,7 @@ class Booking extends Component {
     render() {
 	    return (
          <div>
-             <div class="container-scroller">
-        </div>
-       <AdminHeader/>
+             
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
             
