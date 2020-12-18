@@ -42,9 +42,9 @@ export const GET_CITY_STATEID="GET_CITY_STATEID";
 export const GET_STATES="GET_STATES";
 export const POST_CITY="POST_CITY";
 export const PUT_CITY="PUT_CITY";
+export const RESET_CITY="RESET_CITY";
 
-
-//coupon 
+//coupon
 export const GET_ALL_COUPON="GET_ALL_COUPON";
 export const GET_COUPON_BYID="GET_COUPON_BYID";
 export const POST_COUPON="POST_COUPON";
@@ -65,9 +65,9 @@ export const POST_EVENTTYPE="POST_EVENTTYPE";
 export const PUT_EVENTTYPE="PUT_EVENTTYPE";
 export const GET_EVENTTYPE_BYID="GET_EVENTTYPE_BYID";
 
-
 export const GET_ALL_DESTINATION="GET_ALL_DESTINATION";
 
+export const UPDATE_PROP="UPDATE_PROP";
 
 
 //post
@@ -76,5 +76,3 @@ export const GET_ALL_DESTINATION="GET_ALL_DESTINATION";
 
 
 //put
-
-

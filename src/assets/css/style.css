@@ -1506,7 +1506,7 @@
     0% {
         -webkit-transform: perspective(400px) rotateX(90deg);
         transform: perspective(400px) rotateX(90deg);
-        /* filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);*/ 
+        /* filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);*/
         opacity: 0;
     }
     40% {
@@ -18797,3 +18797,13 @@ dl li {
 
 
 /*# sourceMappingURL=style.css.map */
+.message-wrapper {
+  padding: 10px;
+}
+.message-wrapper.success {
+  background-color: #00FF00;
+}
+.message-wrapper.error {
+  color: #FFFFFF;
+  background-color: #FF0000;
+}

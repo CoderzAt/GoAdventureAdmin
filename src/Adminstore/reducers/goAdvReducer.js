@@ -16,6 +16,7 @@ const initalState ={
     putcountry:[],
     states:[],
     citybyid:[],
+    cityData: {},
     citybystate:[],
     getcountrybyid:[],
     coupons:[],
@@ -46,7 +47,9 @@ const initalState ={
     getitenary:[],
     getitenarybyid:[],
     putitenary:[],
-    postitenary:[]
+    postitenary:[],
+    message: false,
+    messageData: {}
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -228,6 +231,14 @@ const goAdvReducer = (state =initalState, action) => {
                 isCountryLoading: true
             }
         }
+        case `${actions.RESET_CITY}` : {
+            let updatedCityData = {cityId: 0};
+            updatedCityData[action.payload.param] = action.payload.value;
+            return{
+                ...state,
+				        cityData: updatedCityData
+            }
+        }
         case `${actions.GET_COUNTRIES}_FULFILLED` : {
             return{
                 ...state,
@@ -308,7 +319,9 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isCitybyidLoading: false,
-                citybyid: action.payload.data
+                citybyid: action.payload.data,
+                cityData: action.payload.data,
+                message: false
             }
         }
         case `${actions.GET_CITY_BYID}_REJECTED` : {
@@ -438,10 +451,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_CITY}_FULFILLED` : {
+          let updateCityData = {cityId: 0}, msgData = {};
+          if(action.payload.statusText === "error") {
+            msgData.message = "Error while adding the City";
+            msgData.isSuccess = false;
+          } else {
+            msgData.message = "City added successfully.";
+            msgData.isSuccess = true;
+          }
             return{
                 ...state,
                 ispostCityLoading: false,
-                postcity: action.payload.data
+                postcity: action.payload.data,
+                message: true,
+                messageData: msgData,
+                cityData: {cityId: 0}
             }
         }
         case `${actions.POST_CITY}_REJECTED` : {
@@ -457,10 +481,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_CITY}_FULFILLED` : {
+          let updateCityData = {cityId: 0}, msgData = {};
+          if(action.payload.statusText === "error") {
+            msgData.message = "Error while updating the City";
+            msgData.isSuccess = false;
+          } else {
+            msgData.message = "City updated successfully.";
+            msgData.isSuccess = true;
+          }
             return{
                 ...state,
                 isputCityLoading: false,
-                putcity: action.payload.data
+                putcity: action.payload.data,
+                cityData: updateCityData,
+                message: true,
+                messageData: msgData
             }
         }
         case `${actions.PUT_CITY}_REJECTED` : {
@@ -906,9 +941,18 @@ const goAdvReducer = (state =initalState, action) => {
                 isputItenaryLoading: false,
             }
         }
+        case `${actions.UPDATE_PROP}` : {
+			      console.log(action.payload);
+            let propName = action.payload.propName, updatedCityData = state[propName];
+            updatedCityData[action.payload.param] = action.payload.value;
+            return{
+                ...state,
+				        [propName]: updatedCityData
+            }
+        }
         default: return state;
     }
-    
+
 }
 
 export default goAdvReducer;
