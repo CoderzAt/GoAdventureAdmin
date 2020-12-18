@@ -59,11 +59,17 @@ export const destinationpostapi="https://ga-api.azurewebsites.net/api/v1/createD
 export const getdestinationbyid="https://ga-api.azurewebsites.net/api/v1/getDestinationByid?id=";
 export const destinationupdateapi="https://ga-api.azurewebsites.net/api/v1/updateDestination?id=";
 
-export const GET_ALL_DESTINATION=""
+export const GET_DESTINATION="https://ga-api.azurewebsites.net/api/v1getAllDestination";
 //placetype
 export const placetypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdPlaceType";
 export const getplacetypebyid="https://ga-api.azurewebsites.net/api/v1/GetMdPlaceTypeById?id="
 export const placetypeupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateMdPlaceType?id="
+
+export const GET_PLACETYPE="GetAllMdPlaceTypes";
+export const POST_PLACETYPE="CreateMdPlaceType";
+export const GET_PLACETYPE_BYID="GetMdPlaceTypeById?id=";
+export const PUT_PLACETYPE="UpdateMdPlaceType?id=";
+
 //country
 export const countrypostapi="https://ga-api.azurewebsites.net/api/v1/createMdCountry";
 export const deletecountry="https://ga-api.azurewebsites.net/api/v1/deleteMdCountry?id="
@@ -83,6 +89,10 @@ export const getallstatebycountry="https://ga-api.azurewebsites.net/api/v1/GetSt
 
 
 export const GET_STATES="GetAllMdStates";
+export const POST_STATE="CreateMdState";
+export const PUT_STATE="UpdateMdState?id=";
+export const GET_STATE_BYID="GetMdStateById?id=";
+export const GET_STATE_BYCOUNTRYID="GetStateByCountry?countryId=";
 //city
 export const citypostapi="https://ga-api.azurewebsites.net/api/v1/createMdCity";
 export const getstates="https://ga-api.azurewebsites.net/api/v1/GetAllMdStates";
@@ -108,6 +118,13 @@ export const getplacetovisitbyid="https://ga-api.azurewebsites.net/api/v1/GetPla
 export const placetovisitupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdatePlaceToVisit?id=";
 export const getplacetovisitbycity="https://ga-api.azurewebsites.net/api/v1/GetPlacetoVisitByCity?cityId=";
 export const getplacetovisitbydestination="https://ga-api.azurewebsites.net/api/v1/GetPlacetoVisitByDestination?destinationId=";
+
+
+export const GET_PLACETOVISIT="GetAllPlaceToVisits";
+export const POST_PLACETOVISIT="CreatePlaceToVisit";
+export const PUT_PLACETOVISIT="UpdatePlaceToVisit?id=";
+export const GET_PLACETOVISIT_BYID="GetPlaceToVisitById?id=";
+
 
 //package
 export const packagepostapi="https://ga-api.azurewebsites.net/api/v1/CreatePackage";
@@ -136,6 +153,11 @@ export const staypostapi="https://ga-api.azurewebsites.net/api/v1/CreateStay";
 export const getstays="https://ga-api.azurewebsites.net/api/v1/GetAllStays";
 export const getstaybyid="https://ga-api.azurewebsites.net/api/v1/GetStayById?id=";
 export const stayupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateStay?id=";
+
+export const GET_STAY="GetAllStays";
+export const POST_STAY="CreateStay";
+export const GET_STAY_BYID="GetStayById?id=";
+export const PUT_STAY="UpdateStay?id=";
 
 //staytype
 export const getstaytypes="https://ga-api.azurewebsites.net/api/v1/GetAllStayTypes";

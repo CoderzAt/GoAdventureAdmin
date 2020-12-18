@@ -18,7 +18,7 @@ const initalState ={
     citybyid:[],
     citybystate:[],
     getcountrybyid:[],
-    coupons:[],
+    coupons:[], 
     couponbyid:[],
     postcoupon:[],
     putcoupon:[],
@@ -46,7 +46,23 @@ const initalState ={
     getitenary:[],
     getitenarybyid:[],
     putitenary:[],
-    postitenary:[]
+    postitenary:[],
+    getplcetovisit:[],
+    postplacetovisit:[],
+    putplacetovisit:[],
+    getplacetovisitbyid:[],
+    getdestination:[],
+    placetype:[],
+    postplacetype:[],
+    getplacetypebyid:[],
+    putplacetype:[],
+    getstatebycountry:[],
+    poststate:[],
+    putstate:[],
+    getstay:[],
+    putstay:[],
+    poststay:[],
+    getstaybyid:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -277,25 +293,6 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isputCountryLoading: false,
-            }
-        }
-        case `${actions.GET_STATES}_PENDING` : {
-            return{
-                ...state,
-                isStateLoading: true
-            }
-        }
-        case `${actions.GET_STATES}_FULFILLED` : {
-            return{
-                ...state,
-                isStateLoading: false,
-                states: action.payload.data
-            }
-        }
-        case `${actions.GET_STATES}_REJECTED` : {
-            return{
-                ...state,
-                isStateLoading: false,
             }
         }
         case `${actions.GET_CITY_BYID}_PENDING` : {
@@ -906,6 +903,330 @@ const goAdvReducer = (state =initalState, action) => {
                 isputItenaryLoading: false,
             }
         }
+        case `${actions.GET_PLACETOVISIT}_PENDING` : {
+            return{
+                ...state,
+                isgetPlacetovisitLoading: true
+            }
+        }
+        case `${actions.GET_PLACETOVISIT}_FULFILLED` : {
+            return{
+                ...state,
+                isgetPlacetovisitLoading: false,
+                getitenary:action.payload.data
+            }
+        }
+        case `${actions.GET_PLACETOVISIT}_REJECTED` : {
+            return{
+                ...state,
+                isgetPlacetovisitLoading: false,
+            }
+        }
+        case `${actions.GET_PLACETOVISIT_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetPlacetovisitbyidLoading: true
+            }
+        }
+        case `${actions.GET_PLACETOVISIT_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetPlacetovisitbyidLoading: false,
+                getplacetovisitbyid:action.payload.data
+            }
+        }
+        case `${actions.GET_PLACETOVISIT_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetPlacetovisitbyidLoading: false,
+            }
+        }
+        case `${actions.POST_PLACETOVISIT}_PENDING` : {
+            return{
+                ...state,
+                ispostPlacetovisitbyidLoading: true
+            }
+        }
+        case `${actions.POST_PLACETOVISIT}_FULFILLED` : {
+            return{
+                ...state,
+                ispostPlacetovisitLoading: false,
+                postplacetovisit:action.payload.data
+            }
+        }
+        case `${actions.POST_PLACETOVISIT}_REJECTED` : {
+            return{
+                ...state,
+                ispostPlacetovisitLoading: false,
+            }
+        }
+        case `${actions.PUT_PLACETOVISIT}_PENDING` : {
+            return{
+                ...state,
+                isputPlacetovisitbyidLoading: true
+            }
+        }
+        case `${actions.PUT_PLACETOVISIT}_FULFILLED` : {
+            return{
+                ...state,
+                isputPlacetovisitLoading: false,
+                putplacetovisit:action.payload.data
+            }
+        }
+        case `${actions.PUT_PLACETOVISIT}_REJECTED` : {
+            return{
+                ...state,
+                isputPlacetovisitLoading: false,
+            }
+        }
+        case `${actions.GET_PLACETYPE}_PENDING` : {
+            return{
+                ...state,
+                isgetPlacetypeLoading: true
+            }
+        }
+        case `${actions.GET_PLACETYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isgetPlacetypeLoading: false,
+                placetype:action.payload.data
+            }
+        }
+        case `${actions.GET_PLACETYPE}_REJECTED` : {
+            return{
+                ...state,
+                isgetPlacetypeLoading: false,
+            }
+        }
+        case `${actions.GET_DESTINATION}_PENDING` : {
+            return{
+                ...state,
+                isgetDestinationLoading: true
+            }
+        }
+        case `${actions.GET_DESTINATION}_FULFILLED` : {
+            return{
+                ...state,
+                isgetDestinationLoading: false,
+                getdestination:action.payload.data
+            }
+        }
+        case `${actions.GET_DESTINATION}_REJECTED` : {
+            return{
+                ...state,
+                isgetDestinationLoading: false,
+            }
+        }
+        case `${actions.POST_PLACETYPE}_PENDING` : {
+            return{
+                ...state,
+                ispostPlacetypeLoading: true
+            }
+        }
+        case `${actions.POST_PLACETYPE}_FULFILLED` : {
+            return{
+                ...state,
+                ispostPlacetypeLoading: false,
+                postplacetype:action.payload.data
+            }
+        }
+        case `${actions.POST_PLACETYPE}_REJECTED` : {
+            return{
+                ...state,
+                ispostPlacetypeLoading: false,
+            }
+        }
+        case `${actions.PUT_PLACETYPE}_PENDING` : {
+            return{
+                ...state,
+                isputPlacetypeLoading: true
+            }
+        }
+        case `${actions.POST_PLACETYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isputPlacetypeLoading: false,
+                putplacetype:action.payload.data
+            }
+        }
+        case `${actions.POST_PLACETYPE}_REJECTED` : {
+            return{
+                ...state,
+                isputPlacetypeLoading: false,
+            }
+        }
+        case `${actions.GET_PLACETYPE_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetPlacetypebyidLoading: true
+            }
+        }
+        case `${actions.GET_PLACETYPE_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetPlacetypebyidLoading: false,
+                putplacetype:action.payload.data
+            }
+        }
+        case `${actions.GET_PLACETYPE_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetPlacetypebyidLoading: false,
+            }
+        }
+         case `${actions.GET_STATES}_PENDING` : {
+            return{
+                ...state,
+                isStateLoading: true
+            }
+        }
+        case `${actions.GET_STATES}_FULFILLED` : {
+            return{
+                ...state,
+                isStateLoading: false,
+                states: action.payload.data
+            }
+        }
+        case `${actions.GET_STATES}_REJECTED` : {
+            return{
+                ...state,
+                isStateLoading: false,
+            }
+        }
+        case `${actions.GET_STATE_BYCOUNTRYID}_PENDING` : {
+            return{
+                ...state,
+                isstatebyCountryidLoading: true
+            }
+        }
+        case `${actions.GET_STATE_BYCOUNTRYID}_FULFILLED` : {
+            return{
+                ...state,
+                isstatebyCountryidLoading: false,
+                states: action.payload.data
+            }
+        }
+        case `${actions.GET_STATE_BYCOUNTRYID}_REJECTED` : {
+            return{
+                ...state,
+                isstatebyCountryidLoading: false,
+            }
+        }
+        case `${actions.POST_STATE}_PENDING` : {
+            return{
+                ...state,
+                ispostStateLoading: true
+            }
+        }
+        case `${actions.POST_STATE}_FULFILLED` : {
+            return{
+                ...state,
+                ispostStateLoading: false,
+                poststate: action.payload.data
+            }
+        }
+        case `${actions.POST_STATE}_REJECTED` : {
+            return{
+                ...state,
+                ispostStateLoading: false,
+            }
+        }
+        case `${actions.PUT_STATE}_PENDING` : {
+            return{
+                ...state,
+                isputStateLoading: true
+            }
+        }
+        case `${actions.PUT_STATE}_FULFILLED` : {
+            return{
+                ...state,
+                isputStateLoading: false,
+                putstate: action.payload.data
+            }
+        }
+        case `${actions.PUT_STATE}_REJECTED` : {
+            return{
+                ...state,
+                isputStateLoading: false,
+            }
+        }
+        case `${actions.GET_STAY}_PENDING` : {
+            return{
+                ...state,
+                isgetStayLoading: true
+            }
+        }
+        case `${actions.GET_STAY}_FULFILLED` : {
+            return{
+                ...state,
+                isgetStayLoading: false,
+                getstay: action.payload.data
+            }
+        }
+        case `${actions.GET_STAY}_REJECTED` : {
+            return{
+                ...state,
+                isgetStayLoading: false,
+            }
+        }
+        case `${actions.PUT_STAY}_PENDING` : {
+            return{
+                ...state,
+                isputStayLoading: true
+            }
+        }
+        case `${actions.PUT_STAY}_FULFILLED` : {
+            return{
+                ...state,
+                isputStayLoading: false,
+                putstay: action.payload.data
+            }
+        }
+        case `${actions.PUT_STAY}_REJECTED` : {
+            return{
+                ...state,
+                isputStayLoading: false,
+            }
+        }
+        case `${actions.POST_STAY}_PENDING` : {
+            return{
+                ...state,
+                ispostStayLoading: true
+            }
+        }
+        case `${actions.POST_STAY}_FULFILLED` : {
+            return{
+                ...state,
+                ispostStayLoading: false,
+                poststay: action.payload.data
+            }
+        }
+        case `${actions.POST_STAY}_REJECTED` : {
+            return{
+                ...state,
+                ispostStayLoading: false,
+            }
+        }
+        case `${actions.GET_STAY_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetStaybyidLoading: true
+            }
+        }
+        case `${actions.GET_STAY_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetStaybyidLoading: false,
+                getstaybyid: action.payload.data
+            }
+        }
+        case `${actions.GET_STAY_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetStaybyidLoading: false,
+            }
+        }
+
         default: return state;
     }
     

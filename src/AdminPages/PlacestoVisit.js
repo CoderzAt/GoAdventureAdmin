@@ -1,111 +1,110 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import {postData,placetovisitpostapi,loadData,getcities,getdestinations,getplacetypes,getplacetovisit,getplacetovisitbyid,placetovisitupdateapi,getplacetovisitbycity,getplacetovisitbydestination} from '../Shared/Services'
+import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES,GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID } from '../Shared/Services'
 import Sidebar from './Sidebar'
 
-
+import { connect } from 'react-redux';
+import {getDestination, getData, postData1, putData1 } from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
 class PlacestoVisit extends Component {
     constructor(props) {
         super(props);
-       this.state = {
-           validated:false,
-           citynames:[],
-           destinationnames:[],
-           placetypes:[],
-           placename:null,
-           placegenre:null,
-           placedescription:null,
-           price:null,
-           destinationId:1,
-           placeTypeId:1,
-           cityId:1,
-           placetovisitTable:[],
-           editData:[],
-           hidecity:"",
-           hidedestination:""
-                 }
+        this.state = {
+            validated: false,
+            //citynames:[],
+            destinationnames: [],
+           // placetypes: [],
+            placename: null,
+            placegenre: null,
+            placedescription: null,
+            price: null,
+            destinationId: 1,
+            placeTypeId: 1,
+            cityId: 1,
+            placetovisitTable: [],
+            editData: [],
+            hidecity: "",
+            hidedestination: ""
+        }
     }
 
-    async   componentDidMount()
-    {
-debugger
+    async componentDidMount() {
+        debugger
 
         var url
-       if(this.props.match.params.parent == "city")
-        {
-            if(this.props.match.params.pid != undefined)
-            {
-       let valuefromurl=parseInt(this.props.match.params.pid);
-       url=getplacetovisitbycity+valuefromurl;
+        if (this.props.match.params.parent == "city") {
+            if (this.props.match.params.pid != undefined) {
+                let valuefromurl = parseInt(this.props.match.params.pid);
+                url = getplacetovisitbycity + valuefromurl;
             }
             this.setState({
-                hidecity:"",
-                hidedestination:"true"
+                hidecity: "",
+                hidedestination: "true"
             })
         }
-        else if(this.props.match.params.parent == "destination")
-        {
-            if(this.props.match.params.pid != undefined)
-            {
-       let valuefromurl=parseInt(this.props.match.params.pid);
-       url=getplacetovisitbydestination+valuefromurl;
+        else if (this.props.match.params.parent == "destination") {
+            if (this.props.match.params.pid != undefined) {
+                let valuefromurl = parseInt(this.props.match.params.pid);
+                url = getplacetovisitbydestination + valuefromurl;
             }
 
             this.setState({
-                hidecity:"true",
-                hidedestination:""
+                hidecity: "true",
+                hidedestination: ""
             })
 
         }
-        else
-        {
-          url=getplacetovisit
-          this.setState({
-            hidecity:"true",
-            hidedestination:"true"
-        })
+        else {
+            url = getplacetovisit
+            this.setState({
+                hidecity: "true",
+                hidedestination: "true"
+            })
         }
 
-        let palcetovisitdata=await loadData(url)
+        let palcetovisitdata = await loadData(url)
         this.setState({
-            placetovisitTable:palcetovisitdata
+            placetovisitTable: palcetovisitdata
         })
+        this.props.getData(action.GET_CITIES, GET_CITIES)
 
-        let states=await loadData(getcities)
+       /*  let states = await loadData(getcities)
         this.setState({
-            citynames:states
-        })
-        let destinations=await loadData(getdestinations)
-        this.setState({
-           destinationnames:destinations
-            })
-        let placetypes=await loadData(getplacetypes)
-        this.setState({
-            placetypes:placetypes
-        })
-        
-    }
+            citynames: states
+        }) */
 
-    placenameOperation(event)
-    {
-      this.setState({
-            placename:event.target.value
-        })
-    }
-    placedescriptionOperation(event)
-    {
-   this.setState({
-            placedescription:event.target.value
-        })
+        this.props.getDestination();
+       
+        /* let destinations = await loadData(getdestinations)
+        this.setState({
+            destinationnames: destinations
+        }) */
+        /* let placetypes = await loadData(getplacetypes)
+        this.setState({
+            placetypes: placetypes
+        }) */
+
+        this.props.getData(action.GET_PLACETYPE,GET_PLACETYPE)
 
     }
-    placegenreOperation(event)
-    {
-  this.setState({
-            placegenre:event.target.value
+
+    placenameOperation(event) {
+        this.setState({
+            placename: event.target.value
+        })
+    }
+    placedescriptionOperation(event) {
+        this.setState({
+            placedescription: event.target.value
+        })
+
+    }
+    placegenreOperation(event) {
+        this.setState({
+            placegenre: event.target.value
         })
     }
     /* priceOperation(event)
@@ -114,231 +113,218 @@ debugger
             price:event.target.value
         })
     } */
-    destinationOperation(event)
-    {
+    destinationOperation(event) {
         this.setState({
-            destinationId:event.target.value
+            destinationId: event.target.value
         })
     }
-    placetypeOperation(event)
-    {
+    placetypeOperation(event) {
         this.setState({
-            placeTypeId:event.target.value
+            placeTypeId: event.target.value
         })
 
     }
-    cityOperation(event)
-    {
+    cityOperation(event) {
         this.setState({
-            cityId:event.target.value
+            cityId: event.target.value
         })
     }
-   async placetovisitbycityOperation(event)
-    {
-     
-      let url=getplacetovisitbycity+(event.target.value);
-      let place=await loadData(url)
-      this.setState({
-          placetovisitTable:place
-      })
-    }
-    async placetovisitbydestinationOperation(event)
-    {
-     
-      let url=getplacetovisitbydestination+(event.target.value);
-      let place=await loadData(url)
-      this.setState({
-          placetovisitTable:place
-      })
-    }
+    async placetovisitbycityOperation(event) {
 
-    async editReacord(id)
-    {
-        
-        let url=getplacetovisitbyid+id;
-        let editdata=await loadData(url)
+        let url = getplacetovisitbycity + (event.target.value);
+        let place = await loadData(url)
         this.setState({
-            editData:editdata
+            placetovisitTable: place
         })
+    }
+    async placetovisitbydestinationOperation(event) {
 
+        let url = getplacetovisitbydestination + (event.target.value);
+        let place = await loadData(url)
         this.setState({
-            placename:editdata.placeName,
-            placegenre:editdata.placeGenre,
-            placedescription:editdata.description,
-            price:editdata.price
+            placetovisitTable: place
         })
     }
 
-    async postEditedData()
-    {
+    async editReacord(id) {
+
+        let url = getplacetovisitbyid + id;
+        let editdata = await loadData(url)
+        this.setState({
+            editData: editdata
+        })
+
+        this.setState({
+            placename: editdata.placeName,
+            placegenre: editdata.placeGenre,
+            placedescription: editdata.description,
+            price: editdata.price
+        })
+    }
+
+    async postEditedData() {
         debugger
 
-        const obj={
-            placeId:this.state.editData.placeId,
-            placeName:this.state.placename,
-            placeGenre:this.state.placegenre,
+        const obj = {
+            placeId: this.state.editData.placeId,
+            placeName: this.state.placename,
+            placeGenre: this.state.placegenre,
             destinationId: 9,
-            description:this.state.placedescription,
-            price:parseInt(this.state.price),
+            description: this.state.placedescription,
+            price: parseInt(this.state.price),
             placeTypeId: 1,
-            cityId:6
-            }
+            cityId: 6
+        }
 
-        let editurl=placetovisitupdateapi+this.state.editData.cityId;
-        let editeddata=await postData(obj,editurl,'Put')
+        let editurl = placetovisitupdateapi + this.state.editData.cityId;
+        let editeddata = await postData(obj, editurl, 'Put')
 
         alert(editeddata)
         window.location.reload();//page refresh
     }
 
-   async postDatatoApi()
-    {
-      const obj={
-        placeId: 0,
-        placeName: this.state.placename,
-        placeGenre:this.state.placegenre,
-        destinationId:parseInt(this.state.destinationId),
-        description:this.state.placedescription,
-        price:parseInt(this.state.price),
-        placeTypeId:parseInt(this.state.placeTypeId),
-        cityId:parseInt(this.state.cityId)
-        
+    async postDatatoApi() {
+        const obj = {
+            placeId: 0,
+            placeName: this.state.placename,
+            placeGenre: this.state.placegenre,
+            destinationId: parseInt(this.state.destinationId),
+            description: this.state.placedescription,
+            placeTypeId: parseInt(this.state.placeTypeId),
+            cityId: parseInt(this.state.cityId)
+
         }
-             let message=await  postData(obj,placetovisitpostapi,'Post');
-             alert (message);
-             window.location.reload();//page refresh
+
+        this.props.postData1(action.POST_PLACETOVISIT,POST_PLACETOVISIT,obj);
+        /* let message = await postData(obj, placetovisitpostapi, 'Post');
+        alert(message);
+        window.location.reload(); *///page refresh
     }
 
-    async handleSubmit(event)
-    {
+    async handleSubmit(event) {
         debugger
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity())
+        if (form.checkValidity() === false) {
             event.preventDefault();
-            if(this.state.editData.placeId == undefined)
-            {
-          this.postDatatoApi()
+            event.stopPropagation();
+        }
+        else {
+            event.preventDefault();
+            if (this.state.editData.placeId == undefined) {
+                this.postDatatoApi()
             }
-            else
-            {
+            else {
                 this.postEditedData()
             }
         }
-      this.setState({
-            validated:true
+        this.setState({
+            validated: true
         })
-}
+    }
 
-handleReset()
-{
-    this.setState({
-        editData:[]
-    })
-}
+    handleReset() {
+        this.setState({
+            editData: []
+        })
+    }
 
 
     render() {
-	    return (
+        return (
 
-        <div>
-       
-   <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
-       <Sidebar/>
-       
-       <div class="main-panel">
-           <div class="content-wrapper">
-           <div class="page-header">
-                        <h3 class="page-title">
-                            <span class="page-title-icon bg-gradient-primary text-white mr-2">
-                                <i class="mdi mdi-home-map-marker"></i>
-                            </span>Place To Visit
+            <div>
+
+                <div class="container-fluid page-body-wrapper" style={{ paddingTop: 80 }}>
+                    <Sidebar />
+
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="page-header">
+                                <h3 class="page-title">
+                                    <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                                        <i class="mdi mdi-home-map-marker"></i>
+                                    </span>Place To Visit
                         </h3>
-                        <nav aria-label="breadcrumb">
-                            <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
+                                <nav aria-label="breadcrumb">
+                                    <ul class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            Place To Visit
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    Place To Visit
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-               <div class="row">
-                   <div class="col-12 grid-margin stretch-card">
-                       <div class="card">
-                           <div class="card-body">
-                               <h4 class="card-title">Place To Visit</h4>
-                               <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
-                               <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="placeTypeName"
-                                                        class="col-sm-3 col-form-label">Name</label>
-                                                    <div class="col-sm-9">
-                                                        <input type="text" defaultValue={this.state.editData.placeName} class="form-control" id="placeTypeName"
-                                                           onChange={(e)=>this.placenameOperation(e)} placeholder="Name"/>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Place To Visit</h4>
+                                            <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeName"
+                                                                class="col-sm-3 col-form-label">Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" defaultValue={this.state.editData.placeName} class="form-control" id="placeTypeName"
+                                                                    onChange={(e) => this.placenameOperation(e)} placeholder="Name" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="genre" class="col-sm-3 col-form-label">Genre</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" defaultValue={this.state.editData.placeGenre} class="form-control" id="genre"
+                                                                    onChange={(e) => this.placegenreOperation(e)} placeholder="Genre" />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="genre" class="col-sm-3 col-form-label">Genre</label>
-                                                    <div class="col-sm-9">
-                                                        <input type="text" defaultValue={this.state.editData.placeGenre} class="form-control" id="genre"
-                                                           onChange={(e)=>this.placegenreOperation(e)} placeholder="Genre"/>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Destination</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control travellerMode" onChange={(e) => this.destinationOperation(e)}>
+                                                                    {this.props.getdestination.map(obj =>
+                                                                        <option value={obj.destinationId}>{obj.destinationName}</option>
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Destination</label>
-                                                    <div class="col-sm-9">
-                                                    <select class="form-control travellerMode" onChange={(e)=>this.destinationOperation(e)}>
-                                                    {this.state.destinationnames.map(obj=>
-                                                     <option value={obj.destinationId}>{obj.destinationName}</option>
-                                                          )}
-                                                      </select>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Place Type</label>
-                                                    <div class="col-sm-9">
-                                                    <select class="form-control travellerMode" onchange={(e)=>this.placetypeOperation(e)}>
-                                                      {this.state.placetypes.map(obj=>
-                                                     <option value={obj.placeTypeId}>{obj.placeTypeName}</option>
-                                                       )}
-                                                     </select>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Place Type</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control travellerMode" onchange={(e) => this.placetypeOperation(e)}>
+                                                                    {this.props.placetype.map(obj =>
+                                                                        <option value={obj.placeTypeId}>{obj.placeTypeName}</option>
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">City</label>
-                                                    <div class="col-sm-9">
-                                                    <select class="form-control travellerMode" onChange={(e)=>this.cityOperation(e)}>
-                                                    {this.state.citynames.map(obj=>
-                                                       <option value={obj.cityId}>{obj.cityName}</option>
-                                                                )}
-                                                     </select>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">City</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control travellerMode" onChange={(e) => this.cityOperation(e)}>
+                                                                    {this.props.cities.map(obj =>
+                                                                        <option value={obj.cityId}>{obj.cityName}</option>
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
 
-                                            {/* <div class="col-md-6">
+                                                    {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="Price" class="col-sm-3 col-form-label">Price</label>
                                                     <div class="col-sm-9">
@@ -347,48 +333,48 @@ handleReset()
                                                     </div>
                                                 </div>
                                             </div> */}
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="placeTypeDescription"
-                                                        class="col-sm-3 col-form-label">Description</label>
-                                                    <div class="col-sm-9">
-                                                        <textarea class="form-control" defaultValue={this.state.editData.description} id="placeTypeDescription"
-                                                           onChange={(e)=>this.placedescriptionOperation(e)} rows="4"></textarea>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription"
+                                                                class="col-sm-3 col-form-label">Description</label>
+                                                            <div class="col-sm-9">
+                                                                <textarea class="form-control" defaultValue={this.state.editData.description} id="placeTypeDescription"
+                                                                    onChange={(e) => this.placedescriptionOperation(e)} rows="4"></textarea>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" style={{ margin: "auto", textAlign: "center"/* marg:auto;text-align: center} */ }}>
+                                                    <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+                                                    <button type="reset" class="btn btn-light">Cancel</button>
+                                                </div>
+                                            </Form>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                
-                                            </div>
-                                        </div>
-                                       
-                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
-                                            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
-                                            <button type="reset" class="btn btn-light">Cancel</button>
-                                        </div>
-</Form>
-                           </div>
-                       </div>
-                   </div>
-                   </div>
-                   <div class="row">
-                   <div class="col-12 grid-margin stretch-card">
-                       <div class="card">
-                           <div class="card-body">
-                               <h4 class="card-title">List</h4>
-                               <div class="col-md-6" hidden={this.state.hidecity}>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">List</h4>
+                                            <div class="col-md-6" hidden={this.state.hidecity}>
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">City</label>
                                                     <div class="col-sm-9">
-                                                    <select class="form-control travellerMode"  onChange={(e)=>this.placetovisitbycityOperation(e)}>
-                                                    {this.state.citynames.map(obj=>
-                                                       <option value={obj.cityId}>{obj.cityName}</option>
-                                                                )}
-                                                     </select>
+                                                        <select class="form-control travellerMode" onChange={(e) => this.placetovisitbycityOperation(e)}>
+                                                            {this.props.cities.map(obj =>
+                                                                <option value={obj.cityId}>{obj.cityName}</option>
+                                                            )}
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -396,71 +382,71 @@ handleReset()
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Destination</label>
                                                     <div class="col-sm-9">
-                                                    <select class="form-control travellerMode" onChange={(e)=>this.placetovisitbydestinationOperation(e)}>
-                                                    {this.state.destinationnames.map(obj=>
-                                                       <option value={obj.destinationId}>{obj.destinationName}</option>
-                                                                )}
-                                                     </select>
+                                                        <select class="form-control travellerMode" onChange={(e) => this.placetovisitbydestinationOperation(e)}>
+                                                            {this.state.destinationnames.map(obj =>
+                                                                <option value={obj.destinationId}>{obj.destinationName}</option>
+                                                            )}
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
-                   <div className="table-responsive">
-                   <ReactTable columns={[
-                                    {
-                                        Header: "PlaceId",
-                                        accessor: "placeId"
-                                        
-                                    },
-                                  {
-                                    Header: "PlaceName",
-                                    accessor: "placeName"
-                                    
-                                  },
-                                  {
-                                    Header: "PlaceGenre",
-                                    accessor: "placeGenre"
-                                    
-                                  },
-                                  {
-                                    Header: "PlaceDescription",
-                                    accessor: "description"
-                                    
-                                  },
-                                  {
-                                    id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
-                                    accessor: d => d.placeId,
-                                    maxWidth:300,
-                                    Cell: row => (
-                                      <div className="template-demo">
-                                          <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
-                                                            <i class="mdi mdi-pencil-outline"></i>
-                                          </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
-                                                            <i class="mdi mdi-delete-outline"></i>
-                                          </button>
-                                      </div>)
+                                            <div className="table-responsive">
+                                                <ReactTable columns={[
+                                                    {
+                                                        Header: "PlaceId",
+                                                        accessor: "placeId"
 
-                                  }
-                                ]}
-                                data={this.state.placetovisitTable}
-                                showPagination={true}
-                                defaultPageSize={5}
-                                
-                         />
-                         
-      
-                         </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
+                                                    },
+                                                    {
+                                                        Header: "PlaceName",
+                                                        accessor: "placeName"
+
+                                                    },
+                                                    {
+                                                        Header: "PlaceGenre",
+                                                        accessor: "placeGenre"
+
+                                                    },
+                                                    {
+                                                        Header: "PlaceDescription",
+                                                        accessor: "description"
+
+                                                    },
+                                                    {
+                                                        id: 'id', // Required because our accessor is not a string
+                                                        Header: 'Actions',
+                                                        accessor: d => d.placeId,
+                                                        maxWidth: 300,
+                                                        Cell: row => (
+                                                            <div className="template-demo">
+                                                                <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
+                                                                    <i class="mdi mdi-pencil-outline"></i>
+                                                                </button>
+                                                                <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                                    <i class="mdi mdi-delete-outline"></i>
+                                                                </button>
+                                                            </div>)
+
+                                                    }
+                                                ]}
+                                                    data={this.state.placetovisitTable}
+                                                    showPagination={true}
+                                                    defaultPageSize={5}
+
+                                                />
 
 
-            {/* <div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {/* <div>
 		<div style={{paddingLeft:400,paddingTop:110,backgroundColor:"black"}} >
             <div class="card" style={{width:600 }}>
   <div class="card-body">
@@ -543,9 +529,18 @@ handleReset()
                          />
                          </div>
         </div> */}
-        </div>
-     )
-        }
+            </div>
+        )
     }
-    export default PlacestoVisit
+}
+
+const mapStateToProps = (state) => {
+    return {
+        cities:state.goAdvStore.cities,
+        placetype:state.goAdvStore.placetype,
+        getdestination:state.goAdvStore.getdestination
+    }
+}
+export default connect(mapStateToProps, { getData, postData1, putData1,getDestination })(PlacestoVisit);
+    //export default PlacestoVisit
 

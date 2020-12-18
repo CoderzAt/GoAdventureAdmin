@@ -3,10 +3,14 @@ import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import {postData,statepostapi,loadData,getcounties,getstates,getstatebyid,stateupdateapi,getallstatebycountry} from '../Shared/Services'
+import {postData,statepostapi,loadData,getcounties,getstates,getstatebyid,stateupdateapi,getallstatebycountry,POST_STATE,GET_STATE_BYID,GET_STATES,PUT_STATE,GET_STATE_BYCOUNTRYID} from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import TableWithSelection from '../Components/TablewithdataSelection'
+import { connect } from 'react-redux';
+import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
+
 
 
 
@@ -52,7 +56,7 @@ class State extends Component {
     
     }
 
-    async componentDidMount()
+    componentDidMount()
     {
     
       var url
@@ -60,21 +64,24 @@ class State extends Component {
       if(this.props.match.params.sid != undefined)
       {
      let valuefromurl=parseInt(this.props.match.params.sid);
-     url=getallstatebycountry+valuefromurl;
+     url=GET_STATE_BYCOUNTRYID+valuefromurl;
+     this.props.getData(action.GET_STATE_BYCOUNTRYID,url)
+     
       }
       else
       {
-        url=getstates
+       this.props.getData(action.GET_STATES,GET_STATES)
+        //url=getstates
       }
 
       //let url=getstatebyid+valuefromurl;
-      
+      /* 
        let data=await loadData(getcounties);
        this.setState({countrynames:data})
        let statedata=await loadData(url)
        this.setState({
          states:statedata
-       })
+       }) */
 
     }
 
@@ -104,14 +111,15 @@ class State extends Component {
             countryid:event.target.value
         })
     }
-  async  statebycountryoperation(event)
+   statebycountryoperation(event)
     {
 //alert(event.target.value)
-      let url=getallstatebycountry+(event.target.value);
-      let state=await loadData(url)
+      let url=GET_STATE_BYCOUNTRYID+(event.target.value);
+      this.props.getData(action.GET_STATE_BYCOUNTRYID,url)
+      /* let state=await loadData(url)
       this.setState({
           states:state
-      })
+      }) */
 
     }
     async editReacord(id)
@@ -148,7 +156,7 @@ class State extends Component {
         window.location.reload();//page refresh
     }
 
-   async postDatatoApi()
+   postDatatoApi()
     {
       const obj={
         stateId: 0,
@@ -157,9 +165,10 @@ class State extends Component {
         stateDesc:this.state.statedescription,
         countryId:parseInt(this.state.countryid)
     }
-             let message=await  postData(obj,statepostapi,'Post');
+   this.props.postData1(action.POST_STATE,POST_STATE,obj)
+            /*  let message=await  postData(obj,statepostapi,'Post');
              alert (message);
-             window.location.reload();//page refresh
+             window.location.reload(); *///page refresh
     }
 
     async handleSubmit(event)
@@ -356,7 +365,7 @@ class State extends Component {
                                     }
                                   
                                 ]}
-                                data={this.state.states}
+                                data={this.props.states}
                                 showPagination={true}
                                 defaultPageSize={5}
                                 
@@ -440,5 +449,15 @@ class State extends Component {
      )
         }
     }
-    export default State
+
+    const mapStateToProps = (state) => {
+      return {
+         states:state.goAdvStore.states
+         //states:state.goAdvStore.getstatebycountry
+          //cities:state.goAdvStore.citybyid
+          //cities:state.goAdvStore.citybyid
+      }
+  }
+  export default connect(mapStateToProps, {getData,postData1,putData1})(State);
+   // export default State
 

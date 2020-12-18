@@ -17,6 +17,7 @@ export const GET_ITENARY_BYID="GET_ITENARY_BYID";
 export const POST_ITENARY="POST_ITENARY";
 export const PUT_ITENARY="PUT_ITENARY";
 
+
 //activity
 export const GET_AVCTIVITIES="GET_AVCTIVITIES";
 export const GET_ACTIVITY_BYID="GET_ACTIVITY_BYID";
@@ -39,7 +40,6 @@ export const PUT_COUNTRY="PUT_COUNTRY";
 export const GET_CITIES="GET_CITIES";
 export const GET_CITY_BYID="GET_CITY_BYID";
 export const GET_CITY_STATEID="GET_CITY_STATEID";
-export const GET_STATES="GET_STATES";
 export const POST_CITY="POST_CITY";
 export const PUT_CITY="PUT_CITY";
 
@@ -65,8 +65,34 @@ export const POST_EVENTTYPE="POST_EVENTTYPE";
 export const PUT_EVENTTYPE="PUT_EVENTTYPE";
 export const GET_EVENTTYPE_BYID="GET_EVENTTYPE_BYID";
 
+//placetovisit
+export const GET_PLACETOVISIT="GET_PLACETOVISIT";
+export const POST_PLACETOVISIT="POST_PLACETOVISIT";
+export const PUT_PLACETOVISIT="PUT_PLACETOVISIT";
+export const GET_PLACETOVISIT_BYID="GET_PLACETOVISIT_BYID";
 
-export const GET_ALL_DESTINATION="GET_ALL_DESTINATION";
+//placetype
+export const GET_PLACETYPE="GET_PLACETYPE";
+export const POST_PLACETYPE="POST_PLACETYPE";
+export const PUT_PLACETYPE="PUT_PLACETYP";
+export const GET_PLACETYPE_BYID="GET_PLACETYPE_BYID";
+
+//state
+export const GET_STATES="GET_STATES";
+export const GET_STATE_BYID="GET_STATE_BYID";
+export const GET_STATE_BYCOUNTRYID="GET_STATE_BYCOUNTRYID";
+export const POST_STATE="POST_STATE";
+export const PUT_STATE="PUT_STATE";
+
+//stay
+export const GET_STAY="GET_STAY";
+export const POST_STAY="POST_STAY";
+export const GET_STAY_BYID="GET_STAY_BYID";
+export const PUT_STAY="PUT_STAY";
+
+
+//destination
+export const GET_DESTINATION="GET_DESTINATION";
 
 
 

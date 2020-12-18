@@ -4,8 +4,11 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 
-import {placetypepostapi,postData,getplacetypes,loadData,getplacetypebyid,placetypeupdateapi} from '../Shared/Services'
+import {placetypepostapi,postData,getplacetypes,loadData,getplacetypebyid,placetypeupdateapi,GET_PLACETYPE_BYID,GET_PLACETYPE,POST_PLACETYPE,PUT_PLACETYPE} from '../Shared/Services'
 import {namevalidation} from '../Shared/Validations'
+import { connect } from 'react-redux';
+import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
 
 class PlaceType extends Component {
@@ -15,7 +18,7 @@ class PlaceType extends Component {
            validated:false,
            placetypename:"",
            placetypedescription:"",
-           placetypesT:[],
+          // placetypesT:[],
            editData:[],
            errors:{
                name:"",
@@ -25,10 +28,12 @@ class PlaceType extends Component {
     }
     async componentDidMount()
     {
-     let placetypes=await loadData(getplacetypes)
+    this.props.getData(action.GET_PLACETYPE,GET_PLACETYPE)
+
+    /*  let placetypes=await loadData(getplacetypes)
      this.setState({
        placetypesT:placetypes
-     })
+     }) */
     }
 
     placetypenameOperation(event)
@@ -84,9 +89,10 @@ class PlaceType extends Component {
                placeTypeName:this.state.placetypename,
                placeTypeDescription:this.state.placetypedescription
               }
-             let message=await  postData(obj,placetypepostapi,'Post');
+              this.props.postData1(action.POST_PLACETYPE,POST_PLACETYPE,obj)
+             /* let message=await  postData(obj,placetypepostapi,'Post');
              alert (message);
-             window.location.reload();//page refresh
+             window.location.reload() */;//page refresh
     }
      validateForm(errors){
         debugger
@@ -233,7 +239,7 @@ class PlaceType extends Component {
 
                                   }
                                 ]}
-                                data={this.state.placetypesT}
+                                data={this.props.placetype}
                                 showPagination={true}
                                 defaultPageSize={5}
                                 
@@ -270,5 +276,13 @@ class PlaceType extends Component {
      )
         }
     }
-    export default PlaceType
+    const mapStateToProps = (state) => {
+        return {
+           placetype:state.goAdvStore.placetype
+            //cities:state.goAdvStore.citybyid
+            //cities:state.goAdvStore.citybyid
+        }
+    }
+    export default connect(mapStateToProps, {getData,postData1,putData1})(PlaceType);
+   // export default PlaceType
 

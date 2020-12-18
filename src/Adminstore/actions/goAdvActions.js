@@ -20,6 +20,7 @@ export const getPackages = () => {
              })
        });
     }
+
  }
 
  export const getAccessories = (actiontype,url) => {
@@ -105,6 +106,26 @@ export const putData1 =(actiontype,url,obj)=>
       });
    }
 }
+
+export const getDestination = () => {
+   const svcconfig = {
+      headers: { Pragma: 'no-cache' }
+   }
+   return dispatch => {
+      dispatch({
+         type: actions.GET_DESTINATION,
+           payload: axios.get(`${services.GET_DESTINATION}`,svcconfig)
+            .then(response => {
+              console.log("destination",response)
+               return response;
+            })
+            .catch(error => {
+               return { data: { errors: [error.toString()], isSuccess: false } };
+            })
+      });
+   }
+}
+
 
 
 export const getCalendar = () => {

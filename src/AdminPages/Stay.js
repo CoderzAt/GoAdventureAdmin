@@ -1,10 +1,15 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,stayupdateapi,getstaytypes} from '../Shared/Services'
+import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Sidebar from './Sidebar'
+
+import { connect } from 'react-redux';
+import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
+
 
 import {gettingMultiselectValues} from '../Shared/ReauasbleFunctions'
 /* import './assets/vendors/mdi/css/materialdesignicons.min.css'
@@ -42,12 +47,12 @@ class Stay extends Component {
     }
    async componentDidMount()
      {
-    
-        let staydata= await loadData(getstays)
+      this.props.getData(action.GET_STAY,GET_STAY)
+        /* let staydata= await loadData(getstays)
         this.setState({
            stay:staydata
         })
-
+ */
         let data= await loadData(getcities)
         this.setState({
            cities:data
@@ -365,7 +370,7 @@ console.log("stays",staytypenames1)
                                   }
 
                                 ]}
-                                data={this.state.stay}
+                                data={this.props.getstay}
                                 showPagination={true}
                                 defaultPageSize={5}
                                
@@ -385,5 +390,18 @@ console.log("stays",staytypenames1)
  )
         }
     }
-    export default Stay
+    
+    const mapStateToProps = (state) => {
+        return {
+        getstay:state.goAdvStore.getstay,
+        getstaybyid:state.goAdvStore.getstaybyid,
+        cities:state.goAdvStore.cities
+           //states:state.goAdvStore.getstatebycountry
+            //cities:state.goAdvStore.citybyid
+            //cities:state.goAdvStore.citybyid
+        }
+    }
+    export default connect(mapStateToProps, {getData,postData1,putData1})(Stay);
+    
+    //export default Stay
 
