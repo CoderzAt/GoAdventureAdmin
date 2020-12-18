@@ -63,7 +63,7 @@ const initalState ={
     getstay:[],
     putstay:[],
     poststay:[],
-    getstaybyid:[]
+    getstaybyid:[],
     message: false,
     messageData: {}
 }
