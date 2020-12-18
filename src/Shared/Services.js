@@ -72,6 +72,8 @@ export const countryupdateapi="https://ga-api.azurewebsites.net/api/v1/updateMdC
 
 export const GET_COUNTRIES="GetAllMdCountrys";
 export const GET_COUNTRY_BYID="GetMdCountryById?id=";
+export const POST_COUNTRY="createMdCountry";
+export const PUT_COUNTRY="updateMdCountry?id=";
 //state
 export const statepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdState";
 export const getcounties="https://ga-api.azurewebsites.net/api/v1/GetAllMdCountrys";
@@ -164,7 +166,11 @@ export const getiternarybyid="https://ga-api.azurewebsites.net/api/v1/getItenary
 export const itenaryupdateapi="https://ga-api.azurewebsites.net/api/v1/updateItenary?id="
 export const itenarybypackageid="https://ga-api.azurewebsites.net/api/v1/GetItenaryByPackageId?packageId="
 
-export const GET_ITENARY_BYPACKAGEID="getItenaryByid?id=";
+export const GET_ITENARY_BYPACKAGEID="GetItenaryByPackageId?packageId=";
+export const GET_ITENARY="getAllItenary";
+export const POST_ITENARY="createItenary";
+export const PUT_ITENARY="updateItenary?id=";
+export const GET_ITENARY_BYID="getItenaryByid?id=";
 
 //activity
 export const postactivityapi="https://ga-api.azurewebsites.net/api/v1/createMdActivity";
@@ -183,14 +189,28 @@ export const geteventlevels="https://ga-api.azurewebsites.net/api/v1/GetAllMdEve
 export const geteventlevelbyid="https://ga-api.azurewebsites.net/api/v1/GetMdEventLevelById?id=";
 export const eventlevelupdateapi="https://ga-api.azurewebsites.net/api/v1/updateMdEventLevel?id=";
 
+
+export const GET_EVENTLEVEL="GetAllMdEventLevels";
+export const POST_EVENTLEVEL="createMdEventLevel";
+export const PUT_EVENTLEVEL="updateMdEventLevel?id=";
+export const GET_EVENTLEVEL_BYID="GetMdEventLevelById?id=";
+
 //status
 export const getstatusapi="https://ga-api.azurewebsites.net/api/v1/GetAllMdStatus";
+
+export const GET_STATUS="GetAllMdStatus";
 
 //eventtype
 export const eventtypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdEventType";
 export const geteventtypes="https://ga-api.azurewebsites.net/api/v1/GetAllMdEventTypes";
 export const geteventtypebyid="https://ga-api.azurewebsites.net/api/v1/GetMdEventTypeById?id=";
 export const eventtypeupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateMdEventType?id=";
+
+export const GET_EVENTTYPE="GetAllMdEventTypes";
+export const GET_EVENTTYPE_BYID="GetMdEventTypeById?id=";
+export const POST_EVENTTYPE="CreateMdEventType";
+export const PUT_EVENTTYPE="UpdateMdEventType?id=";
+
 
 //packageplace
 export const getpackageplaces="https://ga-api.azurewebsites.net/api/v1/GetAllPackagePlaces";
@@ -206,6 +226,8 @@ export const couponupdateapi="https://ga-api.azurewebsites.net/api/v1/updateCoup
 
 export const GET_ALL_COUPON="getAllCoupon";
 export const GET_COUPON_BYID="getCouponByid?id=";
+export const POST_COUPON="createCoupon";
+export const PUT_COUPON="PUT_COUPON";
 
 //calendar
 export const GET_CALENDAR="GetCalenderList?month=12&year=2020";

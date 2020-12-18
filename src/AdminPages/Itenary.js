@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,countrypostapi,deletecountry,itenarypostapi,getpackages,loadData,itenarygetapi,getiternarybyid,itenaryupdateapi} from '../Shared/Services'
+import {postData,countrypostapi,deletecountry,itenarypostapi,getpackages,loadData,itenarygetapi,getiternarybyid,itenaryupdateapi,PUT_ITENARY,POST_ITENARY,GET_ITENARY_BYID,GET_ITENARY,GET_ALL_PACKAGES} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-
+import { connect } from 'react-redux';
+import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import parse from 'html-react-parser'
@@ -64,13 +66,17 @@ class Itenary extends Component {
         condition=false;
         
      } */
-     async  componentDidMount()
-     {
-        let packages1=await loadData(getpackages);
+    async componentDidMount()
+    {
+        debugger
+      this.props.getData(action.GET_ITENARY,GET_ITENARY)
+      this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES);
+      
+        /*  let packages1=await loadData(getpackages);
         this.setState({
               packages:packages1
         })
-
+ */
         let itenary1=await loadData(itenarygetapi);
         this.setState({
               itenaries:itenary1
@@ -128,11 +134,13 @@ class Itenary extends Component {
    async editReacord(id)
     {
         
-        let url=getiternarybyid+id;
-        let editdata=await loadData(url)
-        this.setState({
+        let url=GET_ITENARY_BYID+id;
+        this.props.getData(action.GET_ITENARY_BYID,url)
+        let editdata=this.props.getitenarybyid;
+     
+        /*  this.setState({
             editData:editdata
-        })
+        }) */
 
         this.setState({
             packageId:editdata.packageId,
@@ -183,10 +191,12 @@ class Itenary extends Component {
             benefitTags:this.state.benefitTags,
             packagePlaceIds:this.state.packagePlaceIds
               }
-             let message=await  postData(obj,itenarypostapi,'Post');
+
+              this.props.postData1(action.POST_ITENARY,POST_ITENARY,obj)
+            /*  let message=await  postData(obj,itenarypostapi,'Post');
              
              alert (message);
-             window.location.reload();//page refresh
+             window.location.reload(); *///page refresh
     }
 
     async handleSubmit(event)
@@ -264,7 +274,7 @@ class Itenary extends Component {
                                                     <label class="col-sm-3 col-form-label">Package</label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" onChange={(e)=>this.packageOperation(e)}>
-                                                       {this.state.packages.map(obj=>
+                                                       {this.props.packages.map(obj=>
                                                       <option value={obj.packageId}>{obj.packageName}</option>
                                                         )}
                                                     </select>
@@ -275,7 +285,7 @@ class Itenary extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Day Number</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.dayNumber}  class="form-control" onChange={(e)=>this.daynumberOpearation(e)} />
+                                                        <input required type="number" defaultValue={this.props.getitenarybyid.dayNumber}  class="form-control" onChange={(e)=>this.daynumberOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -283,7 +293,7 @@ class Itenary extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Summary</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text"  defaultValue={this.state.editData.summary} class="form-control" onChange={(e)=>this.summaryOpearation(e)} />
+                                                        <input required type="text"  defaultValue={this.props.getitenarybyid.summary} class="form-control" onChange={(e)=>this.summaryOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -292,7 +302,7 @@ class Itenary extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">BenfitTags</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.benefitTags} class="form-control" onChange={(e)=>this.benfitstagOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.getitenarybyid.benefitTags} class="form-control" onChange={(e)=>this.benfitstagOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -300,7 +310,7 @@ class Itenary extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">package PlaceIds</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.packagePlaceIds}  class="form-control" onChange={(e)=>this.plackageplaceidsOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.getitenarybyid.packagePlaceIds}  class="form-control" onChange={(e)=>this.plackageplaceidsOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -374,11 +384,10 @@ class Itenary extends Component {
                                   }
 
                                 ]}
-                                data={this.state.itenaries}
+                                data={this.props.getitenary}
                                 showPagination={true}
                                 defaultPageSize={5}
-                               
-                         />
+                               />
                          </div>
                                     </div>
                                     </div>
@@ -389,10 +398,19 @@ class Itenary extends Component {
             </div>
             
         </div>
-        
-    
- )
+        )
         }
     }
-    export default Itenary
+
+    const mapStateToProps = (state) => {
+        return {
+           getitenary:state.goAdvStore.getitenary,
+           getitenarybyid:state.goAdvStore.getitenarybyid,
+           packages:state.goAdvStore.packages
+           //cities:state.goAdvStore.citybyid
+           //cities:state.goAdvStore.citybyid
+        }
+    }
+ export default connect(mapStateToProps, {getData,postData1,putData1})(Itenary);
+    //export default Itenary
 

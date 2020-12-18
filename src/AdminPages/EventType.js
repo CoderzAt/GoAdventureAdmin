@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,loadData,eventtypepostapi,eventtypeupdateapi,getstatusapi,geteventtypebyid,geteventtypes} from '../Shared/Services'
+import {postData,loadData,eventtypepostapi,eventtypeupdateapi,getstatusapi,geteventtypebyid,geteventtypes,GET_EVENTTYPE,GET_EVENTTYPE_BYID,POST_EVENTTYPE,PUT_EVENTTYPE,GET_STATUS} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -25,6 +25,9 @@ import '././assets/js/hoverable-collapse.js'
 import './assets/js/misc.js'
 import './assets/js/dashboard.js'
 import './assets/js/todolist.js' */
+import { connect } from 'react-redux';
+import {getCities,getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
 
 
@@ -36,9 +39,9 @@ class EventType extends Component {
         eventTypeCode:null,
         eventTypeDesc:null,
         statusId: 1,
-        editData:[],
-        eventtypes:[],
-        status:[],
+       // editData:[],
+       // eventtypes:[],
+        //status:[],
         
            }
     }
@@ -63,14 +66,17 @@ class EventType extends Component {
      } */
       async componentDidMount()
      {
-        let eventtype= await loadData(geteventtypes)
+
+        this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
+        this.props.getData(action.GET_STATUS,GET_STATUS)
+        /* let eventtype= await loadData(geteventtypes)
         this.setState({
             eventtypes:eventtype
-        })
-        let status1= await loadData(getstatusapi)
+        }) */
+       /*  let status1= await loadData(getstatusapi)
         this.setState({
             status:status1
-        })
+        }) */
        
      } 
     eventtypecodeOperation(event)
@@ -105,12 +111,15 @@ class EventType extends Component {
     async editReacord(id)
     {
         
-        let url=geteventtypebyid+id;
-        let editdata=await loadData(url)
+        let url=GET_EVENTTYPE_BYID+id;
+
+        this.props.getData(action.GET_EVENTTYPE_BYID,url)
+        let editdata=this.props.geteventtypebyid;
+      /*   let editdata=await loadData(url)
         this.setState({
             editData:editdata
         })
-
+ */
         this.setState({
             eventTypeCode:editdata.eventTypeCode,
             eventTypeDesc:editdata.eventTypeDesc,
@@ -225,7 +234,7 @@ class EventType extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Code</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.eventTypeCode}  class="form-control" onChange={(e)=>this.eventtypecodeOperation(e)}/>
+                                                        <input required type="text" defaultValue={this.props.geteventtypebyid.eventTypeCode}  class="form-control" onChange={(e)=>this.eventtypecodeOperation(e)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -233,7 +242,7 @@ class EventType extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.eventTypeDesc} class="form-control" onChange={(e)=>this.eventtypedescriptionOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.geteventtypebyid.eventTypeDesc} class="form-control" onChange={(e)=>this.eventtypedescriptionOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -242,7 +251,7 @@ class EventType extends Component {
                                                     <label class="col-sm-3 col-form-label">Status</label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" onChange={(e)=>this.statusidOpearation(e)}>
-                                                       {this.state.status.map(obj=>
+                                                       {this.props.getstatus.map(obj=>
                                                       <option value={obj.statusId}>{obj.statusCode}</option>
                                                         )}
                                                     </select>
@@ -297,7 +306,7 @@ class EventType extends Component {
                                   }
 
                                 ]}
-                                data={this.state.eventtypes}
+                                data={this.props.geteventtype}
                                 showPagination={true}
                                 defaultPageSize={5}
                                
@@ -317,5 +326,18 @@ class EventType extends Component {
  )
         }
     }
-    export default EventType
+    const mapStateToProps = (state) => {
+        return {
+           geteventtype:state.goAdvStore.geteventtype,
+           geteventtypebyid:state.goAdvStore.geteventtypebyid,
+           getstatus:state.goAdvStore.getstatus
+           
+            //cities:state.goAdvStore.citybyid
+            //cities:state.goAdvStore.citybyid
+        }
+    }
+    
+    export default connect(mapStateToProps, {getData,postData1,putData1})(EventType);
+
+    //export default EventType
 

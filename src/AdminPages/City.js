@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import {getCities,getStates,getCitybyid,getCitybystate,postData1,putData1} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import './admin.scss'
+import * as validation from '../Shared/Validations'
  var valuefromurl
 class City extends Component {
     constructor(props) {
@@ -19,8 +20,11 @@ class City extends Component {
            cityname:null,
            citydescription:null,
            citycode:null,
-           stateid:1,
-           cities:[],
+           stateid:"0",
+          // cities:[],
+           errors:{
+             selectstate:""
+           }
            //editData:[]
        }
     }
@@ -92,22 +96,22 @@ this.props.getStates()
         let url=getcitybyid+id;
         this.props.getCitybyid(id)
 
-      let editdata=  this.props.citybyid;
+      let editdata= this.props.citybyid;
 
-
+console.log("coderzat",this.props.citybyid)
        /* this.setState({
             editData:this.props.citybyid
         }) */
 
-        this.setState({
+         this.setState({
            cityname:editdata.cityName,
            citycode:editdata.cityCode,
            citydescription:editdata.cityDesc,
 
-        })
+        }) 
     }
     
-    async postEditedData()
+     postEditedData()
     {
         debugger
          const obj={
@@ -145,13 +149,24 @@ this.props.getStates()
              alert (message); */
              //window.location.reload();//page refresh
     }
-
+    validateForm(errors){
+      debugger
+     let valid = true;
+     Object.values(errors).forEach(val => val.length > 0 && (valid = false));
+     return valid;
+   } 
+  handlevalidations()
+  { debugger
+     this.state.errors.selectstate=validation.selectvalidation(this.state.stateid)
+  }
     async handleSubmit(event)
-    {
+    { 
+      event.preventDefault();
+      this.handlevalidations()
         debugger
         const form = event.currentTarget;
         console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
+        if(form.checkValidity() === false || this.validateForm(this.state.errors) === false)
         {
           event.preventDefault();
           event.stopPropagation();
@@ -194,6 +209,7 @@ this.props.getStates()
 
     }
     render() {
+      console.log("renderfunction",this.props.citybyid)
 	    return (
       <div>
         
@@ -230,12 +246,14 @@ this.props.getStates()
                                                     <label class="col-sm-3 col-form-label">State</label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" onChange={(e)=>this.stateidOperation(e)}>
+                                                        <option value={0}>Select</option>
                                                         {this.props.states.map(obj=>
                                                          <option value={obj.stateId}>{obj.stateName}</option>
                                                           )}
                                                    </select>
+                                                   <div style={{color:"red"}}>{this.state.errors.selectstate}</div>
                                                     </div>
-                                                </div>
+                                                   </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">

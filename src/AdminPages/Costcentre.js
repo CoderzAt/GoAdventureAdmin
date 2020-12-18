@@ -1,28 +1,21 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,loadData,getallcostcentreapi,getcostcentrebyid,costcentreupdteapi,costcentrepostapi} from '../Shared/Services'
+import {postData,loadData,getallcostcentreapi,getcostcentrebyid,costcentreupdteapi,costcentrepostapi,GET_COSTCENTRE_BYID,GET_COSTCENTRE,PUT_COSTCENTRE,POST_COSTCENTRE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import parse from 'html-react-parser'
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
+
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
 import TextInput from'../Shared/TextInput';
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
+import { connect } from 'react-redux';
+import {getData,putData1,postData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 var condition=false;
 class Costcentre extends Component {
     constructor(props) {
@@ -33,7 +26,7 @@ class Costcentre extends Component {
        costCenterTypeDescription:null,
        costCenterSubType:null,
        maxPersonsAllowed:null,
-        costcentre:[],
+        //costcentre:[],
         editData:[],
       }
     }
@@ -49,9 +42,11 @@ class Costcentre extends Component {
      } */
      async componentDidMount()
      {
-        this.setState({
+
+        this.props.getData(action.GET_COSTCENTRE,GET_COSTCENTRE)
+       /*  this.setState({
             costcentre:await loadData(getallcostcentreapi)
-        })
+        }) */
      } 
     costcentrenameOperation(event)
     {
@@ -97,11 +92,14 @@ class Costcentre extends Component {
         debugger
         alert(id)
         
-        let url=getcostcentrebyid+id;
-        let editdata=await loadData(url)
-        this.setState({
+        let url=GET_COSTCENTRE_BYID+id;
+        this.props.getData(action.GET_COSTCENTRE_BYID,url)
+      
+      
+           let editdata=this.props.getcostcentrebyid
+        /*this.setState({
             editData:editdata
-        })
+        }) */
         this.setState({
             costCenterId:0,
             costCenterName:editdata.costCenterName,
@@ -145,9 +143,11 @@ class Costcentre extends Component {
             costCenterSubType:st.costCenterSubType,
             maxPersonsAllowed:parseInt(st.maxPersonsAllowed)
             }
-             let message=await  postData(obj,costcentrepostapi,'Post');
-             alert (message);
-             window.location.reload();//page refresh
+
+            this.props.postData1(action.POST_COSTCENTRE,POST_COSTCENTRE,obj)
+             /* let message=await  postData(obj,costcentrepostapi,'Post');
+             alert (message); */
+            // window.location.reload();//page refresh
     } 
     async handleSubmit(event)
     {
@@ -230,7 +230,7 @@ class Costcentre extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text"  defaultValue={this.state.editData.costCenterName} class="form-control" onChange={(e)=>this.costcentrenameOperation(e)}/>
+                                                        <input required type="text"  defaultValue={this.props.getcostcentrebyid.costCenterName} class="form-control" onChange={(e)=>this.costcentrenameOperation(e)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -238,7 +238,7 @@ class Costcentre extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Type</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.costCenterType}  class="form-control" onChange={(e)=>this.costcentretypeOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.getcostcentrebyid.costCenterType}  class="form-control" onChange={(e)=>this.costcentretypeOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -246,7 +246,7 @@ class Costcentre extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">SubType</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.costCenterSubType} class="form-control" onChange={(e)=>this.costcentresubtypeOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.getcostcentrebyid.costCenterSubType} class="form-control" onChange={(e)=>this.costcentresubtypeOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -254,7 +254,7 @@ class Costcentre extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">MaxPersonsAllowed</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.maxPersonsAllowed} class="form-control" onChange={(e)=>this.maxpersonsallowedOpearation(e)} />
+                                                        <input required type="number" defaultValue={this.props.getcostcentrebyid.maxPersonsAllowed} class="form-control" onChange={(e)=>this.maxpersonsallowedOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -262,7 +262,7 @@ class Costcentre extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text"  defaultValue={this.state.editData.costCenterTypeDescription} class="form-control" onChange={(e)=>this.costcentredescriptionOpearation(e)} />
+                                                        <input required type="text"  defaultValue={this.props.getcostcentrebyid.costCenterTypeDescription} class="form-control" onChange={(e)=>this.costcentredescriptionOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -281,7 +281,7 @@ class Costcentre extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Accessories</h4>
+                                    <h4 class="card-title">Costcentres</h4>
                                     <div class="table-responsive"></div>
                                     <ReactTable columns={[
                                     {
@@ -318,7 +318,7 @@ class Costcentre extends Component {
                                          }
 
                                 ]}
-                                data={this.state.costcentre}
+                                data={this.props.getallcostcentres}
                                 showPagination={true}
                                 defaultPageSize={5}
                                 />
@@ -337,5 +337,13 @@ class Costcentre extends Component {
  )
         }
     }
-    export default Costcentre
+
+    const mapStateToProps = (state) => {
+        return {
+            getallcostcentres:state.goAdvStore.getallcostcentres,
+            getcostcentrebyid:state.goAdvStore.getcostcentrebyid
+             }
+    }
+    export default connect(mapStateToProps, {getData,postData1,putData1})(Costcentre);
+    //export default Costcentre
 

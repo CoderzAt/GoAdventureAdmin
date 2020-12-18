@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,countrypostapi,getcounties,loadData,deletecountry,getcountrybyid,countryupdateapi,GET_COUNTRIES,GET_COUNTRY_BYID} from '../Shared/Services'
+import {postData,countrypostapi,getcounties,loadData,deletecountry,getcountrybyid,countryupdateapi,GET_COUNTRIES,GET_COUNTRY_BYID,POST_COUNTRY,PUT_COUNTRY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -18,7 +18,7 @@ import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-j
 import TextInput from'../Shared/TextInput';
 
 import { connect } from 'react-redux';
-import {getData} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 /* import './assets/images/favicon.ico'
 import './assets/vendors/js/vendor.bundle.base.js'
@@ -109,17 +109,16 @@ class Country extends Component {
   async editReacord(id)
     {
         
-        let url=getcountrybyid+id;
-        let editdata=await loadData(url)
+        let url=GET_COUNTRY_BYID+id;
+       // let editdata=await loadData(url)
 
-       // this.props.getData(action.GET_COUNTRY_BYID,);
-        
-
+        this.props.getData(action.GET_COUNTRY_BYID,url);
 
 
-        this.setState({
+        let editdata=this.props.getcountrybyid
+        /*  this.setState({
             viewData:editdata
-        })
+        }) */
 
         this.setState({
             countryname:editdata.countryName,
@@ -148,8 +147,7 @@ class Country extends Component {
         alert(editeddata)
 
         window.location.reload();//page refresh
-
-    }
+}
     async postDatatoApi()
     {
         debugger
@@ -160,10 +158,12 @@ class Country extends Component {
         countryCode:this.state.countrycode,
         countryDesc:this.state.countrydescription,
               }
-             let message=await  postData(obj,countrypostapi,'Post');
+            this.props.postData1(action.POST_COUNTRY,POST_COUNTRY,obj);
+           
+            /*  let message=await  postData(obj,countrypostapi,'Post');
              
-             alert (message);
-             window.location.reload();//page refresh
+             alert (message); */
+             //window.location.reload();//page refresh
     }
 
     async handleSubmit(event)
@@ -248,7 +248,7 @@ class Country extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.viewData.countryName} class="form-control" onChange={(e)=>this.countrynamenameOperation(e)}/>
+                                                        <input required type="text" defaultValue={this.props.getcountrybyid.countryName} class="form-control" onChange={(e)=>this.countrynamenameOperation(e)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -256,7 +256,7 @@ class Country extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Code</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.viewData.countryCode} class="form-control" onChange={(e)=>this.countrycodeOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.getcountrybyid.countryCode} class="form-control" onChange={(e)=>this.countrycodeOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -378,10 +378,11 @@ class Country extends Component {
     }
     const mapStateToProps = (state) => {
         return {
-            countries: state.goAdvStore.countries
+            countries: state.goAdvStore.countries,
+            getcountrybyid:state.goAdvStore.getcountrybyid
         }
     }
-    export default connect(mapStateToProps, {getData})(Country);
+    export default connect(mapStateToProps, {getData,postData1,putData1})(Country);
     
 
     //export default Country

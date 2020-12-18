@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getallcoupons, getcouponbyid, couponpostapi, couponupdateapi,GET_ALL_COUPON,GET_COUPON_BYID} from '../Shared/Services'
+import {postData,loadData,getallcoupons, getcouponbyid, couponpostapi, couponupdateapi,GET_ALL_COUPON,GET_COUPON_BYID,POST_COUPON,PUT_COUPON} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import {getData} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 /* import './assets/vendors/mdi/css/materialdesignicons.min.css'
@@ -89,7 +89,6 @@ class Coupon extends Component {
         fetch(deletecountry+id, {
             method: 'DELETE'
           });
-
     }*/
   async editReacord(id)
     {
@@ -127,7 +126,7 @@ class Coupon extends Component {
         window.location.reload();//page refresh
 
     }
- async postDatatoApi()
+  postDatatoApi()
     {
         debugger
         condition=true;
@@ -137,10 +136,12 @@ class Coupon extends Component {
             couponCode:this.state.couponcode,
             couponPercentage:parseInt(this.state.couponpercentage)
               }
-             let message=await  postData(obj,couponpostapi,'Post');
+             //let message=await  postData(obj,couponpostapi,'Post');
+             this.props.postData1(action.POST_COUPON,POST_COUPON,obj)
+
              
              //alert (message);
-             window.location.reload();//page refresh
+             //window.location.reload();//page refresh
     }
 
     async handleSubmit(event)
@@ -310,7 +311,7 @@ class Coupon extends Component {
             couponbyid:state.goAdvStore.couponbyid
         }
     }
-    export default connect(mapStateToProps, {getData})(Coupon);
+    export default connect(mapStateToProps, {getData,postData1})(Coupon);
     
    // export default Coupon
 

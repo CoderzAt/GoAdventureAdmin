@@ -12,12 +12,16 @@ const initalState ={
     activities:[],
     cities:[],
     countries:[],
+    postcountry:[],
+    putcountry:[],
     states:[],
     citybyid:[],
     citybystate:[],
     getcountrybyid:[],
     coupons:[],
     couponbyid:[],
+    postcoupon:[],
+    putcoupon:[],
     postcity:[],
     putcity:[],
     postaccesory:[],
@@ -25,7 +29,24 @@ const initalState ={
     getaccessorybyid:[],
     postactivity:[],
     putactivity:[],
-    getactivitybyid:[]
+    getactivitybyid:[],
+    getallcostcentres:[],
+    getcostcentrebyid:[],
+    postcostcentre:[],
+    putcostcentre:[],
+    geteventlevel:[],
+    geteventlevelbyid:[],
+    posteventlevel:[],
+    puteventlevel:[],
+    getstatus:[],
+    geteventtype:[],
+    geteventtypebyid:[],
+    posteventtype:[],
+    puteventtype:[],
+    getitenary:[],
+    getitenarybyid:[],
+    putitenary:[],
+    postitenary:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -220,6 +241,44 @@ const goAdvReducer = (state =initalState, action) => {
                 isCountryLoading: false,
             }
         }
+        case `${actions.POST_COUNTRY}_PENDING` : {
+            return{
+                ...state,
+                ispostCountryLoading: true
+            }
+        }
+        case `${actions.POST_COUNTRY}_FULFILLED` : {
+            return{
+                ...state,
+                ispostCoutryLoading: false,
+                countries: action.payload.data
+            }
+        }
+        case `${actions.POST_COUNTRY}_REJECTED` : {
+            return{
+                ...state,
+                ispostCountryLoading: false,
+            }
+        }
+        case `${actions.PUT_COUNTRY}_PENDING` : {
+            return{
+                ...state,
+                isputCountryLoading: true
+            }
+        }
+        case `${actions.PUT_COUNTRY}_FULFILLED` : {
+            return{
+                ...state,
+                isputCountryLoading: false,
+                putcountry: action.payload.data
+            }
+        }
+        case `${actions.PUT_COUNTRY}_REJECTED` : {
+            return{
+                ...state,
+                isputCountryLoading: false,
+            }
+        }
         case `${actions.GET_STATES}_PENDING` : {
             return{
                 ...state,
@@ -332,6 +391,44 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isCouponLoading: false,
+            }
+        }
+        case `${actions.POST_COUPON}_PENDING` : {
+            return{
+                ...state,
+                ispostCouponLoading: true
+            }
+        }
+        case `${actions.POST_COUPON}_FULFILLED` : {
+            return{
+                ...state,
+                ispostCouponLoading: false,
+                postcoupon: action.payload.data
+            }
+        }
+        case `${actions.POST_COUPON}_REJECTED` : {
+            return{
+                ...state,
+                ispostCouponLoading: false,
+            }
+        }
+        case `${actions.PUT_COUPON}_PENDING` : {
+            return{
+                ...state,
+                isputCouponLoading: true
+            }
+        }
+        case `${actions.PUT_COUPON}_FULFILLED` : {
+            return{
+                ...state,
+                isputCouponLoading: false,
+                putcoupon: action.payload.data
+            }
+        }
+        case `${actions.PUT_COUPON}_REJECTED` : {
+            return{
+                ...state,
+                ispuCouponLoading: false,
             }
         }
         case `${actions.POST_CITY}_PENDING` : {
@@ -486,8 +583,332 @@ const goAdvReducer = (state =initalState, action) => {
                 isputgetActbyidLoading: false,
             }
         }
+        case `${actions.GET_COSTCENTRE}_PENDING` : {
+            return{
+                ...state,
+                isgetCostcentreLoading: true
+            }
+        }
+        case `${actions.GET_COSTCENTRE}_FULFILLED` : {
+            return{
+                ...state,
+                isgetCostcentreLoading: false,
+                getallcostcentres: action.payload.data
+            }
+        }
+        case `${actions.GET_COSTCENTRE}_REJECTED` : {
+            return{
+                ...state,
+                isgetCostcentreLoading: false,
+            }
+        }
+         case `${actions.POST_COSTCENTRE}_PENDING` : {
+            return{
+                ...state,
+                ispostCoscentreLoading: true
+            }
+        }
+        case `${actions.POST_COSTCENTRE}_FULFILLED` : {
+            return{
+                ...state,
+                ispostCoscentreLoading: false,
+                postcostcentre: action.payload.data
+            }
+        }
+        case `${actions.POST_COSTCENTRE}_REJECTED` : {
+            return{
+                ...state,
+                ispostCoscentreLoading: false,
+            }
+        }
+        case `${actions.PUT_COSTCENTRE}_PENDING` : {
+            return{
+                ...state,
+                isputCoscentreLoading: true
+            }
+        }
+        case `${actions.PUT_COSTCENTRE}_FULFILLED` : {
+            return{
+                ...state,
+                isputCoscentreLoading: false,
+                putcostcentre: action.payload.data
+            }
+        }
+        case `${actions.PUT_COSTCENTRE}_REJECTED` : {
+            return{
+                ...state,
+                isputCoscentreLoading: false,
+            }
+        }
+        case `${actions.GET_COSTCENTRE_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetCostbyidLoading: true
+            }
+        }
+        case `${actions.GET_COSTCENTRE_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetCostbyidLoading: false,
+                getcostcentrebyid: action.payload.data
+            }
+        }
+        case `${actions.GET_COSTCENTRE_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetCostbyidLoading: false,
+            }
+        }
+        case `${actions.GET_EVENTLEVEL}_PENDING` : {
+            return{
+                ...state,
+                isgetEventlevelLoading: true
+            }
+        }
+        case `${actions.GET_EVENTLEVEL}_FULFILLED` : {
+            return{
+                ...state,
+                isgetEventlevelLoading: false,
+                geteventlevel: action.payload.data
+            }
+        }
+        case `${actions.GET_EVENTLEVEL}_REJECTED` : {
+            return{
+                ...state,
+                isgetEventlevelLoading: false,
+            }
+        }
+        case `${actions.GET_EVENTLEVEL_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetEventlevelbyidLoading: true
+            }
+        }
+        case `${actions.GET_EVENTLEVEL_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetEventlevelbyidLoading: false,
+                geteventlevelbyid: action.payload.data
+            }
+        }
+        case `${actions.GET_EVENTLEVEL_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetEventlevelbyidLoading: false,
+            }
+        }
+        case `${actions.POST_EVENTLEVEL}_PENDING` : {
+            return{
+                ...state,
+                ispostEventlevelLoading: true
+            }
+        }
+        case `${actions.POST_EVENTLEVEL}_FULFILLED` : {
+            return{
+                ...state,
+                ispostEventlevelLoading: false,
+                posteventlevel: action.payload.data
+            }
+        }
+        case `${actions.POST_EVENTLEVEL}_REJECTED` : {
+            return{
+                ...state,
+                ispostEventlevelLoading: false,
+            }
+        }
+        case `${actions.PUT_EVENTLEVEL}_PENDING` : {
+            return{
+                ...state,
+                isputEventlevelLoading: true
+            }
+        }
+        case `${actions.PUT_EVENTLEVEL}_FULFILLED` : {
+            return{
+                ...state,
+                isputEventlevelLoading: false,
+                puteventlevel: action.payload.data
+            }
+        }
+        case `${actions.PUT_EVENTLEVEL}_REJECTED` : {
+            return{
+                ...state,
+                isputEventlevelLoading: false,
+            }
+        }
+        case `${actions.GET_STATUS}_PENDING` : {
+            return{
+                ...state,
+                isgetStatusLoading: true
+            }
+        }
+        case `${actions.GET_STATUS}_FULFILLED` : {
+            return{
+                ...state,
+                isgetStatusLoading: false,
+                getstatus: action.payload.data
+            }
+        }
+        case `${actions.GET_STATUS}_REJECTED` : {
+            return{
+                ...state,
+                isgetStatusLoading: false,
+            }
+        }
+        case `${actions.GET_EVENTTYPE}_PENDING` : {
+            return{
+                ...state,
+                isgetEvevnttypeLoading: true
+            }
+        }
+        case `${actions.GET_EVENTTYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isEvevnttypeLoading: false,
+                geteventtype: action.payload.data
+            }
+        }
+        case `${actions.GET_EVENTTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isEvevnttypeLoading: false,
+            }
+        }
+        case `${actions.GET_EVENTTYPE_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetEvevnttypebyidLoading: true
+            }
+        }
+        case `${actions.GET_EVENTTYPE_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetEvevnttypebyidLoading: false,
+                geteventtypebyid: action.payload.data
+            }
+        }
+        case `${actions.GET_EVENTTYPE_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetEvevnttypebyidLoading: false,
+            }
+        }
+        case `${actions.POST_EVENTTYPE}_PENDING` : {
+            return{
+                ...state,
+                ispostEventtypeLoading: true
+            }
+        }
+        case `${actions.POST_EVENTTYPE}_FULFILLED` : {
+            return{
+                ...state,
+                ispostEventtypeLoading: false,
+                posteventtype: action.payload.data
+            }
+        }
+        case `${actions.POST_EVENTTYPE}_REJECTED` : {
+            return{
+                ...state,
+                ispostEventtypeLoading: false,
+            }
+        }
+        case `${actions.PUT_EVENTTYPE}_PENDING` : {
+            return{
+                ...state,
+                isputEventtypeLoading: true
+            }
+        }
+        case `${actions.PUT_EVENTTYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isputEventtypeLoading: false,
+                puteventtype: action.payload.data
+            }
+        }
+        case `${actions.PUT_EVENTTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isputEventtypeLoading: false,
+            }
+        }
+        case `${actions.GET_ITENARY}_PENDING` : {
+            return{
+                ...state,
+                isgetItenaryLoading: true
+            }
+        }
+        case `${actions.GET_ITENARY}_FULFILLED` : {
+            return{
+                ...state,
+                isgetItenaryLoading: false,
+                getitenary: action.payload.data
+            }
+        }
+        case `${actions.GET_ITENARY}_REJECTED` : {
+            return{
+                ...state,
+                isgetItenaryLoading: false,
+            }
+        }
+        case `${actions.GET_ITENARY_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetItenarybyidLoading: true
+            }
+        }
+        case `${actions.GET_ITENARY_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetItenarybyidLoading: false,
+                getitenarybyid: action.payload.data
+            }
+        }
+        case `${actions.GET_ITENARY_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetItenarybyidLoading: false,
+            }
+        }
+        case `${actions.POST_ITENARY}_PENDING` : {
+            return{
+                ...state,
+                ispostItenaryLoading: true
+            }
+        }
+        case `${actions.POST_ITENARY}_FULFILLED` : {
+            return{
+                ...state,
+                ispostItenaryLoading: false,
+                postitenary:action.payload.data
+            }
+        }
+        case `${actions.POST_ITENARY}_REJECTED` : {
+            return{
+                ...state,
+                ispostItenaryLoading: false,
+            }
+        }
+        case `${actions.PUT_ITENARY}_PENDING` : {
+            return{
+                ...state,
+                isputItenaryLoading: true
+            }
+        }
+        case `${actions.PUT_ITENARY}_FULFILLED` : {
+            return{
+                ...state,
+                isputItenaryLoading: false,
+                putitenary:action.payload.data
+            }
+        }
+        case `${actions.PUT_ITENARY}_REJECTED` : {
+            return{
+                ...state,
+                isputItenaryLoading: false,
+            }
+        }
         default: return state;
     }
+    
 }
 
 export default goAdvReducer;

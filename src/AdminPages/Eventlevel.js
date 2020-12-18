@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,loadData,geteventlevelbyid,geteventlevels,eventlevelpostapi,eventlevelupdateapi,getstatusapi} from '../Shared/Services'
+import {postData,loadData,geteventlevelbyid,geteventlevels,eventlevelpostapi,eventlevelupdateapi,getstatusapi,GET_EVENTLEVEL_BYID,GET_EVENTLEVEL,POST_EVENTLEVEL,PUT_EVENTLEVEL,GET_STATUS} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
+import { connect } from 'react-redux';
+import {getCities,getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
@@ -38,7 +41,7 @@ class Eventlevel extends Component {
         eventLevelDesc:null,
         statusId: 1,
         editData:[],
-        eventlevels:[],
+        //eventlevels:[],
         status:[]
            }
     }
@@ -63,14 +66,17 @@ class Eventlevel extends Component {
      } */
      async componentDidMount()
      {
-        let eventlevel= await loadData(geteventlevels)
+        this.props.getData(action.GET_EVENTLEVEL,GET_EVENTLEVEL)
+        this.props.getData(action.GET_STATUS,GET_STATUS)
+
+        /* let eventlevel= await loadData(geteventlevels)
         this.setState({
             eventlevels:eventlevel
-        })
-        let status1= await loadData(getstatusapi)
+        }) */
+       /*  let status1= await loadData(getstatusapi)
         this.setState({
             status:status1
-        })
+        }) */
      }
     eventlevelcodeOperation(event)
     {
@@ -104,11 +110,14 @@ class Eventlevel extends Component {
     async editReacord(id)
     {
         
-        let url=geteventlevelbyid+id;
-        let editdata=await loadData(url)
+        let url=GET_EVENTLEVEL_BYID+id;
+        this.props.getData(action.GET_EVENTLEVEL_BYID,url)
+
+        let editdata=this.props.geteventlevelbyid
+       /*  let editdata=await loadData(url)
         this.setState({
             editData:editdata
-        })
+        }) */
 
         this.setState({
             eventLevelCode:editdata.eventLevelCode,
@@ -146,10 +155,11 @@ class Eventlevel extends Component {
             eventLevelDesc:this.state.eventLevelDesc,
             statusId:parseInt(this.state.statusId)
               }
-             let message=await  postData(obj,eventlevelpostapi,'Post');
+              this.props.postData1(action.POST_EVENTLEVEL,POST_EVENTLEVEL,obj)
+             /* let message=await  postData(obj,eventlevelpostapi,'Post');
              
-             alert (message);
-             window.location.reload();//page refresh
+             alert (message); */
+            // window.location.reload();//page refresh
     }
 
     async handleSubmit(event)
@@ -188,6 +198,8 @@ class Eventlevel extends Component {
     }
 
     render() {
+
+        
 	    return (
          <div>
              
@@ -224,7 +236,7 @@ class Eventlevel extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Code</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.eventLevelCode}  class="form-control" onChange={(e)=>this.eventlevelcodeOperation(e)}/>
+                                                        <input required type="text" defaultValue={this.props.geteventlevelbyid.eventLevelCode}  class="form-control" onChange={(e)=>this.eventlevelcodeOperation(e)}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -232,7 +244,7 @@ class Eventlevel extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.eventLevelDesc} class="form-control" onChange={(e)=>this.eventleveldescriptionOpearation(e)} />
+                                                        <input required type="text" defaultValue={this.props.geteventlevelbyid.eventLevelDesc} class="form-control" onChange={(e)=>this.eventleveldescriptionOpearation(e)} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -241,7 +253,7 @@ class Eventlevel extends Component {
                                                     <label class="col-sm-3 col-form-label">Status</label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" onChange={(e)=>this.statusidOpearation(e)}>
-                                                       {this.state.status.map(obj=>
+                                                       {this.props.getstatus.map(obj=>
                                                       <option value={obj.statusId}>{obj.statusCode}</option>
                                                         )}
                                                     </select>
@@ -296,7 +308,7 @@ class Eventlevel extends Component {
                                   }
 
                                 ]}
-                                data={this.state.eventlevels}
+                                data={this.props.geteventlevel}
                                 showPagination={true}
                                 defaultPageSize={5}
                                
@@ -316,5 +328,20 @@ class Eventlevel extends Component {
  )
         }
     }
-    export default Eventlevel
+    
+    const mapStateToProps = (state) => {
+        return {
+           geteventlevel:state.goAdvStore.geteventlevel,
+           geteventlevelbyid:state.goAdvStore.geteventlevelbyid,
+           getstatus:state.goAdvStore.getstatus,
+           posteventlevel:state.goAdvStore.posteventlevel
+            //cities:state.goAdvStore.citybyid
+            //cities:state.goAdvStore.citybyid
+        }
+    }
+    
+    export default connect(mapStateToProps, {getData,postData1,putData1})(Eventlevel);
+  
+    
+    //export default Eventlevel
 
