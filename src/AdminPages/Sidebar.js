@@ -6,8 +6,8 @@ import './assets/css/style.css' */
 
 const sidebarItems=[/* {name:"Dashboard",icon:"mdi mdi-home menu-icon"} */,
 {name:"Country",icon:"mdi mdi-wan menu-icon",route:"/"},
-/* {name:"State",icon:"mdi mdi-map menu-icon"},
-{name:"City",icon:"mdi mdi-home-map-marker menu-icon"}, */
+/* {name:"State",icon:"mdi mdi-map menu-icon"},*/
+{name:"City",icon:"mdi mdi-home-map-marker menu-icon",route:"/admin/city"},
 {name:"Place Type",icon:"mdi mdi-sitemap menu-icon",route:"/admin/placetype"},
 {name:"Destination",icon:"mdi mdi-airplane-landing menu-icon",route:"/admin/destination"},
 /* {name:"Place To Visit",icon:"mdi mdi-map-marker menu-icon"}, */
@@ -72,5 +72,5 @@ class Sidebar extends Component {
         }
     }
 
- 
+
 export default Sidebar

@@ -16,7 +16,7 @@ export const getPackages = () => {
                 return response;
                })
              .catch(error => {
-                return { data: { errors: [error.toString()], isSuccess: false } };
+                return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
              })
        });
     }
@@ -36,7 +36,7 @@ export const getPackages = () => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
@@ -44,7 +44,6 @@ export const getPackages = () => {
 
 export const getData =(actiontype,url)=>
 {
-   debugger
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -57,7 +56,7 @@ export const getData =(actiontype,url)=>
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
@@ -66,7 +65,6 @@ export const getData =(actiontype,url)=>
 
 export const postData1 =(actiontype,url,obj)=>
 {
-    debugger
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -80,14 +78,13 @@ export const postData1 =(actiontype,url,obj)=>
           })
           .catch(error=>
             {
-               return { data: { errors: [error.toString()], isSuccess: false }};
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
             })
       });
    }
 }
 export const putData1 =(actiontype,url,obj)=>
 {
-    debugger
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -101,7 +98,7 @@ export const putData1 =(actiontype,url,obj)=>
           })
           .catch(error=>
             {
-               return { data: { errors: [error.toString()], isSuccess: false }};
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
             })
       });
    }
@@ -127,6 +124,14 @@ export const getDestination = () => {
 }
 
 
+export const resetData = (actiontype) => {
+    return dispatch => {
+       dispatch({
+          type: actiontype,
+          payload: {}
+       });
+    }
+ }
 
 export const getCalendar = () => {
    const svcconfig = {
@@ -141,12 +146,12 @@ export const getCalendar = () => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
-export const getItenary = (id1) => { 
+export const getItenary = (id1) => {
    let id=id1;
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
@@ -160,12 +165,12 @@ export const getItenary = (id1) => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
-export const getPackagebyid = (id1) => { 
+export const getPackagebyid = (id1) => {
    let id=id1;
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
@@ -179,13 +184,13 @@ export const getPackagebyid = (id1) => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
 
-export const getTripbypackageid = (id1) => { 
+export const getTripbypackageid = (id1) => {
    let id=id1;
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
@@ -199,13 +204,13 @@ export const getTripbypackageid = (id1) => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
 
-export const getTripbyid = (id1) => { 
+export const getTripbyid = (id1) => {
    let id=id1;
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
@@ -219,14 +224,14 @@ export const getTripbyid = (id1) => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
 
-export const getActivity = () => { 
-   
+export const getActivity = () => {
+
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -239,13 +244,12 @@ export const getActivity = () => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
-export const getCities = () => { 
-   debugger
+export const getCities = () => {
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -258,13 +262,13 @@ export const getCities = () => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
-export const getCountries = () => { 
-   
+export const getCountries = () => {
+
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -277,13 +281,13 @@ export const getCountries = () => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
-export const getStates = () => { 
-   
+export const getStates = () => {
+
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -296,13 +300,12 @@ export const getStates = () => {
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
    }
 }
-export const getCitybyid=(id1)=>
-{
+export const getCitybyid = (id1) => {
    let id=id1
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
@@ -316,11 +319,12 @@ export const getCitybyid=(id1)=>
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
-   }  
+   }
 }
+
 export const getCitybystate=(id1)=>
 {
 debugger
@@ -337,13 +341,20 @@ debugger
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false } };
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
             })
       });
-   }  
+   }
 }
 
-
+export const updatePropData = (param, value, propName) => {
+    return dispatch => {
+       dispatch({
+          type: actions.UPDATE_PROP,
+          payload: {param: param, value: value, propName: propName}
+       });
+    }
+ }
 
 
 
@@ -385,5 +396,5 @@ debugger
             })
       });
    }
-   
+
  } */
