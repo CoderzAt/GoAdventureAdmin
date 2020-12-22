@@ -5,33 +5,10 @@ import {postData,loadData,eventtypepostapi,eventtypeupdateapi,getstatusapi,getev
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import parse from 'html-react-parser'
-
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw } from 'draft-js';
-import { act } from 'react-dom/test-utils';
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
 import { connect } from 'react-redux';
-import {getCities,getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import {getCities,getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
-
-
-var condition=false;
 class EventType extends Component {
     constructor(props) {
         super(props);
@@ -46,39 +23,12 @@ class EventType extends Component {
            }
     }
 
-   /*  async loadtabledata()
-    {
-
-        let countries1=await loadData(getcounties);
-        this.setState({
-                countries:countries1
-            }
-        )
-    } */
- /* componentDidUpdate() //this is for rendering the code for every update
-    {
-        debugger
-        //we need to keep a condition here ...if new data is submitted then only we have to call this function
-       
-        this.loadtabledata()  //is there any problem with hitting the api's too many times
-        condition=false;
-        
-     } */
-      async componentDidMount()
+   
+    componentDidMount()
      {
-
-        this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
-        this.props.getData(action.GET_STATUS,GET_STATUS)
-        /* let eventtype= await loadData(geteventtypes)
-        this.setState({
-            eventtypes:eventtype
-        }) */
-       /*  let status1= await loadData(getstatusapi)
-        this.setState({
-            status:status1
-        }) */
-       
-     } 
+       this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
+       this.props.getData(action.GET_STATUS,GET_STATUS)
+    } 
     eventtypecodeOperation(event)
     {
       this.setState({
@@ -149,7 +99,7 @@ class EventType extends Component {
      async postDatatoApi()
     {
         debugger
-        condition=true;
+        
         const obj={
             eventTypeId: 0,
             eventTypeCode:this.state.eventTypeCode,
@@ -161,42 +111,53 @@ class EventType extends Component {
              alert (message);
              window.location.reload();//page refresh
     }
+    postEventtypeData()
+    {
+        debugger
+        const obj = {
+            eventTypeId:this.props.geteventtypebyid.eventTypeId?this.props.geteventtypebyid.eventTypeId:0,
+            eventTypeCode:this.props.geteventtypebyid.eventTypeCode,
+            eventTypeDesc:this.props.geteventtypebyid.eventTypeDesc,
+            statusId:this.props.geteventtypebyid.statusId*1
+        };
+        let url = PUT_EVENTTYPE + this.props.geteventtypebyid.eventTypeId;
+        if (this.props.geteventtypebyid.eventTypeId) {
+            this.props.putData1(action.PUT_EVENTTYPE, url, obj);
+        }
+        else {
+            this.props.postData1(action.POST_EVENTTYPE, POST_EVENTTYPE, obj);
+        }
+        this.setState({ validated: false });
+    }
 
     async handleSubmit(event)
     {
-        debugger
+        event.preventDefault();
+        //this.handlevalidations();
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity());
+        this.setState({ validated: true });
+        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
-            if(this.state.editData.eventTypeId == undefined)
-            {
-              this.postDatatoApi()
-            }
-            else
-            {
-                this.postEditedData()
-            }
+            event.stopPropagation();
         }
-      this.setState({
-            validated:true
-        })
-
+        else {
+            event.preventDefault();
+            this.postEventtypeData();
+        }   
     }
 
-    handleReset()
-    {
-        this.setState({
-            editData:[]
-        })
+    handleReset() {
+        this.props.resetData(action.RESET_DATA,"geteventtypebyid");
+        this.setState({ validated: false });
     }
-
+    editReacord(id) {
+        this.props.getData(action.GET_EVENTTYPE_BYID, GET_EVENTTYPE_BYID+id)
+    }
+    updateEventtype = (e, paramName) => {
+        this.props.updatePropAccData(paramName, e.target.value,"geteventtypebyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
+    }
     render() {
 	    return (
          <div>
@@ -213,6 +174,10 @@ class EventType extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span>EventType
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -234,7 +199,8 @@ class EventType extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Code</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.props.geteventtypebyid.eventTypeCode}  class="form-control" onChange={(e)=>this.eventtypecodeOperation(e)}/>
+                                                        <input required type="text" value={this.props.geteventtypebyid.eventTypeCode?this.props.geteventtypebyid.eventTypeCode:""}  
+                                                        class="form-control" onChange={(e)=>this.updateEventtype(e,"eventTypeCode")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -242,7 +208,8 @@ class EventType extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.props.geteventtypebyid.eventTypeDesc} class="form-control" onChange={(e)=>this.eventtypedescriptionOpearation(e)} />
+                                                        <input required type="text" value={this.props.geteventtypebyid.eventTypeDesc?this.props.geteventtypebyid.eventTypeDesc:""} 
+                                                        class="form-control" onChange={(e)=>this.updateEventtype(e,"eventTypeDesc")} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -250,7 +217,9 @@ class EventType extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Status</label>
                                                     <div class="col-sm-9">
-                                                    <select class="form-control travellerMode" onChange={(e)=>this.statusidOpearation(e)}>
+                                                    <select class="form-control travellerMode" value={this.props.geteventtypebyid.statusId?this.props.geteventtypebyid.statusId:"0"} 
+                                                    onChange={(e)=>this.updateEventtype(e,"statusId")}>
+                                                        <option value={0}>Select</option>
                                                        {this.props.getstatus.map(obj=>
                                                       <option value={obj.statusId}>{obj.statusCode}</option>
                                                         )}
@@ -330,14 +299,16 @@ class EventType extends Component {
         return {
            geteventtype:state.goAdvStore.geteventtype,
            geteventtypebyid:state.goAdvStore.geteventtypebyid,
-           getstatus:state.goAdvStore.getstatus
+           getstatus:state.goAdvStore.getstatus,
+           message: state.goAdvStore.message,
+           messageData: state.goAdvStore.messageData
            
             //cities:state.goAdvStore.citybyid
             //cities:state.goAdvStore.citybyid
         }
     }
     
-    export default connect(mapStateToProps, {getData,postData1,putData1})(EventType);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(EventType);
 
     //export default EventType
 

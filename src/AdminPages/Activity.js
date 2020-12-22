@@ -17,7 +17,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import { act } from 'react-dom/test-utils';
 import { connect } from 'react-redux';
-import {getActivity,getData,putData1,postData1} from '../Adminstore/actions/goAdvActions';
+import {getActivity,getData,putData1,postData1,resetData,updatePropAccData} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 /* import './assets/images/favicon.ico'
 import './assets/vendors/js/vendor.bundle.base.js'
@@ -127,9 +127,9 @@ class Activity extends Component {
         debugger
         condition=true;
         const obj={
-            activityId: 0,
-            activityName:this.state.activityName,
-            activityGenre:this.state.activityGenre
+            activityId:this.props.activitybyid.activityId?this.props.activitybyid.activityId:0,
+            activityName:this.props.getactivitybyid.activityName,
+            activityGenre:this.props.getactivitybyid.activityGenre
               }
              
      this.props.postData1(action.POST_ACTIVITY,POST_ACTIVITY,obj)
@@ -139,40 +139,52 @@ class Activity extends Component {
              //window.location.reload();//page refresh
     }
 
+    postActivityData() {
+        debugger
+        const obj = {
+            activityId:this.props.getactivitybyid.activityId?this.props.getactivitybyid.activityId:0,
+            activityName:this.props.getactivitybyid.activityName,
+            activityGenre:this.props.getactivitybyid.activityGenre
+        };
+        let url = PUT_ACTIVITY +this.props.getactivitybyid.activityId;
+        if (this.props.getactivitybyid.activityId) {
+            this.props.putData1(action.PUT_ACTIVITY, url, obj);
+        } else {
+            this.props.postData1(action.POST_ACTIVITY,POST_ACTIVITY,obj);
+        }
+        this.setState({ validated: false });
+    }
+
     async handleSubmit(event)
     {
-        debugger
+        event.preventDefault();
+        //this.handlevalidations();
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity());
+        this.setState({ validated: true });
+        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
-            if(this.state.editData.activityId == undefined)
-            {
-              this.postDatatoApi()
-            }
-            else
-            {
-                this.postEditedData()
-            }
+            event.stopPropagation();
+        } else {
+            event.preventDefault();
+            this.postActivityData();
         }
-      this.setState({
-            validated:true
-        })
 
     }
-
-    handleReset()
-    {
-        this.setState({
-            editData:[]
-        })
-    }
+    editReacord(id) {
+        let url=GET_ACTIVITY_BYID+id;
+      this.props.getData(action.GET_ACTIVITY_BYID, url)
+      this.setState({validated:false})
+      }
+   handleReset() {
+        this.props.resetData(action.RESET_DATA,"getactivitybyid");
+        this.setState({ validated: false });
+      }
+updateActivity = (e, paramName) => {
+    debugger
+    this.props.updatePropAccData(paramName, e.target.value,"getactivitybyid");
+    this.setState({refreshflag: !this.state.refreshflag});
+  }
 
     render() {
 	    return (
@@ -190,6 +202,10 @@ class Activity extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span>Activity
                         </h3>
+                        {this.props.message?
+                        <div className={`message-wrapper ${this.props.messageData.isSuccess? "success":"error"}`}>{this.props.messageData.message}</div> :
+                        null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -211,7 +227,8 @@ class Activity extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.props.getactivitybyid.activityName}  class="form-control" onChange={(e)=>this.activitynamenameOperation(e)}/>
+                                                        <input required type="text" value={this.props.getactivitybyid.activityName?this.props.getactivitybyid.activityName:""}  
+                                                        class="form-control" onChange={(e)=>this.updateActivity(e,"activityName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -219,7 +236,8 @@ class Activity extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Genre</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.props.getactivitybyid.activityGenre} class="form-control" onChange={(e)=>this.activitygenreOpearation(e)} />
+                                                        <input required type="text" value={this.props.getactivitybyid.activityGenre?this.props.getactivitybyid.activityGenre:""} 
+                                                        class="form-control" onChange={(e)=>this.updateActivity(e,"activityGenre")} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -295,10 +313,12 @@ class Activity extends Component {
     const mapStateToProps = (state) => {
         return {
             activities: state.goAdvStore.activities,
-            getactivitybyid:state.goAdvStore.getactivitybyid
+            getactivitybyid:state.goAdvStore.getactivitybyid,
+            message: state.goAdvStore.message,
+            messageData: state.goAdvStore.messageData
          }
     }
-    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1})(Activity);
+    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1,resetData,updatePropAccData})(Activity);
     
 
    // export default Activity

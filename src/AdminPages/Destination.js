@@ -3,8 +3,13 @@ import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
-import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid, destinationupdateapi} from '../Shared/Services'
+import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid, destinationupdateapi,GET_DESTINATION_BYID,GET_DESTINATION,POST_DESTINATION,PUT_DESTINATION} from '../Shared/Services'
 import Sidebar from './Sidebar'
+
+import { connect } from 'react-redux';
+import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
+
 
 
 
@@ -25,116 +30,49 @@ class Destination extends Component {
 
    async componentDidMount()
     {
-      let destination=await loadData(getdestinations)
-      this.setState({
-        destinations:destination
-      })
+     this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
     }
-    destinantionnameOperation(event)
+   
+    postDestinationdata()
     {
-      this.setState({
-            destinationname:event.target.value
-        })
-    }
-    descriptionOperation(event)
-    {
-   this.setState({
-            description:event.target.value
-        })
-
-    }
-    titleOpearation(event)
-    {
-  this.setState({
-            title:event.target.value
-        })
-    }
-    promoimageOpeartion(event)
-    {
-        this.setState({
-            promoimage:event.target.value
-        })
-    }
-    async editReacord(id)
-    {
-        
-        let url=getdestinationbyid+id;
-        let editdata=await loadData(url)
-        this.setState({
-            editData:editdata
-        })
-
-        this.setState({
-          destinationname:editdata.destinationName,
-          description:editdata.description,
-          title:editdata.title,
-          promoimage:editdata.promoImage
-         })
-    }
-
-    async postEditedData()
-    {
-        debugger
-        
-        const obj={
-          destinationId:this.state.editData.destinationId,
-          destinationName:this.state.destinationname,
-          description:this.state.description,
-          title:this.state.title,
-          promoImage:this.state.promoimage
-          }
-        let editurl=destinationupdateapi+this.state.editData.destinationId;
-        let editeddata=await postData(obj,editurl,'Put')
-        alert(editeddata)
-        window.location.reload();//page refresh
-    }
-    async postDatatoApi()
-    {
-
-  const obj={
-                destinationId:0,
-                destinationName:this.state.destinationname,
-                description:this.state.description,
-                title:this.state.title,
-                promoImage:this.state.promoimage,
+      debugger
+    const obj = {
+      destinationId:this.props.getdestinationbyid.destinationId?this.props.getdestinationbyid.destinationId:0,
+                destinationName:this.props.getdestinationbyid.destinationName,
+                description:this.props.getdestinationbyid.description,
+                title:this.props.getdestinationbyid.title,
+                promoImage:this.props.getdestinationbyid.promoimage,
                 formFile:this.state.formFile
-                }
-             let message=await  postData(obj,destinationpostapi,'Post');
-             alert (message);
-             window.location.reload();//page refresh
+       };
+    let url = PUT_DESTINATION+this.props.getdestinationbyid.destinationId;
+    if (this.props.getdestinationbyid.destinationId) {
+        this.props.putData1(action.PUT_DESTINATION,url,obj);
     }
-   async handleSubmit(event)
+    else {
+        this.props.postData1(action.POST_DESTINATION,POST_DESTINATION,obj);
+    }
+    this.setState({ validated: false });
+    }
+   handleSubmit(event)
     {
-        debugger
-        const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
+      event.preventDefault();
+      //this.handlevalidations();
+      const form = event.currentTarget;
+      console.log("checkform", form.checkValidity());
+      this.setState({ validated: true });
+      if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
           event.preventDefault();
           event.stopPropagation();
-        }
-        else
-        {
-            event.preventDefault();
-            if(this.state.editData.destinationId == undefined)
-            {
-          this.postDatatoApi()
-            }
-            else
-            {
-              this.postEditedData()
-            }
-        }
-      this.setState({
-            validated:true
-        })
+      }
+      else {
+          event.preventDefault();
+          this.postDestinationdata();
+      }    
 
     }
-    handleReset()
-    {
-      this.setState({
-        editData:[]
-      })
+    handleReset() {
+      this.props.resetData(action.RESET_DATA,"getdestinationbyid");
+          this.setState({ validated: false });
     }
  saveFile=(e)=>
 {
@@ -145,6 +83,13 @@ debugger
   this.setState({
     formFile:e.target.files[0]
   })
+}
+editReacord(id) {
+  this.props.getData(action.GET_DESTINATION_BYID, GET_DESTINATION_BYID+id)
+}
+updateDestination = (e, paramName) => {
+  this.props.updatePropAccData(paramName,e.target.value,"getdestinationbyid");
+  this.setState({ refreshflag: !this.state.refreshflag });
 }
     render() {
 	    return (
@@ -184,8 +129,8 @@ debugger
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" required defaultValue={this.state.editData.destinationName} class="form-control" id="placeTypeName"
-                                                           onChange={(e)=>this.destinantionnameOperation(e)} placeholder="Name"/>
+                                                        <input type="text" required value={this.props.getdestinationbyid.destinationName?this.props.getdestinationbyid.destinationName:""} class="form-control" id="placeTypeName"
+                                                           onChange={(e)=>this.updateDestination(e,"destinationName")} placeholder="Name"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -194,8 +139,8 @@ debugger
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">Title</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" required defaultValue={this.state.editData.title} class="form-control" id="placeTypeName"
-                                                           onChange={(e)=>this.titleOpearation(e)} placeholder="Title"/>
+                                                        <input type="text" required value={this.props.getdestinationbyid.title?this.props.getdestinationbyid.title:""} class="form-control" id="placeTypeName"
+                                                           onChange={(e)=>this.updateDestination(e,"title")} placeholder="Title"/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -232,8 +177,8 @@ debugger
                                                     <label for="placeTypeDescription"
                                                         class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <textarea class="form-control" required defaultValue={this.state.editData.description} id="placeTypeDescription"
-                                                          onChange={(e)=>this.descriptionOperation(e)}  rows="4"></textarea>
+                                                        <textarea class="form-control" required value={this.props.getdestinationbyid.description?this.props.getdestinationbyid.description:""} id="placeTypeDescription"
+                                                          onChange={(e)=>this.updateDestination(e,"description")}  rows="4"></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -297,7 +242,7 @@ debugger
 
                                   }
                                 ]}
-                                data={this.state.destinations}
+                                data={this.props.getdestination}
                                 showPagination={true}
                                 defaultPageSize={5}
                                 
@@ -315,68 +260,23 @@ debugger
         
 
 
-        {/* <div>
-		<div style={{paddingLeft:400,paddingTop:110,backgroundColor:"black"}} >
-            <div class="card" style={{width:600 }}>
-  <div class="card-body">
-    <h3 class="card-title">New Destination</h3>
-    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)}>
-                  <Form.Group >
-                    <label htmlFor="destinationname">DestinationName</label>
-                    <Form.Control   type="text" id="destinationname"  onChange={(e)=>this.destinantionnameOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group>
-                    <label htmlFor="description">Description</label>
-                    <textarea required class="form-control" id="description" rows="3" onChange={(e)=>this.descriptionOperation(e)}></textarea>
-                  </Form.Group>
-                  <Form.Group>
-                    <label htmlFor="title">Title</label>
-                    <Form.Control required type="title" id="title" onChange={(e)=>this.titleOpearation(e)}  />
-                  </Form.Group>
-                  <Form.Group>
-                    <label htmlFor="promoimage">PromoImage</label>
-                    <Form.Control required type="promoimage" id="promoimage" onChange={(e)=>this.promoimageOpeartion(e)}/>
-                  </Form.Group>
-                  <button type="submit" class="btn btn-primary" >submit</button>
-    </Form>
-  </div>
-  
-</div>
-        </div>
-        <h2>Destination Table</h2>
-        <div className="table-responsive" style={{ paddingTop: '20px' }}>
-        <ReactTable columns={[
-                                    {
-                                        Header: "DestinationId",
-                                        accessor: "destinationId"
-                                        
-                                    },
-                                  {
-                                    Header: "DestinationName",
-                                    accessor: "destinationName"
-                                    
-                                  },
-                                  {
-                                    Header: "Title",
-                                    accessor: "title"
-                                    
-                                  },
-                                  {
-                                    Header: "PromoImage",
-                                    accessor: "promoImage"
-                                    
-                                  }
-                                ]}
-                                data={this.state.destinations}
-                                showPagination={true}
-                                defaultPageSize={10}
-                                
-                         />
-        </div>
-        </div> */}
+        
         </div>
      )
         }
     }
-    export default Destination
+    const mapStateToProps = (state) => {
+      return {
+        getdestination:state.goAdvStore.getdestination,
+        getdestinationbyid:state.goAdvStore.getdestinationbyid
+          /* gettraveltypebyid:state.goAdvStore.gettraveltypebyid,
+          gettraveltype:state.goAdvStore.gettraveltype,
+       message: state.goAdvStore.message,
+        messageData: state.goAdvStore.messageData */
+      }
+    }
+    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(Destination);
+
+
+    //export default Destination
 

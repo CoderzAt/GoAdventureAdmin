@@ -7,7 +7,7 @@ import Sidebar from './Sidebar'
 import {placetypepostapi,postData,getplacetypes,loadData,getplacetypebyid,placetypeupdateapi,GET_PLACETYPE_BYID,GET_PLACETYPE,POST_PLACETYPE,PUT_PLACETYPE} from '../Shared/Services'
 import {namevalidation} from '../Shared/Validations'
 import { connect } from 'react-redux';
-import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -104,47 +104,57 @@ class PlaceType extends Component {
     { debugger
        this.state.errors.name=namevalidation(this.state.placetypename)
     }
+    postPlacetypeData()
+    {
+        debugger
+        const obj = {
+            placeTypeId:this.props.getplacetypebyid.placeTypeId?this.props.getplacetypebyid.placeTypeId:0,
+            placeTypeName:this.props.getplacetypebyid.placeTypeName,
+            placeTypeDescription:this.props.getplacetypebyid.placeTypeDescription
+             };
+        let url = PUT_PLACETYPE+ this.props.getplacetypebyid.placeTypeId;
+        if (this.props.getplacetypebyid.placeTypeId) {
+            this.props.putData1(action.PUT_PLACETYPE,url,obj);
+        }
+        else {
+            this.props.postData1(action.POST_PLACETYPE,POST_PLACETYPE,obj);
+        }
+        this.setState({ validated: false });
+    }
 
     async handleSubmit(event)
     { 
         event.preventDefault();
-          this.handlevalidations()
-   debugger
+        //this.handlevalidations();
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false || this.validateForm(this.state.errors) === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity());
+        this.setState({ validated: true });
+        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
-            if(this.state.editData.placeTypeId == undefined)
-            {
-          this.postDatatoApi()
-            }
-            else{
-                this.postEditedData()
-            }
+            event.stopPropagation();
         }
-      this.setState({
-            validated:true
-        })
+        else {
+            event.preventDefault();
+            this.postPlacetypeData();
+        }   
 
     }
-    handleReset()
-    {
-        this.setState({
-            editData:[]
-        })
+    handleReset() {
+        this.props.resetData(action.RESET_DATA,"getplacetypebyid");
+        this.setState({ validated: false });
+    }
+    editReacord(id) {
+        this.props.getData(action.GET_PLACETYPE_BYID, GET_PLACETYPE_BYID+id)
+    }
+    updatePlacetype = (e, paramName) => {
+        this.props.updatePropAccData(paramName, e.target.value,"getplacetypebyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
     }
 
     render() {
 	    return (
         <div>
-       
-   <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
+        <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
        <Sidebar/>
        
        <div class="main-panel">
@@ -155,6 +165,10 @@ class PlaceType extends Component {
                                 <i class="mdi mdi-home-map-marker"></i>
                             </span>Place Type
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -176,7 +190,8 @@ class PlaceType extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeName" class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" required defaultValue={this.state.editData.placeTypeName} class="form-control" id="placeTypeName" onChange={(e)=>this.placetypenameOperation(e,this.state.palcetypename)} placeholder="Name"/>
+                                                        <input type="text" required value={this.props.getplacetypebyid.placeTypeName?this.props.getplacetypebyid.placeTypeName:""} 
+                                                        class="form-control" id="placeTypeName" onChange={(e)=>this.updatePlacetype(e,"placeTypeName")} placeholder="Name"/>
                                                      <div style={{color:"red"}}>{this.state.errors.name}</div>
                                                     </div>
                                                 </div>
@@ -185,7 +200,8 @@ class PlaceType extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <textarea class="form-control" required defaultValue={this.state.editData.placeTypeDescription} id="placeTypeDescription" rows="4" onChange={(e)=>this.placetypedescriptionOperation(e)}></textarea>
+                                                        <textarea class="form-control" required value={this.props.getplacetypebyid.placeTypeDescription?this.props.getplacetypebyid.placeTypeDescription:""} id="placeTypeDescription" rows="4" 
+                                                        onChange={(e)=>this.updatePlacetype(e,"placeTypeDescription")}></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -278,11 +294,14 @@ class PlaceType extends Component {
     }
     const mapStateToProps = (state) => {
         return {
-           placetype:state.goAdvStore.placetype
+           placetype:state.goAdvStore.placetype,
+           getplacetypebyid:state.goAdvStore.getplacetypebyid,
+           message: state.goAdvStore.message,
+           messageData: state.goAdvStore.messageData
             //cities:state.goAdvStore.citybyid
             //cities:state.goAdvStore.citybyid
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1})(PlaceType);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(PlaceType);
    // export default PlaceType
 

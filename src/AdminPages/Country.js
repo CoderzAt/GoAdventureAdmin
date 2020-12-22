@@ -5,33 +5,19 @@ import {postData,countrypostapi,getcounties,loadData,deletecountry,getcountrybyi
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import parse from 'html-react-parser'
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
 import TextInput from'../Shared/TextInput';
-
 import { connect } from 'react-redux';
-import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
-
-
 
 var condition=false;
+var editorstate='<div>hi<div>'
 class Country extends Component {
     constructor(props) {
         super(props);
@@ -47,37 +33,11 @@ class Country extends Component {
            
        }
     }
-
-    async loadtabledata()
-    {
-       
-        let countries1=await loadData(getcounties);
-        this.setState({
-                countries:countries1
-            }
-        )
-    }
- /* componentDidUpdate() //this is for rendering the code for every update
-    {
-        debugger
-        //we need to keep a condition here ...if new data is submitted then only we have to call this function
-       
-        this.loadtabledata()  //is there any problem with hitting the api's too many times
-        condition=false;
-        
-     } */
-     componentDidMount()
+    componentDidMount()
      {
-
-        this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
-        /* this.loadtabledata() */
+      this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
      }
-    countrynamenameOperation(event)
-    {
-      this.setState({
-            countryname:event.target.value
-        })
-    }
+    
     countrydescriptionOperation(event)
     {
         //alert(draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())))
@@ -92,20 +52,8 @@ class Country extends Component {
           editorState,
         });
       } 
-    countrycodeOpearation(event)
-    {
-  this.setState({
-            countrycode:event.target.value
-        })
-    }
-    deleteRecord(id)
-    {
-        alert("in delete id no is"+id)
-        fetch(deletecountry+id, {
-            method: 'DELETE'
-          });
-
-    }
+   
+   
   async editReacord(id)
     {
         
@@ -130,84 +78,71 @@ class Country extends Component {
               )
         })
     }
-    async postEditedData()
+        postCountrydata()
     {
         debugger
-        
-        const obj={
-            countryId:this.state.viewData.countryId,
-            countryName:this.state.countryname,
-            countryCode:this.state.countrycode,
-            countryDesc:this.state.countrydescription,
-                  }
-
-        let editurl=countryupdateapi+this.state.viewData.countryId;
-        let editeddata=await postData(obj,editurl,'Put')
-
-        alert(editeddata)
-
-        window.location.reload();//page refresh
-}
-    async postDatatoApi()
-    {
-        debugger
-        condition=true;
-        const obj={
-        countryId: 0,
-        countryName:this.state.countryname,
-        countryCode:this.state.countrycode,
-        countryDesc:this.state.countrydescription,
-              }
+        const obj = {
+        countryId:this.props.getcountrybyid.countryId?this.props.getcountrybyid.countryId:0,
+        countryName:this.props.getcountrybyid.countryName,
+        countryCode:this.props.getcountrybyid.countryCode,
+        countryDesc:this.props.getcountrybyid.countryDesc
+        };
+        let url = PUT_COUNTRY+this.props.getcountrybyid.countryId;
+        if (this.props.getcountrybyid.countryId) {
+            this.props.putData1(action.PUT_COUNTRY,url,obj);
+        } else {
             this.props.postData1(action.POST_COUNTRY,POST_COUNTRY,obj);
-           
-            /*  let message=await  postData(obj,countrypostapi,'Post');
-             
-             alert (message); */
-             //window.location.reload();//page refresh
+        }
+        this.setState({ validated: false });
+
     }
-
-    async handleSubmit(event)
+    handleSubmit(event)
     {
-        debugger
+        event.preventDefault();
+        //this.handlevalidations();
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity());
+        this.setState({ validated: true });
+        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
-            if(this.state.viewData.countryId == undefined)
-            {
-              this.postDatatoApi()
-            }
-            else
-            {
-                this.postEditedData()
-            }
+            event.stopPropagation();
+        } else {
+            event.preventDefault();
+            this.postCountrydata();
         }
-      this.setState({
-            validated:true
-        })
-
     }
 
     handleReset()
     {
-        this.setState({
-            viewData:[],
-            editorState:EditorState.createEmpty()
-        })
+        this.props.resetData(action.RESET_DATA,"getcountrybyid");
+        this.setState({ validated: false });
     }
-
-    handleinput(e)
+    editReacord(id)
     {
-       alert(e.target.value)
+    this.props.getData(action.GET_COUNTRY_BYID,GET_COUNTRY_BYID+id);
     }
 
+    updateCountry = (e, paramName) => {
+        
+        var value
+        if(paramName === "countryDesc")
+        {
+            value=draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));  
+        }
+        else
+        {
+            value=e.target.value
+        }
+        this.props.updatePropAccData(paramName,value,"getcountrybyid");
+        this.setState({ refreshflag:!this.state.refreshflag });
+    }
     render() {
+         editorstate=EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(this.props.getcountrybyid.countryDesc?this.props.getcountrybyid.countryDesc:'<div><div>')
+            )
+          )
+        
 	    return (
          <div>
             
@@ -223,6 +158,10 @@ class Country extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Country
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                                }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -248,7 +187,8 @@ class Country extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.props.getcountrybyid.countryName} class="form-control" onChange={(e)=>this.countrynamenameOperation(e)}/>
+                                                        <input required type="text" value={this.props.getcountrybyid.countryName?this.props.getcountrybyid.countryName:""} 
+                                                        class="form-control" onChange={(e)=>this.updateCountry(e,"countryName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -256,7 +196,8 @@ class Country extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Code</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.props.getcountrybyid.countryCode} class="form-control" onChange={(e)=>this.countrycodeOpearation(e)} />
+                                                        <input required type="text" value={this.props.getcountrybyid.countryCode?this.props.getcountrybyid.countryCode:""} 
+                                                        class="form-control" onChange={(e)=>this.updateCountry(e,"countryCode")} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -270,11 +211,11 @@ class Country extends Component {
                                                        
                                                        {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
                                                        <Editor
-                                                 editorState={this.state.editorState}
+                                                 editorState={editorstate}
                                                  wrapperClassName="demo-wrapper"
                                                  editorClassName="demo-editor"
                                                  onEditorStateChange={this.onEditorStateChange}
-                                                 onChange={(e)=>this.countrydescriptionOperation(e)}
+                                                 onChange={(e)=>this.updateCountry(e,"countryDesc")}
                                                       />
                                                       
                                                       </div>
@@ -379,10 +320,12 @@ class Country extends Component {
     const mapStateToProps = (state) => {
         return {
             countries: state.goAdvStore.countries,
-            getcountrybyid:state.goAdvStore.getcountrybyid
+            getcountrybyid:state.goAdvStore.getcountrybyid,
+            message: state.goAdvStore.message,
+            messageData: state.goAdvStore.messageData
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1})(Country);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(Country);
     
 
     //export default Country

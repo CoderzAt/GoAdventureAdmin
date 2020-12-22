@@ -1,22 +1,13 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,travelinfopostapi,getcities,getalltravelinfo,gettravelinfobyid,travelinfoupdateapi} from '../Shared/Services'
+import {GET_TRAVELINFO_BYID,GET_TRAVELINFO,PUT_TRAVELONFO,POST_TRAVELINFO,GET_CITIES} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar';
 
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
-
+import { connect } from 'react-redux';
+import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
 
 var condition=false;
@@ -25,171 +16,65 @@ class TravelInfo extends Component {
         super(props);
        this.state = {
            validated:false,
-           vehicleNumber: null,
-           vehicleName: null,
-           vehicleOwner: null,
-           vehicleContactNumber:null,
-           agencyName: null,
-           locationDetails: null,
-           cityId:1,
-           travelinfo:[],
-           editData:[],
-           cities:[]
-           
-       }
+           refreshflag:false
+            }
     }
-   async componentDidMount()
+   componentDidMount()
      {
     
-        let data= await loadData(getcities)
-        let travelinfo=await loadData(getalltravelinfo)
-        this.setState({
-           cities:data,
-           travelinfo:travelinfo
-        })
+        this.props.getData(action.GET_TRAVELINFO,GET_TRAVELINFO)
+        this.props.getData(action.GET_CITIES,GET_CITIES)
+        
      }  
-     vehchilenameOperation(event)
+    postTravelinfoData()
     {
-      this.setState({
-            vehicleName:event.target.value
-        })
+    debugger
+    const obj = {
+            travelInfoId:this.props.gettravelinfobyid.travelInfoId?this.props.gettravelinfobyid.travelInfoId:0,
+            vehicleNumber:this.props.gettravelinfobyid.vehicleNumber,
+            vehicleName:this.props.gettravelinfobyid.vehicleName,
+            vehicleOwner:this.props.gettravelinfobyid.vehicleOwner,
+            vehicleContactNumber:this.props.gettravelinfobyid.vehicleContactNumber*1,
+            agencyName:this.props.gettravelinfobyid.agencyName,
+            locationDetails:this.props.gettravelinfobyid.locationDetails,
+            cityId:this.props.gettravelinfobyid.cityId*1
+};
+    let url = PUT_TRAVELONFO+ this.props.gettravelinfobyid.travelInfoId;
+    if (this.props.gettravelinfobyid.travelInfoId) {
+        this.props.putData1(action.PUT_TRAVELINFO,url,obj);
     }
-    vechchilenumberOperation(event)
-    {
-        
-   this.setState({
-            vehicleNumber:event.target.value
-        })
-
+    else {
+        this.props.postData1(action.POST_TRAVELINFO,POST_TRAVELINFO,obj);
     }
-    vehchileownerOperation(event)
-    {
-  this.setState({
-            vehicleOwner:event.target.value
-        })
+    this.setState({ validated: false });
     }
-    vehchilecontactnumberOperation(event)
+     handleSubmit(event)
     {
-  this.setState({
-            vehicleContactNumber:event.target.value
-        })
+    event.preventDefault();
+    //this.handlevalidations();
+    const form = event.currentTarget;
+    console.log("checkform", form.checkValidity());
+    this.setState({ validated: true });
+    if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        event.preventDefault();
+        event.stopPropagation();
     }
-    locationdetailsOperation(event)
-    {
-  this.setState({
-            locationDetails:event.target.value
-        })
-    }
-    cityIdOperation(event)
-    {
-  this.setState({
-            cityId:event.target.value
-        })
-    }
-    agencynameOperation(event)
-    {
-  this.setState({
-            agencyName:event.target.value
-        })
-    }
-    
-     async editReacord(id)
-    {
-        
-        let url=gettravelinfobyid+id;
-        let editdata=await loadData(url)
-        this.setState({
-            editData:editdata
-        })
-
-        this.setState({
-            vehicleNumber:this.state.editData.vehicleNumber,
-            vehicleName:this.state.editData.vehicleName,
-            vehicleOwner:this.state.editData.vehicleOwner,
-            vehicleContactNumber:parseInt(this.state.editData.vehicleContactNumber),
-            agencyName:this.state.editData.agencyName,
-            locationDetails:this.state.editData.locationDetails,
-            cityId:parseInt(this.state.editData.cityId)
-        })
-    } 
-    /* deleteRecord(id)
-    {
-        alert("in delete id no is"+id)
-        fetch(deletecountry+id, {
-            method: 'DELETE'
-          });
-
-    }*/
+    else {
+        event.preventDefault();
+        this.postTravelinfoData();
+    }   
+  } 
  
-    async postEditedData()
-    {
-        debugger
-        const obj={
-            travelInfoId:this.state.editData.travelInfoId,
-            vehicleNumber:this.state.vehicleNumber,
-            vehicleName:this.state.vehicleName,
-            vehicleOwner:this.state.vehicleOwner,
-            vehicleContactNumber:parseInt(this.state.vehicleContactNumber),
-            agencyName:this.state.agencyName,
-            locationDetails:this.state.locationDetails,
-            cityId:parseInt(this.state.cityId)
-                            }
-
-        let editurl=travelinfoupdateapi+this.state.editData.travelInfoId;
-        let editeddata=await postData(obj,editurl,'Put')
-
-        alert(editeddata)
-
-        window.location.reload();//page refresh
-
-    } 
-    async postDatatoApi()
-    {
-        debugger
-        condition=true;
-        const obj={
-            travelInfoId:0,
-            vehicleNumber:this.state.vehicleNumber,
-            vehicleName:this.state.vehicleName,
-            vehicleOwner:this.state.vehicleOwner,
-            vehicleContactNumber:parseInt(this.state.vehicleContactNumber),
-            agencyName:this.state.agencyName,
-            locationDetails:this.state.locationDetails,
-            cityId:parseInt(this.state.cityId)
-              }
-             let message = await  postData(obj,travelinfopostapi,'Post');
-             alert (message);
-             //window.location.reload();//page refresh
+    handleReset() {
+        this.props.resetData(action.RESET_DATA,"gettravelinfobyid");
+            this.setState({ validated: false });
+      }
+    editReacord(id) {
+        this.props.getData(action.GET_TRAVELINFO_BYID, GET_TRAVELINFO_BYID+id)
     }
-    async handleSubmit(event)
-    {
-        debugger
-        const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
-            event.preventDefault();
-            if(this.state.editData.travelInfoId == undefined)
-              this.postDatatoApi()
-            else
-              this.postEditedData()
-        }
-      this.setState({
-            validated:true
-        })
-
-    } 
- handleReset()
-    {
-        this.setState({
-            editData:[]
-            
-        })
+    updateTravelinfo = (e, paramName) => {
+        this.props.updatePropAccData(paramName,e.target.value,"gettravelinfobyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
     }
 
     render() {
@@ -208,6 +93,10 @@ class TravelInfo extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> TravelInfo
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -229,7 +118,8 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Vehchile Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.vehicleName} class="form-control" onChange={(e)=>this.vehchilenameOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettravelinfobyid.vehicleName?this.props.gettravelinfobyid.vehicleName:""}
+                                                         class="form-control" onChange={(e)=>this.updateTravelinfo(e,"vehicleName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -237,7 +127,8 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Vehchile Number</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.vehicleNumber} class="form-control" onChange={(e)=>this.vechchilenumberOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettravelinfobyid.vehicleNumber?this.props.gettravelinfobyid.vehicleNumber:""} 
+                                                        class="form-control" onChange={(e)=>this.updateTravelinfo(e,"vehicleNumber")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -247,7 +138,8 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehchile Owner</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text"  defaultValue={this.state.editData.vehicleOwner} class="form-control"  onChange={(e)=>this.vehchileownerOperation(e)}/>
+                                                        <input required type="text"  value={this.props.gettravelinfobyid.vehicleOwner?this.props.gettravelinfobyid.vehicleOwner:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"vehicleOwner")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -255,7 +147,8 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehchile Contact number</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.vehicleContactNumber}  class="form-control"  onChange={(e)=>this.vehchilecontactnumberOperation(e)}/>
+                                                        <input required type="number" value={this.props.gettravelinfobyid.vehicleContactNumber?this.props.gettravelinfobyid.vehicleContactNumber:""} 
+                                                         class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"vehicleContactNumber")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -263,7 +156,8 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Agency Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.agencyName}  class="form-control"  onChange={(e)=>this.agencynameOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettravelinfobyid.agencyName?this.props.gettravelinfobyid.agencyName:""}  class="form-control"  
+                                                        onChange={(e)=>this.updateTravelinfo(e,"agencyName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -271,7 +165,8 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Location Details</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.locationDetails}  class="form-control"  onChange={(e)=>this.locationdetailsOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettravelinfobyid.locationDetails?this.props.gettravelinfobyid.locationDetails:""}  
+                                                        class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"locationDetails")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -279,8 +174,10 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">City</label>
                                                     <div class="col-sm-9">
-                                                    <select class="form-control travellerMode" onChange={(e)=>this.cityIdOperation(e)}>
-                                                       {this.state.cities.map(obj=>
+                                                    <select class="form-control travellerMode" value={this.props.gettravelinfobyid.cityId?this.props.gettravelinfobyid.cityId:"0"} 
+                                                    onChange={(e)=>this.updateTravelinfo(e,"cityId")}>
+                                                        <option value={0}>Select</option>
+                                                       {this.props.cities.map(obj=>
                                                       <option value={obj.cityId}>{obj.cityName}</option>
                                                         )}
                                                     </select>
@@ -348,7 +245,7 @@ class TravelInfo extends Component {
                                   }
 
                                 ]}
-                                data={this.state.travelinfo}
+                                data={this.props.gettravelinfo}
                                 showPagination={true}
                                 defaultPageSize={5}
                                
@@ -368,5 +265,18 @@ class TravelInfo extends Component {
  )
         }
     }
-    export default TravelInfo
+    const mapStateToProps = (state) => {
+        return {
+          gettravelinfobyid:state.goAdvStore.gettravelinfobyid,
+          gettravelinfo:state.goAdvStore.gettravelinfo,
+          message: state.goAdvStore.message,
+          messageData: state.goAdvStore.messageData,
+          cities:state.goAdvStore.cities
+         
+        }
+      }
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(TravelInfo);
+    
+    
+    //export default TravelInfo
 

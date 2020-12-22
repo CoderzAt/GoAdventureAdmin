@@ -1,87 +1,24 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getallcoupons, getcouponbyid, couponpostapi, couponupdateapi,GET_ALL_COUPON,GET_COUPON_BYID,POST_COUPON,PUT_COUPON} from '../Shared/Services'
+import { postData, couponupdateapi, GET_ALL_COUPON, GET_COUPON_BYID, POST_COUPON, PUT_COUPON } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import {getData,postData1} from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
-
-
-
-var condition=false;
+var condition = false;
 class Coupon extends Component {
     constructor(props) {
         super(props);
-       this.state = {
-           validated:false,
-           couponcode:null,
-           couponvalue:null,
-           couponpercentage:null,
-           //coupons:[],
-           editData:[]
-           
-       }
+        this.state = {
+            validated: false,
+            refreshflag: false
+        }
     }
-
-  /*   async loadtabledata()
-    {
-
-        let countries1=await loadData(getcounties);
-        this.setState({
-                countries:countries1
-            }
-        )
-    } */
- /* componentDidUpdate() //this is for rendering the code for every update
-    {
-        debugger
-        //we need to keep a condition here ...if new data is submitted then only we have to call this function
-       
-        this.loadtabledata()  //is there any problem with hitting the api's too many times
-        condition=false;
-        
-     } */
-    componentDidMount()
-    {
-
-        this.props.getData(action.GET_ALL_COUPON,GET_ALL_COUPON)
-        /* this.setState({
-            coupons:await loadData(getallcoupons)
-        }) */
-        
-     }
-    couponCodeOperation(event)
-    {
-      this.setState({
-            couponcode:event.target.value
-        })
-    }
-    couponvalueOperation(event)
-    {
-   this.setState({
-            couponvalue:event.target.value
-        })
-
-    }
-    couponpercentageOperation(event)
-    {
-  this.setState({
-            couponpercentage:event.target.value
-        })
+    componentDidMount() {
+        this.props.getData(action.GET_ALL_COUPON, GET_ALL_COUPON)
     }
     /* deleteRecord(id)
     {
@@ -90,228 +27,194 @@ class Coupon extends Component {
             method: 'DELETE'
           });
     }*/
-  async editReacord(id)
-    {
-        //alert("in Edit "+id)
-        let url=GET_COUPON_BYID+id;
-       // let editdata=await loadData(url)
-        this.props.getData(action.GET_COUPON_BYID,url)
-
-        let editdata=this.props.couponbyid;
-        this.setState({
-            editData:editdata
-        })
-        this.setState({
-        couponvalue: editdata.couponValue,
-        couponcode:editdata.couponCode,
-        couponpercentage:editdata.couponPercentage
-    })
-    }
-    async postEditedData()
-    {
+    postCouponData() {
         debugger
-        //alert("in post edit")
-        const obj={
-            couponId:this.state.editData.couponId,
-            couponValue:parseInt(this.state.couponvalue),
-            couponCode:this.state.couponcode,
-            couponPercentage:parseInt(this.state.couponpercentage)
-                  }
-
-        let editurl=couponupdateapi+this.state.editData.couponId;
-        let editeddata=await postData(obj,editurl,'Put')
-
-        //alert(editeddata)
-
-        window.location.reload();//page refresh
-
-    }
-  postDatatoApi()
-    {
-        debugger
-        condition=true;
-        const obj={
-            couponId:0,
-            couponValue:parseInt(this.state.couponvalue),
-            couponCode:this.state.couponcode,
-            couponPercentage:parseInt(this.state.couponpercentage)
-              }
-             //let message=await  postData(obj,couponpostapi,'Post');
-             this.props.postData1(action.POST_COUPON,POST_COUPON,obj)
-
-             
-             //alert (message);
-             //window.location.reload();//page refresh
+        const obj = {
+            couponId: this.props.couponbyid.couponId ? this.props.couponbyid.couponId : 0,
+            couponValue: this.props.couponbyid.couponValue * 1,
+            couponCode: this.props.couponbyid.couponCode,
+            couponPercentage: this.props.couponbyid.couponPercentage * 1
+        };
+        let url = PUT_COUPON + this.props.couponbyid.couponId;
+        if (this.props.couponbyid.couponId) {
+            this.props.putData1(action.PUT_COUPON, url, obj);
+        } else {
+            this.props.postData1(action.POST_COUPON, POST_COUPON, obj);
+        }
+        this.setState({ validated: false });
     }
 
-    async handleSubmit(event)
-    {
-        debugger
+    handleSubmit(event) {
+        event.preventDefault();
+        //this.handlevalidations();
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity());
+        this.setState({ validated: true });
+        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
-            if(this.state.editData.couponId == undefined)
-            {
-              this.postDatatoApi()
-            }
-            else
-            {
-                this.postEditedData()
-            }
+            event.stopPropagation();
+        } else {
+            event.preventDefault();
+            this.postCouponData();
         }
-      this.setState({
-            validated:true
-        })
+    }
+    editReacord(id) {
+        this.props.getData(action.GET_COUPON_BYID, GET_COUPON_BYID + id)
+    }
 
-    } 
+    handleReset() {
+        this.props.resetData(action.RESET_DATA, "couponbyid");
+        this.setState({ validated: false });
+    }
+    updateCoupon = (e, paramName) => {
 
-    handleReset()
-    {
-        this.setState({
-            viewData:[]
-        })
+        this.props.updatePropAccData(paramName, e.target.value, "couponbyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
     }
 
     render() {
-	    return (
-         <div>
-             
-        <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
-            <Sidebar/>
-            
-            <div class="main-panel">
-                <div class="content-wrapper">
-                    
-                     <div class="page-header">
-                        <h3 class="page-title">
-                            <span class="page-title-icon bg-gradient-primary text-white mr-2">
-                                <i class="mdi mdi-wan"></i>
-                            </span> Coupon
+        //this.props.getData(action.GET_ALL_COUPON, GET_ALL_COUPON)
+        return (
+            <div>
+
+                <div class="container-fluid page-body-wrapper" style={{ paddingTop: 80 }}>
+                    <Sidebar />
+
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+
+                            <div class="page-header">
+                                <h3 class="page-title">
+                                    <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                                        <i class="mdi mdi-wan"></i>
+                                    </span> Coupon
                         </h3>
-                        <nav aria-label="breadcrumb">
-                            <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
+                                {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                                }
+                                <nav aria-label="breadcrumb">
+                                    <ul class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            Coupon
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    Coupon
-                                </li>
-                            </ul>
-                        </nav>
-                    </div> 
-                    <div class="row">
-                        <div class="col-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Coupon</h4>
-                                    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
-                                    <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Code</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.couponCode} class="form-control" onChange={(e)=>this.couponCodeOperation(e)}/>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Coupon</h4>
+                                            <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Code</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="text" value={this.props.couponbyid.couponCode ? this.props.couponbyid.couponCode : ""}
+                                                                    class="form-control" onChange={(e) => this.updateCoupon(e, "couponCode")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Percentage</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="number" value={this.props.couponbyid.couponPercentage ? this.props.couponbyid.couponPercentage : ""}
+                                                                    class="form-control" onChange={(e) => this.updateCoupon(e, "couponPercentage")} />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Percentage</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.couponPercentage}  class="form-control" onChange={(e)=>this.couponpercentageOperation(e)} />
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Value</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="number" value={this.props.couponbyid.couponValue ? this.props.couponbyid.couponValue : ""}
+                                                                    class="form-control" onChange={(e) => this.updateCoupon(e, "couponValue")} />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Value</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.couponValue} class="form-control"  onChange={(e)=>this.couponvalueOperation(e)}/>
-                                                    </div>
+
+
+                                                <div class="row" style={{ margin: "auto", textAlign: "center"/* marg:auto;text-align: center} */ }}>
+                                                    <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+                                                    <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
-                                            </div>
+                                            </Form>
                                         </div>
-                                       
-                
-                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
-                                            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
-                                            <button type="reset" class="btn btn-light">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Coupons</h4>
+                                            <div class="table-responsive"></div>
+                                            <ReactTable columns={[
+                                                {
+                                                    Header: "couponValue",
+                                                    accessor: "couponValue"
+
+                                                },
+                                                {
+                                                    Header: "couponCode",
+                                                    accessor: "couponCode"
+
+                                                },
+                                                {
+                                                    Header: "couponPercentage",
+                                                    accessor: "couponPercentage"
+
+                                                },
+                                                {
+                                                    id: 'id', // Required because our accessor is not a string
+                                                    Header: 'Actions',
+                                                    accessor: d => d.couponId,
+                                                    maxWidth: 300,
+                                                    Cell: row => (
+                                                        <div className="template-demo">
+                                                            <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
+                                                                <i class="mdi mdi-pencil-outline"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                                <i class="mdi mdi-delete-outline"></i>
+                                                            </button>
+                                                        </div>)
+
+                                                }
+
+                                            ]}
+                                                data={this.props.coupons}
+                                                showPagination={true}
+                                                defaultPageSize={5}
+                                            />
                                         </div>
-    </Form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Coupons</h4>
-                                    <div class="table-responsive"></div>
-                                     <ReactTable columns={[
-                                    {
-                                        Header: "couponValue",
-                                        accessor:"couponValue"
-                                        
-                                    },
-                                  {
-                                    Header: "couponCode",
-                                    accessor: "couponCode"
-                                    
-                                  },
-                                  {
-                                    Header: "couponPercentage",
-                                    accessor: "couponPercentage"
-                                    
-                                  },
-                                  {
-                                    id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
-                                    accessor: d => d.couponId,
-                                    maxWidth:300,
-                                    Cell: row => (
-                                      <div className="template-demo">
-                                          <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
-                                                            <i class="mdi mdi-pencil-outline"></i>
-                                          </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
-                                                            <i class="mdi mdi-delete-outline"></i>
-                                          </button>
-                                      </div>)
-
-                                  }
-
-                                ]}
-                                data={this.props.coupons}
-                                showPagination={true}
-                                defaultPageSize={5}
-                               /> 
-                         </div>
-                                    </div>
-                                    </div>
-                                    </div>
-                                    </div>
-                    </div>
                 </div>
-          </div>
-    )
-        }
+            </div>
+        )
     }
-    const mapStateToProps = (state) => {
-        return {
-            coupons: state.goAdvStore.coupons,
-            couponbyid:state.goAdvStore.couponbyid
-        }
+}
+const mapStateToProps = (state) => {
+    return {
+        coupons: state.goAdvStore.coupons,
+        couponbyid: state.goAdvStore.couponbyid,
+        message: state.goAdvStore.message,
+        messageData: state.goAdvStore.messageData
     }
-    export default connect(mapStateToProps, {getData,postData1})(Coupon);
-    
+}
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData })(Coupon);
+
    // export default Coupon
 

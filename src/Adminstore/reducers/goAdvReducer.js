@@ -7,8 +7,8 @@ const initalState ={
     calendar:[],
     itenary:[],
     packagebyid:[],
-    gettripbypackageid:[],
-    gettripbyid:[],
+    putpackage:[],
+    postpackage:[],
     activities:[],
     cities:[],
     countries:[],
@@ -53,6 +53,9 @@ const initalState ={
     putplacetovisit:[],
     getplacetovisitbyid:[],
     getdestination:[],
+    getdestinationbyid:[],
+    putdestination:[],
+    postdestination:[],
     placetype:[],
     postplacetype:[],
     getplacetypebyid:[],
@@ -60,12 +63,31 @@ const initalState ={
     getstatebycountry:[],
     poststate:[],
     putstate:[],
+    getstatebyid:[],
     getstay:[],
     putstay:[],
     poststay:[],
     getstaybyid:[],
+    getstaytype:[],
+    getstaytypebyid:[],
+    putstaytype:[],
+    poststaytype:[],
+    gettravelinfo:[],
+    gettravelinfobyid:[],
+    puttravelinfo:[],
+    posttravelinfo:[],
+    gettraveltype:[],
+    gettraveltypebyid:[],
+    posttraveltype:[],
+    puttraveltype:[],
+    staytypeids:"",
     message: false,
-    messageData: {}
+    messageData: {},
+    gettripbypackageid:[],
+    gettripbyid:[],
+    gettrip:[],
+    posttrip:[],
+    puttrip:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -87,6 +109,66 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isPkgLoading: false,
+            }
+        }
+        case `${actions.PUT_PACKAGE}_PENDING` : {
+            return{
+                ...state,
+                isputPackageLoading: true
+            }
+        }
+        case `${actions.PUT_PACKAGE}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Package";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Package updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputPackageLoading: false,
+                putpackage: action.payload.data,
+                message: true,
+                messageData: msgData,
+                packagebyid:{}
+            }
+        }
+        case `${actions.PUT_PACKAGE}_REJECTED` : {
+            return{
+                ...state,
+                isputPackageLoading: false,
+            }
+        }
+        case `${actions.POST_PACKAGE}_PENDING` : {
+            return{
+                ...state,
+                ispostPackageLoading: true
+            }
+        }
+        case `${actions.POST_PACKAGE}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Package";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Package added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostPackageLoading: false,
+                posttpackage: action.payload.data,
+                message: true,
+                messageData: msgData,
+                packagebyid:{}
+            }
+        }
+        case `${actions.POST_PACKAGE}_REJECTED` : {
+            return{
+                ...state,
+                ispostPackageLoading: false,
             }
         }
         case `${actions.GET_ALL_ACCESSORIES}_PENDING` : {
@@ -175,7 +257,7 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isTrbpidLoading: false,
-                gettripbypackageid: action.payload.data
+                gettrip: action.payload.data
             }
         }
         case `${actions.GET_TRIP_BYPACKAGEID}_REJECTED` : {
@@ -247,12 +329,12 @@ const goAdvReducer = (state =initalState, action) => {
                 isCountryLoading: true
             }
         }
-        case `${actions.RESET_CITY}` : {
+        case `${actions.RESET_DATA}` : {
             let updatedCityData = {cityId: 0};
-            updatedCityData[action.payload.param] = action.payload.value;
+            updatedCityData[action.payload.promName] = action.payload.value;
             return{
                 ...state,
-				        cityData: updatedCityData
+				        [action.payload.propName]: updatedCityData
             }
         }
         case `${actions.GET_COUNTRIES}_FULFILLED` : {
@@ -275,10 +357,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COUNTRY}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Country";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Country added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostCoutryLoading: false,
-                countries: action.payload.data
+                countries: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getcountrybyid:{}
             }
         }
         case `${actions.POST_COUNTRY}_REJECTED` : {
@@ -294,10 +387,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COUNTRY}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Country";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Country updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputCountryLoading: false,
-                putcountry: action.payload.data
+                putcountry: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getcountrybyid:{}
             }
         }
         case `${actions.PUT_COUNTRY}_REJECTED` : {
@@ -410,10 +514,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COUPON}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Coupon";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Coupon added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostCouponLoading: false,
-                postcoupon: action.payload.data
+                postcoupon: action.payload.data,
+                message: true,
+                messageData: msgData,
+                couponbyid:{}
             }
         }
         case `${actions.POST_COUPON}_REJECTED` : {
@@ -429,10 +544,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COUPON}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Coupon";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Coupon updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputCouponLoading: false,
-                putcoupon: action.payload.data
+                putcoupon: action.payload.data,
+                message: true,
+                messageData: msgData,
+                couponbyid:{}
             }
         }
         case `${actions.PUT_COUPON}_REJECTED` : {
@@ -502,16 +628,29 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ACCESSORIES}_PENDING` : {
+           
             return{
                 ...state,
                 ispostAccessoryLoading: true
             }
         }
         case `${actions.POST_ACCESSORIES}_FULFILLED` : {
+            let updateAccessoryData = {accessoriesId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Acessory";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Accessory added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostAccessoryLoading: false,
-                postaccesory: action.payload.data
+                postaccesory: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getaccessorybyid: {}
+
             }
         }
         case `${actions.POST_ACCESSORIES}_REJECTED` : {
@@ -527,10 +666,22 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_ACCESSORIES}_FULFILLED` : {
+            let updateAccessaryData = {accessoriesId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Aceessory";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Accessory updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputAccessoryLoading: false,
-                putaccessory: action.payload.data
+                putaccessory: action.payload.data,
+                getaccessorybyid:{accessoriesId:0},  //here everything is setting with null thats why data removing
+                message: true,
+                messageData: msgData
+                
             }
         }
         case `${actions.PUT_ACCESSORIES}_REJECTED` : {
@@ -559,17 +710,30 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ACTIVITY}_PENDING` : {
-            return{
+             return{
                 ...state,
-                ispostAactivityLoading: true
-            }
+                ispostAactivityLoading: true,
+               }
         }
         case `${actions.POST_ACTIVITY}_FULFILLED` : {
+            let updateCityData = {activityId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Activity";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Activity added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostAactivityLoading: false,
-                postactivity: action.payload.data
+                postactivity: action.payload.data,
+                getactivitybyid:{activityId: 0},
+                message: true,
+                messageData: msgData,
+
             }
+        
         }
         case `${actions.POST_ACTIVITY}_REJECTED` : {
             return{
@@ -584,10 +748,22 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_ACTIVITY}_FULFILLED` : {
+
+            let updateCityData = {activityId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the activity";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "activity updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputAactivityLoading: false,
-                putactivity: action.payload.data
+                putactivity: action.payload.data,
+                message:true,
+                messageData:msgData,
+                getactivitybyid:{activityId: 0}
             }
         }
         case `${actions.PUT_ACTIVITY}_REJECTED` : {
@@ -641,10 +817,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COSTCENTRE}_FULFILLED` : {
+            let updateCityData = {}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while posting the costcentre";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "costcentre posted successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostCoscentreLoading: false,
-                postcostcentre: action.payload.data
+                postcostcentre: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getcostcentrebyid: {}
             }
         }
         case `${actions.POST_COSTCENTRE}_REJECTED` : {
@@ -660,10 +847,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COSTCENTRE}_FULFILLED` : {
+            let updateCityData = {}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the costcentre";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "costcentre upadated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputCoscentreLoading: false,
-                putcostcentre: action.payload.data
+                putcostcentre: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getcostcentrebyid: {}
             }
         }
         case `${actions.PUT_COSTCENTRE}_REJECTED` : {
@@ -736,10 +934,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_EVENTLEVEL}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Eventlevel";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Eventlevel added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostEventlevelLoading: false,
-                posteventlevel: action.payload.data
+                posteventlevel: action.payload.data,
+                message: true,
+                messageData: msgData,
+                geteventlevelbyid:{}
             }
         }
         case `${actions.POST_EVENTLEVEL}_REJECTED` : {
@@ -755,10 +964,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_EVENTLEVEL}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Eventlevel";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Eventlevel updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputEventlevelLoading: false,
-                puteventlevel: action.payload.data
+                puteventlevel: action.payload.data,
+                message: true,
+                messageData: msgData,
+                geteventlevelbyid:{}
             }
         }
         case `${actions.PUT_EVENTLEVEL}_REJECTED` : {
@@ -831,10 +1051,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_EVENTTYPE}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while Adding the Eventtype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Eventtype added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostEventtypeLoading: false,
-                posteventtype: action.payload.data
+                posteventtype: action.payload.data,
+                message: true,
+                messageData: msgData,
+                geteventtypebyid:{}
             }
         }
         case `${actions.POST_EVENTTYPE}_REJECTED` : {
@@ -850,10 +1081,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_EVENTTYPE}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Eventtype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Eventtype updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputEventtypeLoading: false,
-                puteventtype: action.payload.data
+                puteventtype: action.payload.data,
+                message: true,
+                messageData: msgData,
+                geteventtypebyid:{}
             }
         }
         case `${actions.PUT_EVENTTYPE}_REJECTED` : {
@@ -907,10 +1149,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ITENARY}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the itenary";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "itenary added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostItenaryLoading: false,
-                postitenary:action.payload.data
+                postitenary:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getitenarybyid:{}
             }
         }
         case `${actions.POST_ITENARY}_REJECTED` : {
@@ -926,10 +1179,22 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_ITENARY}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Itenary";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Itenary updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputItenaryLoading: false,
-                putitenary:action.payload.data
+                putitenary:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getitenarybyid:{}
+
             }
         }
         case `${actions.PUT_ITENARY}_REJECTED` : {
@@ -948,7 +1213,7 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isgetPlacetovisitLoading: false,
-                getitenary:action.payload.data
+                getplcetovisit:action.payload.data
             }
         }
         case `${actions.GET_PLACETOVISIT}_REJECTED` : {
@@ -983,10 +1248,21 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PLACETOVISIT}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while Adding the placetovisit";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "placetovisit added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostPlacetovisitLoading: false,
-                postplacetovisit:action.payload.data
+                postplacetovisit:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getplacetovisitbyid:{}
             }
         }
         case `${actions.POST_PLACETOVISIT}_REJECTED` : {
@@ -1002,10 +1278,22 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_PLACETOVISIT}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the placetovisit";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "placetovisit added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputPlacetovisitLoading: false,
-                putplacetovisit:action.payload.data
+                putplacetovisit:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getplacetovisitbyid:{}
+
             }
         }
         case `${actions.PUT_PLACETOVISIT}_REJECTED` : {
@@ -1052,17 +1340,110 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetDestinationLoading: false,
             }
         }
-        case `${actions.POST_PLACETYPE}_PENDING` : {
+        case `${actions.GET_DESTINATION_BYID}_PENDING` : {
             return{
                 ...state,
-                ispostPlacetypeLoading: true
+                isgetDestinationbyidLoading: true
+            }
+        }
+        case `${actions.GET_DESTINATION_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetDestinationbyidLoading: false,
+                getdestinationbyid:action.payload.data
+            }
+        }
+        case `${actions.GET_DESTINATION_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetDestinationbyidLoading: false,
+            }
+        }
+        case `${actions.POST_DESTINATION}_PENDING` : {
+            return{
+                ...state,
+                ispostDestinationLoading: true
+            }
+        }
+        case `${actions.POST_DESTINATION}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Destination";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Destination added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostDestinationLoading: false,
+                postdestination:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getdestinationbyid:{}
+
+            }
+        }
+        case `${actions.POST_DESTINATION}_REJECTED` : {
+            return{
+                ...state,
+                ispostDestinationLoading: false,
+            }
+        }
+        case `${actions.PUT_DESTINATION}_PENDING` : {
+            return{
+                ...state,
+                isputDestinationLoading: true
+            }
+        }
+        case `${actions.PUT_DESTINATION}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while added the Destination";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Destination updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputDestinationLoading: false,
+                putdestination:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getdestinationbyid:{}
+
+            }
+        }
+        case `${actions.PUT_DESTINATION}_REJECTED` : {
+            return{
+                ...state,
+                isputDestinationLoading: false,
+            }
+        }
+        case `${actions.PUT_PLACETYPE}_PENDING` : {
+            return{
+                ...state,
+                isputPlacetypeLoading: true
             }
         }
         case `${actions.POST_PLACETYPE}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Placetype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Placetype added successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 ispostPlacetypeLoading: false,
-                postplacetype:action.payload.data
+                postplacetype:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getplacetypebyid:{}
+
             }
         }
         case `${actions.POST_PLACETYPE}_REJECTED` : {
@@ -1077,11 +1458,23 @@ const goAdvReducer = (state =initalState, action) => {
                 isputPlacetypeLoading: true
             }
         }
-        case `${actions.POST_PLACETYPE}_FULFILLED` : {
+        case `${actions.PUT_PLACETYPE}_FULFILLED` : {
+            debugger
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Placetype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Placetype Updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputPlacetypeLoading: false,
-                putplacetype:action.payload.data
+                putplacetype:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getplacetypebyid:{}
             }
         }
         case `${actions.POST_PLACETYPE}_REJECTED` : {
@@ -1100,7 +1493,7 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isgetPlacetypebyidLoading: false,
-                putplacetype:action.payload.data
+                getplacetypebyid:action.payload.data
             }
         }
         case `${actions.GET_PLACETYPE_BYID}_REJECTED` : {
@@ -1126,6 +1519,25 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isStateLoading: false,
+            }
+        }
+        case `${actions.GET_STATE_BYID}_PENDING` : {
+            return{
+                ...state,
+                isStatebyidLoading: true
+            }
+        }
+        case `${actions.GET_STATE_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isStatebyidLoading: false,
+                getstatebyid: action.payload.data
+            }
+        }
+        case `${actions.GET_STATE_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isStatebyidLoading: false,
             }
         }
         case `${actions.GET_STATE_BYCOUNTRYID}_PENDING` : {
@@ -1154,10 +1566,22 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STATE}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the State";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "State added successfully.";
+              msgData.isSuccess = true;
+            }
+
             return{
                 ...state,
                 ispostStateLoading: false,
-                poststate: action.payload.data
+                poststate: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getstatebyid:{}
             }
         }
         case `${actions.POST_STATE}_REJECTED` : {
@@ -1167,16 +1591,29 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STATE}_PENDING` : {
+           
             return{
                 ...state,
                 isputStateLoading: true
+               
             }
         }
         case `${actions.PUT_STATE}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "State while updating the Eventlevel";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "State updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputStateLoading: false,
-                putstate: action.payload.data
+                putstate: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getstatebyid:{}
             }
         }
         case `${actions.PUT_STATE}_REJECTED` : {
@@ -1211,10 +1648,23 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STAY}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Stay";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Stay updated successfully.";
+              msgData.isSuccess = true;
+            }
             return{
                 ...state,
                 isputStayLoading: false,
-                putstay: action.payload.data
+                putstay: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getstaybyid:{},
+                staytypeids:{}
+
             }
         }
         case `${actions.PUT_STAY}_REJECTED` : {
@@ -1230,10 +1680,23 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STAY}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Stay";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Stay added successfully.";
+              msgData.isSuccess = true;
+            }
+
             return{
                 ...state,
                 ispostStayLoading: false,
-                poststay: action.payload.data
+                poststay: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getstaybyid:{},
+                staytypeids:{}
             }
         }
         case `${actions.POST_STAY}_REJECTED` : {
@@ -1249,10 +1712,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_STAY_BYID}_FULFILLED` : {
+            let staytypeids=action.payload.data.stayTypeIds;
+            let data= Array.prototype.map.call(staytypeids, function(item) { return item.stayTypeId; }).join(",");
+            
             return{
                 ...state,
                 isgetStaybyidLoading: false,
-                getstaybyid: action.payload.data
+                getstaybyid: action.payload.data,
+                staytypeids:data
             }
         }
         case `${actions.GET_STAY_BYID}_REJECTED` : {
@@ -1261,8 +1728,379 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetStaybyidLoading: false,
             }
         }
+        case `${actions.GET_STAYTYPE}_PENDING` : {
+            return{
+                ...state,
+                isgetStaytypeLoading: true
+            }
+        }
+        case `${actions.GET_STAYTYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isgetStaytypeLoading: false,
+                getstaytype: action.payload.data
+            }
+        }
+        case `${actions.GET_STAYTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isgetStaytypeLoading: false,
+            }
+        }
+        case `${actions.GET_STAYTYPE_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetStaytypebyidLoading: true
+            }
+        }
+        case `${actions.GET_STAYTYPE_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetStaytypebyidLoading: false,
+                getstaytypebyid: action.payload.data
+            }
+        }
+        case `${actions.GET_STAYTYPE_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetStaytypebyidLoading: false,
+            }
+        }
+        case `${actions.POST_STAYTYPE}_PENDING` : {
+            return{
+                ...state,
+                ispostStaytypeLoading: true
+            }
+        }
+        case `${actions.POST_STAYTYPE}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the staytype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "staytype added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostStaytypeLoading: false,
+                poststaytype: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getstaytypebyid:{}
+            }
+        }
+        case `${actions.POST_STAYTYPE}_REJECTED` : {
+            return{
+                ...state,
+                ispostStaytypeLoading: false,
+            }
+        }
+        
+         case `${actions.PUT_TRAVELINFO}_PENDING` : {
+            return{
+                ...state,
+                isputTravelinfoLoading: true
+            }
+        }
+        case `${actions.PUT_TRAVELINFO}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the travelinfo";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "travelinfo updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputTravelinfoLoading: false,
+                puttravelinfo: action.payload.data,
+                message: true,
+                messageData: msgData,
+                gettravelinfobyid:{}
+             }
+        }
+        case `${actions.PUT_TRAVELINFO}_REJECTED` : {
+            return{
+                ...state,
+                isputTravelinfoLoading: false,
+            }
+        }
+        case `${actions.POST_TRAVELINFO}_PENDING` : {
+            return{
+                ...state,
+                isposttTravelinfoLoading: true
+            }
+        }
+        case `${actions.POST_TRAVELINFO}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the travelinfo";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "travelinfo added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isposttTravelinfoLoading: false,
+                posttravelinfo: action.payload.data,
+                message: true,
+                messageData: msgData,
+                gettravelinfobyid:{}
+             }
+        }
+        case `${actions.POST_TRAVELINFO}_REJECTED` : {
+            return{
+                ...state,
+                ispostTravelinfoLoading: false,
+            }
+        }
+
+        case `${actions.GET_TRAVELINFO}_PENDING` : {
+            return{
+                ...state,
+                isgetTravelinfoLoading: true
+            }
+        }
+        case `${actions.GET_TRAVELINFO}_FULFILLED` : {
+            return{
+                ...state,
+                isgetTravelinfoLoading: false,
+                gettravelinfo: action.payload.data
+            }
+        }
+        case `${actions.GET_TRAVELINFO}_REJECTED` : {
+            return{
+                ...state,
+                isgetTravelinfoLoading: false,
+            }
+        }
+        case `${actions.GET_TRAVELINFO_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetTravelinfobyidLoading: true
+            }
+        }
+        case `${actions.GET_TRAVELINFO_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetTravelinfobyidLoading: false,
+                gettravelinfobyid: action.payload.data
+            }
+        }
+        case `${actions.GET_TRAVELINFO_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetTravelinfobyidLoading: false,
+            }
+        }
+        case `${actions.PUT_STAYTYPE}_PENDING` : {
+            return{
+                ...state,
+                isputStaytypeLoading: true
+            }
+        }
+        case `${actions.PUT_STAYTYPE}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the staytype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "staytype updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputStaytypeLoading: false,
+                putstaytype: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getstaytypebyid:{}
+             }
+        }
+        case `${actions.PUT_STAYTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isputStaytypeLoading: false,
+            }
+        }
+
+        case `${actions.GET_TRAVELTYPE}_PENDING` : {
+            return{
+                ...state,
+                isgetTraveltypeLoading: true
+            }
+        }
+        case `${actions.GET_TRAVELTYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isgetTraveltypeLoading: false,
+                gettraveltype: action.payload.data
+            }
+        }
+        case `${actions.GET_TRAVELTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isgetTraveltypeLoading: false,
+            }
+        }
+        case `${actions.GET_TRAVELTYPE_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetTraveltypebyidLoading: true
+            }
+        }
+        case `${actions.GET_TRAVELTYPE_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetTraveltypebyidLoading: false,
+                gettraveltypebyid: action.payload.data
+            }
+        }
+        case `${actions.GET_TRAVELTYPE_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetTraveltypebyidLoading: false,
+            }
+        }
+        case `${actions.PUT_TRAVELTYPE}_PENDING` : {
+            return{
+                ...state,
+                isputTraveltypeLoading: true
+            }
+        }
+        case `${actions.PUT_TRAVELTYPE}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the traveltype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "traveltype updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputTraveltypeLoading: false,
+                puttraveltype: action.payload.data,
+                message: true,
+                messageData: msgData,
+                gettraveltypebyid:{}
+             }
+        }
+        case `${actions.POST_TRAVELTYPE}_PENDING` : {
+            return{
+                ...state,
+                isposttTraveltypeLoading: true
+            }
+        }
+        case `${actions.POST_TRAVELTYPE}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the traveltype";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "traveltype added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostTraveltypeLoading: false,
+                puttraveltype: action.payload.data,
+                message: true,
+                messageData: msgData,
+                gettraveltypebyid:{}
+             }
+        }
+        case `${actions.POST_TRAVELTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isposttTraveltypeLoading: false,
+            }
+        }
+        case `${actions.GET_TRIP}_PENDING` : {
+            return{
+                ...state,
+                isgetTripLoading: true
+            }
+        }
+        case `${actions.GET_TRIP}_FULFILLED` : {
+            return{
+                ...state,
+                isgetTripLoading: false,
+                gettrip: action.payload.data
+            }
+        }
+        case `${actions.GET_TRIP}_REJECTED` : {
+            return{
+                ...state,
+                isgetTripLoading: false,
+            }
+        }
+        case `${actions.POST_TRIP}_PENDING` : {
+            return{
+                ...state,
+                ispostTripLoading: true
+            }
+        }
+        case `${actions.POST_TRIP}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the trip";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "trip added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostTripLoading: false,
+                postrip: action.payload.data,
+                message: true,
+                messageData: msgData,
+                gettripbyid:{}
+             }
+        }
+        case `${actions.POST_TRIP}_REJECTED` : {
+            return{
+                ...state,
+                ispostTripLoading: false,
+            }
+        }
+        case `${actions.PUT_TRIP}_PENDING` : {
+            return{
+                ...state,
+                isputTripLoading: true
+            }
+        }
+        case `${actions.PUT_TRIP}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the trip";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "trip updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostTripLoading: false,
+                putrip: action.payload.data,
+                message: true,
+                messageData: msgData,
+                gettripbyid:{}
+             }
+        }
+        case `${actions.PUT_TRIP}_REJECTED` : {
+            return{
+                ...state,
+                isputTripLoading: false,
+            }
+        }
 
         case `${actions.UPDATE_PROP}` : {
+            debugger
 			      console.log(action.payload);
             let propName = action.payload.propName, updatedCityData = state[propName];
             updatedCityData[action.payload.param] = action.payload.value;
@@ -1271,6 +2109,17 @@ const goAdvReducer = (state =initalState, action) => {
 				        [propName]: updatedCityData
             }
         }
+        case `${actions.UPDATE_PROP_ACC}` : {
+            debugger
+			      console.log(action.payload);
+            let propName = action.payload.propName, updatedAccessoryData = state[propName];
+            updatedAccessoryData[action.payload.param] = action.payload.value;
+            return{
+                ...state,
+				        [propName]: updatedAccessoryData
+            }
+        }
+        
         default: return state;
     }
 

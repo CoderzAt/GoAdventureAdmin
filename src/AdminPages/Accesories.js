@@ -1,414 +1,278 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { Link} from "react-router-dom";
-import {postData,loadData,getaccessories,accessorybyid,accessoryupdateapi,accessorypostapi,GET_ALL_ACCESSORIES,POST_ACCESSORIES,PUT_ACCESSORIES,GET_ACCESSORIES_BYID} from '../Shared/Services'
+import { postData, GET_ALL_ACCESSORIES, POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-import AdminHeader from'./AdminHeader'
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import parse from 'html-react-parser'
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
-import TextInput from'../Shared/TextInput';
-import * as validation from '../Shared/Validations'
 import { connect } from 'react-redux';
-import {getAccessories,getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import { getAccessories, getData, postData1, putData1, updatePropAccData, resetData } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
 
-
-
-var condition=false;
+var condition = false;
 class Accessories extends Component {
     constructor(props) {
         super(props);
-       this.state = {
-        accessoryName:"",
-        saleOrRent:"0",
-        salePrice: 0,
-        rentPrice: 0,
-       // accessories:[],
-        //editData:[],
-        saledisbale:"",
-        rentdisable:"",
-        errors:{
-           }
-      }
-    }
- 
- /* componentDidUpdate() //this is for rendering the code for every update
-    {
-        debugger
-        //we need to keep a condition here ...if new data is submitted then only we have to call this function
-       
-        this.loadtabledata()  //is there any problem with hitting the api's too many times
-        condition=false;
-        
-     } */
-      componentDidMount()
-     {
-       //this.props.getAccessories(action.GET_ALL_ACCESSORIES,GET_ALL_ACCESSORIES)
-       this.props.getData(action.GET_ALL_ACCESSORIES,GET_ALL_ACCESSORIES)
-       
-       
-     }
-    accessorynamenameOperation(event)
-    {
-      this.setState({
-            accessoryName:event.target.value
-        })
-    }
-   salepriceOpearation(event)
-    {
-        this.setState({
-            salePrice:event.target.value
-        })
-
-    }
-   rentpriceOpearation(event)
-    {
-  this.setState({
-            rentPrice:event.target.value
-        })
-    }
-    saleorrentOpearation(event)
-    {
-        debugger
-
-  this.setState({
-            saleOrRent:event.target.value
-        })
-       
-       
-        if(event.target.value == "sale")
-        {
-            this.setState({
-                saledisbale:"",
-                rentdisable:"true"
-            })
-        }
-        else if(event.target.value == "rent")
-        {
-            this.setState({
-                rentdisable:"",
-                saledisbale:"true"
-            })
-        }
-        else if(event.target.value == "both")
-        {
-            this.setState({
-                rentdisable:"",
-                saledisbale:""
-            })
-
+        this.state = {
+            validated: false,
+            saledisbale: "",
+            rentdisable: "",
+            refreshflag: false,
+            errors: {
+            }
         }
     }
-
-    /* deleteRecord(id)
-    {
-        alert("in delete id no is"+id)
-        fetch(deletecountry+id, {
-            method: 'DELETE'
-          });
-
-    } */
-   async editReacord(id)
-    {
-        debugger
-        alert(id)
-        
-        let url=GET_ACCESSORIES_BYID+id;
-        this.props.getData(action.GET_ACCESSORIES_BYID,url)
-        let editdata=this.props. getaccessorybyid
-
-        
-        /*this.setState({
-            editData:editdata
-        }) */
-
-        console.log("datata",this.props.getaccessorybyid)
-        this.setState({
-            accessoryName:editdata.accessoryName,
-            saleOrRent:editdata.saleOrRent,
-            salePrice:editdata.salePrice,
-            rentPrice:editdata.rentPrice
-         })
-
-} 
-     async postEditedData()
-    {
-        debugger
-        const obj={
-            accessoriesId:this.props.getaccessorybyid.accessoriesId,
-            accessoryName:this.state.accessoryName,
-            saleOrRent:this.state.saleOrRent,
-            salePrice:parseInt(this.state.salePrice),
-            rentPrice:parseInt(this.state.rentPrice)
-           }
-
-        let editurl=PUT_ACCESSORIES+this.props.getaccessorybyid.accessoriesId;
-
-        this.props.putData1(action.PUT_ACCESSORIES,editurl,obj)
-        /* let editeddata=await postData(obj,editurl,'Put')
-
-        alert(editeddata)
- */
-        //window.location.reload();//page refresh
-
+    componentDidMount() {
+        this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
     }
-     async postDatatoApi()
-    {
+    saleorrentOpearation(event) {
         debugger
-        condition=true;
-        const obj={
-            accessoriesId:0,
-            accessoryName:this.state.accessoryName,
-            saleOrRent:this.state.saleOrRent,
-            salePrice:parseInt(this.state.salePrice),
-            rentPrice:parseInt(this.state.rentPrice)
-              }
-
-              this.props.postData1(action.POST_ACCESSORIES,POST_ACCESSORIES,obj)
-            /*  let message=await  postData(obj,accessorypostapi,'Post');
-             alert (message); */
-             //window.location.reload();//page refresh
-    }
-    handlevalidation()
-    {
-
         this.setState({
-            errors:{
+            saleOrRent: event.target.value
+        })
+        if (event.target.value == "sale") {
+            this.setState({
+                saledisbale: "",
+                rentdisable: "true"
+            })
+        }
+        else if (event.target.value == "rent") {
+            this.setState({
+                rentdisable: "",
+                saledisbale: "true"
+            })
+        }
+        else if (event.target.value == "both") {
+            this.setState({
+                rentdisable: "",
+                saledisbale: ""
+            })
+        }
+    }
+    handlevalidation() {
+        this.setState({
+            errors: {
                 //saleOrrent:validation.selectvalidation(this.state.saleOrRent),
                 //accessoryName:validation.namevalidation(this.state.accessoryName)
-                   }
+            }
         })
-        }
-    async handleSubmit(event)
-    {  
-         event.preventDefault();
-        this.handlevalidation();
+    }
+    postAccessoryData() {
         debugger
+        const obj = {
+            accessoriesId: this.props.getaccessorybyid.accessoriesId ? this.props.getaccessorybyid.accessoriesId : 0,
+            accessoryName: this.props.getaccessorybyid.accessoryName,
+            saleOrRent: this.props.getaccessorybyid.saleOrRent,
+            salePrice: this.props.getaccessorybyid.salePrice * 1,
+            rentPrice: this.props.getaccessorybyid.rentPrice * 1
+        };
+        let url = PUT_ACCESSORIES + this.props.getaccessorybyid.accessoriesId;
+        if (this.props.getaccessorybyid.accessoriesId) {
+            this.props.putData1(action.PUT_ACCESSORIES, url, obj);
+        } else {
+            this.props.postData1(action.POST_ACCESSORIES, POST_ACCESSORIES, obj);
+        }
+        this.setState({ validated: false });
+    }
+    handleSubmit(event) {
+        event.preventDefault();
+        //this.handlevalidations();
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity());
+        this.setState({ validated: true });
+        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
-            if(this.props.getaccessorybyid.accessoriesId == undefined)
-            {
-              this.postDatatoApi()
-            }
-            else
-            {
-               this.postEditedData()
-            }
+            event.stopPropagation();
+        } else {
+            event.preventDefault();
+            this.postAccessoryData();
         }
-      this.setState({
-            validated:true
-        })
 
     }
-
-    handleReset()
+    handleReset() {
+        this.props.resetData(action.RESET_DATA, "getaccessorybyid");
+        this.setState({ validated: false });
+    }
+    updateAccessory = (e, paramName) => {
+        debugger
+        this.props.updatePropAccData(paramName, e.target.value, "getaccessorybyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
+    }
+    editReacord(id)
     {
-        this.setState({
-            editData:[]
-            })
+        this.props.getData(action.GET_ACCESSORIES_BYID,GET_ACCESSORIES_BYID+id)
     }
-
-    handleinput(e)
-    {
-       alert(e.target.value)
-    }
-
     render() {
-	    return (
-         <div>
-            
-        <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
-            <Sidebar/>
-            
-            <div class="main-panel">
-                <div class="content-wrapper">
-                    
-                     <div class="page-header">
-                        <h3 class="page-title">
-                            <span class="page-title-icon bg-gradient-primary text-white mr-2">
-                                <i class="mdi mdi-wan"></i>
-                            </span>Accessories
-                        </h3>
-                        <nav aria-label="breadcrumb">
-                            <ul class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
+        return (
+            <div>
+                <div class="container-fluid page-body-wrapper" style={{ paddingTop: 80 }}>
+                    <Sidebar />
+                    <div class="main-panel">
+                        <div class="content-wrapper">
+                            <div class="page-header">
+                                <h3 class="page-title">
+                                    <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                                        <i class="mdi mdi-wan"></i>
+                                    </span>Accessories
+                                </h3>
+                                {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                                }
+                                <nav aria-label="breadcrumb">
+                                    <ul class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
+                                        </li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+                                            Accessories
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">
-                                Accessories
-                                </li>
-                            </ul>
-                        </nav>
-                    </div> 
-                    <div class="row">
-                        <div class="col-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Accessories</h4>
-                                    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
-                                    <div class="row">
-                                        {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Accessories</h4>
+                                            <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
+                                                <div class="row">
+                                                    {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
                                         <TextInput value={this.state.country} defaultValue={this.state.viewData.countryCode} type="text" name="countryCode" onChange={(value)=>this.countrycodeOpearation(value)}/>
                                             */}
-                                          
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Name</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.props.getaccessorybyid.accessoryName} class="form-control" onChange={(e)=>this.accessorynamenameOperation(e)}/>
-                                                        <div style={{color:"red"}}>{this.state.errors.accessoryName}</div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" value={this.props.getaccessorybyid.accessoryName ? this.props.getaccessorybyid.accessoryName : ""}
+                                                                    className="form-control" onChange={(e) => this.updateAccessory(e, "accessoryName")} />
+                                                                <div style={{ color: "red" }}>{this.state.errors.accessoryName}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">saleOrRent</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control" value={this.props.getaccessorybyid.saleOrRent ? this.props.getaccessorybyid.saleOrRent : "0"} onChange={(e) => this.updateAccessory(e, "saleOrRent")}>
+                                                                    <option value={0}>Select</option>
+                                                                    <option value="sale">Sale</option>
+                                                                    <option value="rent">Rent</option>
+                                                                    <option value="both">Both</option>
+                                                                </select>
+                                                                <div style={{ color: "red" }}>{this.state.errors.saleOrrent}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row" >
+                                                            <label class="col-sm-3 col-form-label">SalePrice</label>
+                                                            <div class="col-sm-9" >
+                                                                <input type="number" value={this.props.getaccessorybyid.salePrice ? this.props.getaccessorybyid.salePrice : ""}
+                                                                    class="form-control" onChange={(e) => this.updateAccessory(e, "salePrice")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">RentPrice</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="number" value={this.props.getaccessorybyid.rentPrice ? this.props.getaccessorybyid.rentPrice : ""}
+                                                                    class="form-control" onChange={(e) => this.updateAccessory(e, "rentPrice")} />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">saleOrRent</label>
-                                                    <div class="col-sm-9">
-                                                    <select class="form-control" onChange={(e)=>this.saleorrentOpearation(e)}>
-                                                         <option value={0}>Select</option>
-                                                         <option value="sale">Sale</option>
-                                                         <option value="rent">Rent</option>
-                                                         <option value="both">Both</option>
-                                                    </select>
-                                                     <div style={{color:"red"}}>{this.state.errors.saleOrrent}</div>
-                                                    </div>
-                                            </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group row" >
-                                                    <label class="col-sm-3 col-form-label">SalePrice</label>
-                                                    <div class="col-sm-9" >
-                                                        <input required  disabled={this.state.saledisbale} type="number" defaultValue={this.props.getaccessorybyid.salePrice} class="form-control" onChange={(e)=>this.salepriceOpearation(e)} />
-                                                    </div>
+
+                                                <div class="row" style={{ margin: "auto", textAlign: "center"/* marg:auto;text-align: center} */ }}>
+                                                    <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+                                                    <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">RentPrice</label>
-                                                    <div class="col-sm-9">
-                                                        <input required disabled={this.state.rentdisable} type="number" defaultValue={this.props.getaccessorybyid.rentPrice} class="form-control" onChange={(e)=>this.rentpriceOpearation(e)} />
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            </Form>
                                         </div>
-                                        
-                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
-                                            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
-                                            <button type="reset" class="btn btn-light">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 grid-margin stretch-card">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">Accessories</h4>
+                                            <div class="table-responsive"></div>
+                                            <ReactTable columns={[
+                                                {
+                                                    Header: "Name",
+                                                    accessor: "accessoryName",
+                                                    headerStyle: {
+                                                        textAlign: 'left'
+                                                    }
+                                                },
+                                                {
+                                                    Header: "Borrowtype",
+                                                    accessor: "saleOrRent",
+                                                    headerStyle: {
+                                                        textAlign: 'left'
+                                                    },
+                                                },
+                                                {
+                                                    Header: "SalePrice",
+                                                    accessor: "salePrice",
+                                                    headerStyle: {
+                                                        textAlign: 'left'
+                                                    }
+
+                                                },
+                                                {
+                                                    Header: "RentPrice",
+                                                    accessor: "rentPrice",
+                                                    headerStyle: {
+                                                        textAlign: 'left'
+                                                    }
+
+                                                },
+                                                {
+                                                    id: 'id', // Required because our accessor is not a string
+                                                    Header: 'Actions',
+                                                    headerStyle: {
+                                                        textAlign: 'left'
+                                                    },
+                                                    accessor: d => d.accessoriesId,
+                                                    maxWidth: 300,
+                                                    Cell: row => (
+                                                        <div className="template-demo">
+                                                            <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
+                                                                <i class="mdi mdi-pencil-outline"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                                <i class="mdi mdi-delete-outline"></i>
+                                                            </button>
+                                                        </div>)
+                                                }
+
+                                            ]}
+                                                data={this.props.accessories}
+                                                showPagination={true}
+                                                defaultPageSize={5}
+                                            />
                                         </div>
-    </Form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Accessories</h4>
-                                    <div class="table-responsive"></div>
-                                    <ReactTable columns={[
-                                    {
-                                        Header: "Name",
-                                        accessor:"accessoryName",
-                                        headerStyle:{
-                                            textAlign:'left'
-                                        }
-                                    },
-                                  {
-                                    Header: "Borrowtype",
-                                    accessor: "saleOrRent",
-                                    headerStyle:{
-                                        textAlign:'left'
-                                    },
-                                  },
-                                  {
-                                    Header: "SalePrice",
-                                    accessor: "salePrice",
-                                    headerStyle:{
-                                        textAlign:'left'
-                                    }
-                                    
-                                  },
-                                  {
-                                    Header: "RentPrice",
-                                    accessor: "rentPrice",
-                                    headerStyle:{
-                                        textAlign:'left'
-                                    }
-                                    
-                                  },
-                                  {
-                                    id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
-                                    headerStyle:{
-                                        textAlign:'left'
-                                    },
-                                    accessor: d => d.accessoriesId,
-                                    maxWidth:300,
-                                    Cell: row => (
-                                      <div className="template-demo">
-                                          <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
-                                                            <i class="mdi mdi-pencil-outline"></i>
-                                          </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
-                                                            <i class="mdi mdi-delete-outline"></i>
-                                          </button>
-                                         </div>)
-                                         }
-
-                                ]}
-                                data={this.props.accessories}
-                                showPagination={true}
-                                defaultPageSize={5}
-                                />
-                         </div>
-                                    </div>
-                                    </div>
-                                    </div>
-                                    </div>
-                    </div>
-                
+                </div>
             </div>
-            
-        </div>
-        
-    
- )
-        }
+        )
     }
-    const mapStateToProps = (state) => {
-        return {
-            accessories: state.goAdvStore.accessories,
-            getaccessorybyid:state.goAdvStore.getaccessorybyid
-        }
+}
+const mapStateToProps = (state) => {
+    return {
+        accessories: state.goAdvStore.accessories,
+        getaccessorybyid: state.goAdvStore.getaccessorybyid,
+        message: state.goAdvStore.message,
+        messageData: state.goAdvStore.messageData
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1})(Accessories);
-    
+}
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData })(Accessories);
+
 
     //export default Accessories
 

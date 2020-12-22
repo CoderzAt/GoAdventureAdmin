@@ -1,23 +1,17 @@
 import React, {Component,useState} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,trippostapi,tripupdateapi,gettrips, gettripbyid,gettripbypackage,getpackages,traveltypegetapi,getstaytypes} from '../Shared/Services'
+import {loadData,gettripbyid,GET_TRIP,GET_TRIP_BYID,GET_TRIP_BYPACKAGEID,POST_TRIP,PUT_TRIP,GET_ALL_PACKAGES,GET_STAYTYPE,GET_TRAVELTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 
 import { Multiselect } from 'multiselect-react-dropdown';
 import {gettingMultiselectValues} from '../Shared/ReauasbleFunctions'
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css';
-import './assets/vendors/css/vendor.bundle.base.css';
-import './assets/css/style.css'; */
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
+
+import { connect } from 'react-redux';
+import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
+
 
 
 
@@ -59,100 +53,30 @@ class Trip extends Component {
          if(this.props.match.params.tid != undefined)
          {
         let valuefromurl=parseInt(this.props.match.params.tid);
-        url=gettripbypackage+valuefromurl;
+        url=GET_TRIP_BYPACKAGEID+valuefromurl;
+        this.props.getData(action.GET_TRIP_BYPACKAGEID,url)
          }
          else
          {
-           url=gettrips
-         }
+             this.props.getData(action.GET_TRIP,GET_TRIP)
+        }
     
-        let data= await loadData(url)
-        this.setState({
-           trips:data
-        })
+       this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
+       this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
+       this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
 
-        let package1=await loadData(getpackages)
-        this.setState({
-            packages:package1
-        })
-        let traveltype=await loadData(traveltypegetapi)
+      
+       /*  let traveltype=await loadData(traveltypegetapi)
         this.setState({
             traveltypes:traveltype
         })
 
         this.setState({
             staytypes:await loadData(getstaytypes)
-        })
+        }) */
      }
-    tripnameOperation(event)
-    {
-        
-      this.setState({
-            tripName:event.target.value
-        })
-    }
-    packageOperation(event)
-    {
-        
-   this.setState({
-            packageId:event.target.value
-        })
-
-    }
-    startdateOperation(event)
-    {
-  this.setState({
-            startDate:event.target.value
-        })
-    }
-    enddateOperation(event)
-    {
-  this.setState({
-            endDate:event.target.value
-        })
-    }
-    treckleaderOperation(event)
-    {
-  this.setState({
-            treckLeaderId:event.target.value
-        })
-    }
-    strengthlimitOperation(event)
-    {
-  this.setState({
-            strengthLimit:event.target.value
-        })
-    }
    
-    basepriceOperation(event)
-    {
-  this.setState({
-            basePrice:event.target.value
-        })
-    }
-    discountpriceOperation(event)
-    {
-  this.setState({
-            discountPrice:event.target.value
-        })
-    }
-    maxpriceOperation(event)
-    {
-  this.setState({
-            maxPrice:event.target.value
-        })
-    }
-   async tripbypackageOperation(event)
-    { 
-       //alert(event.target.value)
-      let url=gettripbypackage+(event.target.value);
-      let trip1=await loadData(url)
-      this.setState({
-          trips:trip1
-      })
-    }
-    
-     async editReacord(id)
+     async editReacord1(id)
     {
         debugger
         let url=gettripbyid+id;
@@ -197,97 +121,35 @@ console.log("staytypenames",this.state.staytypenames)
 
     }*/
  
-     async postEditedData()
+     
+    postTripdata()
     {
         debugger
-        alert("in post edit")
-        const obj={
-            tripId:this.state.editData.tripId,
-            tripName:this.state.tripName,
-            packageId:parseInt(this.state.packageId),
-            startDate:this.state.startDate,
-            endDate:this.state.endDate,
-            treckLeaderId:parseInt(this.state.treckLeaderId),
-            strengthLimit:parseInt(this.state.strengthLimit),
-            travelTypeIds:this.state.travelTypeIds,
-            basePrice:parseInt(this.state.basePrice),
-            maxPrice:parseInt(this.state.maxPrice),
-            stayTypeIds:this.state.stayTypeIds,
-            couponCode:this.state.couponCode
-            }
-        let editurl=tripupdateapi+this.state.editData.tripId;
-        let editeddata=await postData(obj,editurl,'Put')
-        alert(editeddata)
-        window.location.reload();//page refresh
- } 
-    async postDatatoApi()
-    {
-        debugger
-        condition=true;
-        const obj={
-           tripId: 0,
-           tripName:this.state.tripName,
-           packageId:parseInt(this.state.packageId),
-           startDate:this.state.startDate,
-           endDate:this.state.endDate,
-           treckLeaderId:parseInt(this.state.treckLeaderId),
-           strengthLimit:parseInt(this.state.strengthLimit),
-           travelTypeIds:this.state.travelTypeIds,
+    const obj = {
+        tripId:this.props.gettripbyid.tripId?this.props.gettripbyid.tripId:"",
+           tripName:this.props.gettripbyid.tripName,
+           packageId:parseInt(this.props.gettripbyid.packageId),
+           startDate:this.props.gettripbyid.startDate,
+           endDate:this.props.gettripbyid.endDate,
+           treckLeaderId:parseInt(this.props.gettripbyid.treckLeaderId),
+           strengthLimit:parseInt(this.props.gettripbyid.strengthLimit),
+           travelTypeIds:this.props.gettripbyid.travelTypeIds?this.props.gettripbyid.travelTypeIds:"",
            basePrice:parseInt(this.state.basePrice),
             maxPrice:parseInt(this.state.maxPrice),
-            stayTypeIds:this.state.stayTypeIds,
-            couponCode:this.state.couponCode
-     }
-             let message = await  postData(obj,trippostapi,'Post');
-             alert (message);
-             //window.location.reload();//page refresh
+            stayTypeIds:this.props.gettripbyid.stayTypeIds?this.props.gettripbyid.stayTypeIds:"",
+            couponCode:this.props.gettripbyid.couponCode
+        
+        };
+    let url = PUT_TRIP+ this.props.gettripbyid.tripId;
+    if (this.props.gettripbyid.tripId) {
+        this.props.putData1(action.PUT_TRIP,url,obj);
     }
-    async handleSubmit(event)
-    {
-        debugger
-        const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
-            event.preventDefault();
-            if(this.state.editData.tripId== undefined)
-              this.postDatatoApi()
-            else
-              this.postEditedData()
-        }
-      this.setState({
-            validated:true
-        })
-
-    } 
-    handleReset()
-    {
-        this.setState({
-            editData:[],
-            traveltypenames:[],
-            staytypenames:[]
-            })
+    else {
+        this.props.postData1(action.POST_TRIP,POST_TRIP,obj);
     }
-     handlemultiselect(e)
-    {
-      let data= Array.prototype.map.call(e, function(item) { return item.travelTypeId; }).join(",");
-       this.setState({
-           travelTypeIds:data
-       })
-       console.log("multiselect",this.state.travelTypeIds)
+    this.setState({ validated: false });
     }
-    staytypeidOpeartion(e)
-    {
-        let data= Array.prototype.map.call(e, function(item) { return item.stayTypeId; }).join(",");
-       this.setState({
-           stayTypeIds:data
-       })
-       }
+   
     gettingstaytypeids(ids,list)
      {
     let staytypeids=(ids).split(",");
@@ -303,6 +165,30 @@ console.log("staytypenames",this.state.staytypenames)
 
         return staytypenames1
      }
+     handleReset() {
+        this.props.resetData(action.RESET_DATA,"gettripbyid");
+            this.setState({ validated: false });
+      }
+     editReacord(id) {
+        this.props.getData(action.GET_TRIP_BYID, GET_TRIP_BYID+id)
+    }
+    updateTrip = (e, paramName) => {
+        let value
+        if(paramName === "travelTypeIds")
+        {
+            value= Array.prototype.map.call(e, function(item) { return item.travelTypeId; }).join(",");
+        }
+        else if(paramName === "stayTypeIds")
+        {
+            value= Array.prototype.map.call(e, function(item) { return item.stayTypeId; }).join(",")   
+        }
+        else
+        {
+         value=e.target.value
+        }
+        this.props.updatePropAccData(paramName,value,"gettripbyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
+      }
   render() {
         return (
          <div>
@@ -319,6 +205,10 @@ console.log("staytypenames",this.state.staytypenames)
                                 <i class="mdi mdi-wan"></i>
                             </span> Trip
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -340,7 +230,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.tripName}  class="form-control" onChange={(e)=>this.tripnameOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettripbyid.tripName?this.props.gettripbyid.tripName:""}  
+                                                        class="form-control" onChange={(e)=>this.updateTrip(e,"tripName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -349,7 +240,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                     <label class="col-sm-3 col-form-label">Package</label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" onChange={(e)=>this.packageOperation(e)}>
-                                                       {this.state.packages.map(obj=>
+                                                       <option value={0}>Select</option>
+                                                       {this.props.packages.map(obj=>
                                                       <option value={obj.packageId}>{obj.packageName}</option>
                                                         )}
                                                     </select>
@@ -360,7 +252,7 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Package</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.packageId} class="form-control" onChange={(e)=>this.packageOperation(e)}/>
+                                                        <input required type="number" value={this.state.editData.packageId} class="form-control" onChange={(e)=>this.packageOperation(e)}/>
                                                     </div>
                                                 </div>
                                             </div> */}
@@ -370,7 +262,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">StartDate</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.startDate} class="form-control"  onChange={(e)=>this.startdateOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettripbyid.startDate?this.props.gettripbyid.startDate:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateTrip(e,"startDate")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -378,7 +271,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">EndDate</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.endDate}  class="form-control"  onChange={(e)=>this.enddateOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettripbyid.endDate?this.props.gettripbyid.endDate:""}  
+                                                        class="form-control"  onChange={(e)=>this.updateTrip(e,"endDate")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -386,7 +280,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">TreckLeader Id</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.treckLeaderId}  class="form-control"  onChange={(e)=>this.treckleaderOperation(e)}/>
+                                                        <input required type="number" value={this.props.gettripbyid.treckLeaderId?this.props.gettripbyid.treckLeaderId:""}  
+                                                        class="form-control"  onChange={(e)=>this.updateTrip(e,"treckLeaderId")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -394,7 +289,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Strength Limit</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.strengthLimit}   class="form-control"  onChange={(e)=>this.strengthlimitOperation(e)}/>
+                                                        <input required type="number" value={this.props.gettripbyid.strengthLimit?this.props.gettripbyid.strengthLimit:""}   
+                                                        class="form-control"  onChange={(e)=>this.updateTrip(e,"strengthLimit")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -403,7 +299,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">TravelType Ids</label>
                                                     <div class="col-sm-9">
-                                                    <Multiselect  selectedValues={this.state.traveltypenames} options={this.state.traveltypes} displayValue={"travelTypeName"} onSelect={(e)=>this.handlemultiselect(e)} onRemove={(e)=>this.handlemultiselect(e)} /> 
+                                                    <Multiselect  selectedValues={this.state.traveltypenames} options={this.props.gettraveltype} displayValue={"travelTypeName"} 
+                                                    onSelect={(e)=>this.updateTrip(e,"travelTypeIds")} onRemove={(e)=>this.updateTrip(e,"travelTypeIds")} /> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -411,7 +308,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">BasePrice</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.basePrice}  class="form-control"  onChange={(e)=>this.basepriceOperation(e)}/>
+                                                        <input required type="number" value={this.props.gettripbyid.basePrice?this.props.gettripbyid.basePrice:""}  
+                                                        class="form-control"  onChange={(e)=>this.updateTrip(e,"basePrice")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -427,7 +325,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">MaxPrice</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number"  defaultValue={this.state.editData.maxPrice} class="form-control"  onChange={(e)=>this.maxpriceOperation(e)}/>
+                                                        <input required type="number"  value={this.props.gettripbyid.maxPrice?this.props.gettripbyid.maxPrice:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateTrip(e,"maxPrice")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -435,7 +334,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">CouponCode</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text"  defaultValue={this.state.editData.couponCode} class="form-control"  onChange={(e)=>this.couponCodeOperation(e)}/>
+                                                        <input required type="text"  value={this.props.gettripbyid.couponCode?this.props.gettripbyid.couponCode:""}
+                                                         class="form-control"  onChange={(e)=>this.updateTrip(e,"couponCode")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -443,7 +343,8 @@ console.log("staytypenames",this.state.staytypenames)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayTypeIds</label>
                                                     <div class="col-sm-9">
-                                                    <Multiselect selectedValues={this.state.staytypenames}  options={this.state.staytypes} displayValue={"stayTypeName"} onSelect={(e)=>this.staytypeidOpeartion(e)} onRemove={(e)=>this.staytypeidOpeartion(e)} /> 
+                                                    <Multiselect selectedValues={this.state.staytypenames}  options={this.props.getstaytype} 
+                                                    displayValue={"stayTypeName"} onSelect={(e)=>this.staytypeidOpeartion(e)} onRemove={(e)=>this.staytypeidOpeartion(e)} /> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -489,7 +390,7 @@ console.log("staytypenames",this.state.staytypenames)
                                                     <label class="col-sm-3 col-form-label">Package</label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" onChange={(e)=>this.tripbypackageOperation(e)}>
-                                                       {this.state.packages.map(obj=>
+                                                       {this.props.packages.map(obj=>
                                                       <option value={obj.packageId}>{obj.packageName}</option>
                                                         )}
                                                     </select>
@@ -525,7 +426,7 @@ console.log("staytypenames",this.state.staytypenames)
                                       </div>)
                                  }
                                 ]}
-                                data={this.state.trips}
+                                data={this.props.gettrip}
                                 showPagination={true}
                                 defaultPageSize={5}
                             /> 
@@ -540,5 +441,17 @@ console.log("staytypenames",this.state.staytypenames)
             )
         }
     }
-    export default Trip
+    const mapStateToProps = (state) => {
+        return {
+            gettrip:state.goAdvStore.gettrip,
+            gettripbyid:state.goAdvStore.gettripbyid,
+            packages:state.goAdvStore.packages,
+            gettraveltype:state.goAdvStore.gettraveltype,
+            getstaytype:state.goAdvStore.getstaytype,
+            message: state.goAdvStore.message,
+          messageData: state.goAdvStore.messageData
+        }
+      }
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(Trip);
+    //export default Trip
 

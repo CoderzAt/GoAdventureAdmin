@@ -1,154 +1,73 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,staytypepostapi,staytypeupdateapi,getstaytypes,staytypebyid} from '../Shared/Services'
+import {GET_STAYTYPE,GET_STAYTYPE_BYID,POST_STAYTYPE,PUT_STAYTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
+import { connect } from 'react-redux';
+import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
 
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-/*import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js'*/
-
-
-
-var condition=false;
 class StayType extends Component {
     constructor(props) {
         super(props);
        this.state = {
-        stayTypeName:null,
-        stayTypeDescription:null,
-        maxCapacity:0,
-        editData:[],
-        staytypes:[]
+        validated:false,
+        refreshflag:false
          }
     }
-    async componentDidMount()
+    componentDidMount()
      {
-    
-        let data= await loadData(getstaytypes)
-        this.setState({
-           staytypes:data
-        })
+     this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
      }  
-     staytypenameOperation(event)
-    {
-      this.setState({
-            stayTypeName:event.target.value
-        })
-    }
-    staytypeDescriptionOperation(event)
-    {
-   this.setState({
-            stayTypeDescription:event.target.value
-        })
-    }
-    maxCapacityOperation(event)
-    {
-  this.setState({
-            maxCapacity:event.target.value
-        })
-    }
-   
-    
-     async editReacord(id)
-    {
-        
-        debugger
-
-        let url=staytypebyid+id;
-        let editdata=await loadData(url)
-        this.setState({
-            editData:editdata       
-        })
-
-        this.setState({
-            stayTypeName:editdata.stayTypeName,
-            stayTypeDescription:editdata.stayTypeDescription,
-            maxCapacity:editdata.maxCapacity
-        })
-    } 
-
-    /* deleteRecord(id)
-    {
-        alert("in delete id no is"+id)
-        fetch(deletecountry+id, {
-            method: 'DELETE'
-          });
-
-    }*/
- 
-    async postEditedData()
+    postStaytypedata()
     {
         debugger
-        
-        const obj={
-            stayTypeId:this.state.editData.stayTypeId,
-            stayTypeName:this.state.stayTypeName,
-            stayTypeDescription:this.state.stayTypeDescription,
-            maxCapacity:parseInt(this.state.maxCapacity)
-                  }
-
-        let editurl=staytypeupdateapi+this.state.editData.stayTypeId;
-        let editeddata=await postData(obj,editurl,'Put')
-
-        alert(editeddata)
-
-        window.location.reload();//page refresh
-
-    } 
-     async postDatatoApi()
-    {
-        debugger
-        condition=true;
-        const obj={
-            stayTypeName:this.state.stayTypeName,
-            stayTypeDescription:this.state.stayTypeDescription,
-            maxCapacity:parseInt(this.state.maxCapacity)
-              }
-             let message = await  postData(obj,staytypepostapi,'Post');
-             alert (message);
-             window.location.reload();//page refresh
+    const obj = {
+            stayTypeId:this.props.getstaytypebyid.stayTypeId?this.props.getstaytypebyid.stayTypeId:0,
+            stayTypeName:this.props.getstaytypebyid.stayTypeName,
+            stayTypeDescription:this.props.getstaytypebyid.stayTypeDescription,
+            maxCapacity:this.props.getstaytypebyid.maxCapacity*1
+     };
+    let url = PUT_STAYTYPE+ this.props.getstaytypebyid.stayTypeId;
+    if (this.props.getstaytypebyid.stayTypeId) {
+        this.props.putData1(action.PUT_STAYTYPE,url,obj);
     }
-    async handleSubmit(event)
+    else {
+        this.props.postData1(action.POST_STAYTYPE,POST_STAYTYPE,obj);
+    }
+    this.setState({ validated: false });
+    }
+     handleSubmit(event)
     {
-        debugger
+        event.preventDefault();
+        //this.handlevalidations();
         const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
+        console.log("checkform", form.checkValidity());
+        this.setState({ validated: true });
+        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
-            if(this.state.editData.stayTypeId == undefined)
-              this.postDatatoApi()
-            else
-              this.postEditedData()
+            event.stopPropagation();
         }
-      this.setState({
-            validated:true
-        })
-
+        else {
+            event.preventDefault();
+            this.postStaytypedata();
+        }   
     } 
  handleReset()
     {
-        this.setState({
-            editData:[]
-            
-        })
+        this.props.resetData(action.RESET_DATA,"getstaytypebyid");
+        this.setState({ validated: false });
     } 
+    editReacord(id) {
+        this.props.getData(action.GET_STAYTYPE_BYID, GET_STAYTYPE_BYID+id)
+    }
+
+    updateStaytype = (e, paramName) => {
+        this.props.updatePropAccData(paramName,e.target.value,"getstaytypebyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
+    }
 
     render() {
 	    return (
@@ -166,6 +85,10 @@ class StayType extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Staytype
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i>index</a>
@@ -188,7 +111,8 @@ class StayType extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">StayType Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.stayTypeName} class="form-control" onChange={(e)=>this.staytypenameOperation(e)}/>
+                                                        <input required type="text" value={this.props.getstaytypebyid.stayTypeName?this.props.getstaytypebyid.stayTypeName:""} 
+                                                        class="form-control" onChange={(e)=>this.updateStaytype(e,"stayTypeName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -198,7 +122,8 @@ class StayType extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayType Description</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.stayTypeDescription}  class="form-control"  onChange={(e)=>this.staytypeDescriptionOperation(e)}/>
+                                                        <input required type="text" value={this.props.getstaytypebyid.stayTypeDescription?this.props.getstaytypebyid.stayTypeDescription:""} 
+                                                         class="form-control"  onChange={(e)=>this.updateStaytype(e,"stayTypeDescription")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -206,7 +131,8 @@ class StayType extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">MaxCapacity</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.maxCapacity}  class="form-control"  onChange={(e)=>this.maxCapacityOperation(e)}/>
+                                                        <input required type="number" value={this.props.getstaytypebyid.maxCapacity?this.props.getstaytypebyid.maxCapacity:""}  
+                                                        class="form-control"  onChange={(e)=>this.updateStaytype(e,"maxCapacity")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -271,7 +197,7 @@ class StayType extends Component {
                                   }
 
                                 ]}
-                                data={this.state.staytypes}
+                                data={this.props.getstaytype}
                                 showPagination={true}
                                 defaultPageSize={5}
                                
@@ -291,5 +217,17 @@ class StayType extends Component {
  )
         }
     }
-    export default StayType
+    const mapStateToProps = (state) => {
+        return {
+         getstaytypebyid:state.goAdvStore.getstaytypebyid,
+         getstaytype:state.goAdvStore.getstaytype,
+          message: state.goAdvStore.message,
+          messageData: state.goAdvStore.messageData
+          //states:state.goAdvStore.getstatebycountry
+          //cities:state.goAdvStore.citybyid
+          //cities:state.goAdvStore.citybyid
+        }
+      }
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(StayType)
+    //export default StayType
 

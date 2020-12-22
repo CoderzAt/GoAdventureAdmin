@@ -49,6 +49,7 @@ class City extends Component {
   }
 
   postCityData() {
+    debugger
     const obj = {
       cityId: this.props.cityData.cityId,
       cityName: this.props.cityData.cityName,
@@ -93,13 +94,15 @@ class City extends Component {
       event.preventDefault();
       this.postCityData();
     }
+    //this.setState({ validated:true});
   }
   handleReset() {
-    this.props.resetData(action.RESET_CITY);
+    this.props.resetData(action.RESET_DATA,"cityData");
     this.setState({ validated: false });
   }
 
   updateCity = (e, paramName) => {
+    debugger
     this.props.updatePropData(paramName, e.target.value, "cityData");
     this.setState({refreshflag: !this.state.refreshflag});
   }
@@ -163,7 +166,7 @@ class City extends Component {
                             <div className="form-group row">
                               <label className="col-sm-3 col-form-label">Name</label>
                               <div className="col-sm-9">
-                                <input type="text" value={this.props.cityData.cityName? this.props.cityData.cityName : ""}
+                                <input type="text" required value={this.props.cityData.cityName? this.props.cityData.cityName : ""}
                                   className="form-control" onChange={(e) => this.updateCity(e, "cityName")} />
                               </div>
                             </div>

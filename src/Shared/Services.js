@@ -59,7 +59,10 @@ export const destinationpostapi="https://ga-api.azurewebsites.net/api/v1/createD
 export const getdestinationbyid="https://ga-api.azurewebsites.net/api/v1/getDestinationByid?id=";
 export const destinationupdateapi="https://ga-api.azurewebsites.net/api/v1/updateDestination?id=";
 
-export const GET_DESTINATION="https://ga-api.azurewebsites.net/api/v1getAllDestination";
+export const GET_DESTINATION="getAllDestination";
+export const GET_DESTINATION_BYID="getDestinationByid?id=";
+export const POST_DESTINATION="createDestination";
+export const PUT_DESTINATION="updateDestination?id=";
 //placetype
 export const placetypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdPlaceType";
 export const getplacetypebyid="https://ga-api.azurewebsites.net/api/v1/GetMdPlaceTypeById?id="
@@ -135,6 +138,8 @@ export const packageupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdatePac
 
 export const GET_ALL_PACKAGES="GetAllPackages";
 export const GET_PACKAGE_BYID="GetPackageById?id=";
+export const POST_PACKAGE="CreatePackage";
+export const PUT_PACKAGE="UpdatePackage?id=";
 
 //Traveltype
 export const traveltypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdTravelType";
@@ -142,11 +147,21 @@ export const traveltypegetapi="https://ga-api.azurewebsites.net/api/v1/GetAllMdT
 export const traveltypebyid="https://ga-api.azurewebsites.net/api/v1/GetMdTravelTypeById?id=";
 export const travelupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateMdTravelType?id=";
 
+export const GET_TRAVELTYPE="GetAllMdTravelTypes";
+export const GET_TRAVELTYPE_BYID="GetMdTravelTypeById?id=";
+export const POST_TRAVELTYPE="CreateMdTravelType";
+export const PUT_TRAVELTYPE="UpdateMdTravelType?id=";
+
 //travelinfo
 export const travelinfopostapi="https://ga-api.azurewebsites.net/api/v1/CreateTravelInfo";
 export const getalltravelinfo="https://ga-api.azurewebsites.net/api/v1/GetAllTravelInfo";
 export const gettravelinfobyid="https://ga-api.azurewebsites.net/api/v1/GetTravelInfoById?id=";
 export const travelinfoupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateTravelInfo?id=";
+
+export const GET_TRAVELINFO="GetAllTravelInfo";
+export const GET_TRAVELINFO_BYID="GetTravelInfoById?id=";
+export const POST_TRAVELINFO="CreateTravelInfo";
+export const PUT_TRAVELONFO="UpdateTravelInfo?id=";
 
 //stay
 export const staypostapi="https://ga-api.azurewebsites.net/api/v1/CreateStay";
@@ -165,6 +180,11 @@ export const staytypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateStay
 export const staytypeupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateStayType?id=";
 export const staytypebyid="https://ga-api.azurewebsites.net/api/v1/GetStayTypeById?id=";
 
+export const GET_STAYTYPE="GetAllStayTypes";
+export const GET_STAYTYPE_BYID="GetStayTypeById?id=";
+export const POST_STAYTYPE="CreateStayType";
+export const PUT_STAYTYPE="UpdateStayType?id="
+
 //Trip
 export const trippostapi="https://ga-api.azurewebsites.net/api/v1/CreateTrip";
 export const tripupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateTrip?id=";
@@ -174,6 +194,9 @@ export const gettripbypackage="https://ga-api.azurewebsites.net/api/v1/GetTripBy
 
 export const GET_TRIP_BYID="GetTripById?id=";
 export const GET_TRIP_BYPACKAGEID="GetTripByPackage?packageID=";
+export const GET_TRIP="GetAllTrips";
+export const POST_TRIP="CreateTrip";
+export const PUT_TRIP="UpdateTrip?id=";
 
 //booking
 export const getbookings="https://ga-api.azurewebsites.net/api/v1/getAllBookings";
@@ -249,7 +272,7 @@ export const couponupdateapi="https://ga-api.azurewebsites.net/api/v1/updateCoup
 export const GET_ALL_COUPON="getAllCoupon";
 export const GET_COUPON_BYID="getCouponByid?id=";
 export const POST_COUPON="createCoupon";
-export const PUT_COUPON="PUT_COUPON";
+export const PUT_COUPON="updateCoupon?id=";
 
 //calendar
 export const GET_CALENDAR="GetCalenderList?month=12&year=2020";

@@ -65,6 +65,7 @@ export const getData =(actiontype,url)=>
 
 export const postData1 =(actiontype,url,obj)=>
 {
+   debugger
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -85,6 +86,7 @@ export const postData1 =(actiontype,url,obj)=>
 }
 export const putData1 =(actiontype,url,obj)=>
 {
+   debugger
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }
@@ -124,14 +126,7 @@ export const getDestination = () => {
 }
 
 
-export const resetData = (actiontype) => {
-    return dispatch => {
-       dispatch({
-          type: actiontype,
-          payload: {}
-       });
-    }
- }
+
 
 export const getCalendar = () => {
    const svcconfig = {
@@ -348,6 +343,7 @@ debugger
 }
 
 export const updatePropData = (param, value, propName) => {
+   debugger
     return dispatch => {
        dispatch({
           type: actions.UPDATE_PROP,
@@ -355,8 +351,24 @@ export const updatePropData = (param, value, propName) => {
        });
     }
  }
+ export const updatePropAccData = (param, value, propName) => {
+   debugger
+    return dispatch => {
+       dispatch({
+          type: actions.UPDATE_PROP_ACC,
+          payload: {param: param, value: value, propName: propName}
+       });
+    }
+ }
 
-
+ export const resetData = (actiontype,propName) => {
+   return dispatch => {
+      dispatch({
+         type: actiontype,
+         payload: {value:{},propName:propName}
+      });
+   }
+}
 
 
 

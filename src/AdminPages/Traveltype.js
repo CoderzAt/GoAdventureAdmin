@@ -1,22 +1,13 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,traveltypepostapi,loadData,traveltypegetapi,traveltypebyid,travelupdateapi} from '../Shared/Services'
+import {postData,traveltypepostapi,loadData,traveltypegetapi,traveltypebyid,travelupdateapi,GET_TRAVELTYPE_BYID,GET_TRAVELTYPE,POST_TRAVELTYPE,PUT_TRAVELTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
+import { connect } from 'react-redux';
+import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes'
 
-
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
 
 
 
@@ -26,150 +17,66 @@ class Traveltype extends Component {
         super(props);
        this.state = {
            validated:false,
-           name:null,
-           description:null,
-           maxCapacity:null,
-           traveltypes:[],
-           editData:[]
+          refreshflag:false
            
        }
     }
 
-  /*   async loadtabledata()
-    {
-
-        let countries1=await loadData(getcounties);
-        this.setState({
-                countries:countries1
-            }
-        )
-    } */
- /* componentDidUpdate() //this is for rendering the code for every update
-    {
-        debugger
-        //we need to keep a condition here ...if new data is submitted then only we have to call this function
-       
-        this.loadtabledata()  //is there any problem with hitting the api's too many times
-        condition=false;
-        
-     } */
-      async componentDidMount()
+  
+    componentDidMount()
      {
-    
-        let data= await loadData(traveltypegetapi)
-        this.setState({
-           traveltypes:data
-        })
-     } 
-    nameOperation(event)
-    {
-      this.setState({
-            name:event.target.value
-        })
-    }
-    descriptionOperation(event)
-    {
-   this.setState({
-            description:event.target.value
-        })
-
-    }
-    maxCapacityOperation(event)
-    {
-  this.setState({
-            maxCapacity:event.target.value
-        })
-    }
-    async editReacord(id)
-    {
-        
-        let url=traveltypebyid+id;
-        let editdata=await loadData(url)
-        this.setState({
-            editData:editdata
-        })
-
-        this.setState({
-           name:editdata.travelTypeName,
-           description:editdata.travelTypeDescription,
-           maxCapacity:editdata.maxCapacity
-        })
-    }
-    /* deleteRecord(id)
-    {
-        alert("in delete id no is"+id)
-        fetch(deletecountry+id, {
-            method: 'DELETE'
-          });
-
-    }*/
- 
-    async postEditedData()
-    {
-        debugger
-        
-        const obj={
-            travelTypeId:parseInt(this.state.editData.travelTypeId),
-            travelTypeName:this.state.name,
-            travelTypeDescription:this.state.description,
-            maxCapacity:parseInt(this.state.maxCapacity)
-                  }
-
-        let editurl=travelupdateapi+this.state.editData.travelTypeId;
-        let editeddata=await postData(obj,editurl,'Put')
-
-        alert(editeddata)
-
-        window.location.reload();//page refresh
-
-    }
- async postDatatoApi()
-    {
-        debugger
-        condition=true;
-        const obj={
-            travelTypeId: 0,
-            travelTypeName:this.state.name,
-            travelTypeDescription:this.state.description,
-            maxCapacity:parseInt(this.state.maxCapacity)
-              }
-             let message=await  postData(obj,traveltypepostapi,'Post');
-             
-             alert (message);
-             window.location.reload();//page refresh
-    }
-
-    async handleSubmit(event)
-    {
-        debugger
-        const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        else
-        {
-            event.preventDefault();
-            if(this.state.editData.travelTypeId == undefined)
-              this.postDatatoApi()
-            else
-              this.postEditedData()
-        }
-      this.setState({
-            validated:true
-        })
-
+    this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
     } 
- handleReset()
+    
+ 
+    postTraveltypeData()
     {
-        this.setState({
-            editData:[]
-            
-        })
+        debugger
+    const obj = {
+        travelTypeId:this.props.gettraveltypebyid.travelTypeId?this.props.gettraveltypebyid.travelTypeId:0,
+        travelTypeName:this.props.gettraveltypebyid.travelTypeName,
+        travelTypeDescription:this.props.gettraveltypebyid.travelTypeDescription,
+        maxCapacity:this.props.gettraveltypebyid.maxCapacity*1
+        };
+    let url = PUT_TRAVELTYPE+ this.props.gettraveltypebyid.travelTypeId;
+    if (this.props.gettraveltypebyid.travelTypeId) {
+        this.props.putData1(action.PUT_TRAVELTYPE,url,obj);
+    }
+    else {
+        this.props.postData1(action.POST_TRAVELTYPE,POST_TRAVELTYPE,obj);
+    }
+    this.setState({ validated: false });
     }
 
+    handleSubmit(event)
+    {
+    event.preventDefault();
+    //this.handlevalidations();
+    const form = event.currentTarget;
+    console.log("checkform", form.checkValidity());
+    this.setState({ validated: true });
+    if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    else {
+        event.preventDefault();
+        this.postTraveltypeData();
+    }   
+  } 
+ 
+    handleReset() {
+        this.props.resetData(action.RESET_DATA,"gettraveltypebyid");
+            this.setState({ validated: false });
+      }
+    editReacord(id) {
+        this.props.getData(action.GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYID+id)
+    }
+
+    updateTraveltype = (e, paramName) => {
+        this.props.updatePropAccData(paramName,e.target.value,"gettraveltypebyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
+    }
     render() {
 	    return (
          <div>
@@ -186,6 +93,10 @@ class Traveltype extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Traveltype
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -207,7 +118,8 @@ class Traveltype extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.travelTypeName} class="form-control" onChange={(e)=>this.nameOperation(e)}/>
+                                                        <input required type="text" value={this.props.gettraveltypebyid.travelTypeName?this.props.gettraveltypebyid.travelTypeName:""} 
+                                                        class="form-control" onChange={(e)=>this.updateTraveltype(e,"travelTypeName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -215,7 +127,8 @@ class Traveltype extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
-                                                        <textarea required rows="4" defaultValue={this.state.editData.travelTypeDescription}  class="form-control" onChange={(e)=>this.descriptionOperation(e)}></textarea>
+                                                        <textarea required rows="4" value={this.props.gettraveltypebyid.travelTypeDescription?this.props.gettraveltypebyid.travelTypeDescription:""}  
+                                                        class="form-control" onChange={(e)=>this.updateTraveltype(e,"travelTypeDescription")}></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -225,7 +138,8 @@ class Traveltype extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">MaxCapacity</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number" defaultValue={this.state.editData.maxCapacity}  class="form-control"  onChange={(e)=>this.maxCapacityOperation(e)}/>
+                                                        <input required type="number" value={this.props.gettraveltypebyid.maxCapacity?this.props.gettraveltypebyid.maxCapacity:""}  
+                                                        class="form-control"   onChange={(e)=>this.updateTraveltype(e,"maxCapacity")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -282,7 +196,7 @@ class Traveltype extends Component {
                                   }
 
                                 ]}
-                                data={this.state.traveltypes}
+                                data={this.props.gettraveltype}
                                 showPagination={true}
                                 defaultPageSize={5}
                                
@@ -302,5 +216,15 @@ class Traveltype extends Component {
  )
         }
     }
-    export default Traveltype
+    const mapStateToProps = (state) => {
+        return {
+            gettraveltypebyid:state.goAdvStore.gettraveltypebyid,
+            gettraveltype:state.goAdvStore.gettraveltype,
+         message: state.goAdvStore.message,
+          messageData: state.goAdvStore.messageData
+        }
+      }
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(Traveltype);
+    
+    //export default Traveltype
 

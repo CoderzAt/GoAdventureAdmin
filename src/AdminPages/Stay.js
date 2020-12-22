@@ -1,17 +1,18 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY} from '../Shared/Services'
+import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY,GET_CITIES,GET_STAYTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import {getData,postData1,putData1} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
 import {gettingMultiselectValues} from '../Shared/ReauasbleFunctions'
+import { act } from 'react-dom/test-utils';
 /* import './assets/vendors/mdi/css/materialdesignicons.min.css'
 import './assets/vendors/css/vendor.bundle.base.css'
 import './assets/css/style.css' */
@@ -48,12 +49,14 @@ class Stay extends Component {
    async componentDidMount()
      {
       this.props.getData(action.GET_STAY,GET_STAY)
+      this.props.getData(action.GET_CITIES,GET_CITIES)
+      this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
         /* let staydata= await loadData(getstays)
         this.setState({
            stay:staydata
         })
  */
-        let data= await loadData(getcities)
+       /*  let data= await loadData(getcities)
         this.setState({
            cities:data
         })
@@ -61,7 +64,7 @@ class Stay extends Component {
         let staytype= await loadData(getstaytypes)
         this.setState({
            staytypes:staytype
-        })
+        }) */
 
 
      }  
@@ -114,20 +117,7 @@ class Stay extends Component {
             editData:editdata
         })
 
-        let staytypeids=(editdata.stayTypeIds).split(",");
-    var staytypenames1=[]
-
-    staytypeids.map(obj=>
-        this.state.staytypes.map((item)=>{
-            if(parseInt(obj) == item.stayTypeId)
-            {
-              staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
-            }
-        }))
-console.log("stays",staytypenames1)
-        this.setState({
-            staytypenames:staytypenames1
-        })
+       
         this.setState({
             stayName:editdata.stayName,
             rateType:editdata.rateType,
@@ -181,37 +171,44 @@ console.log("stays",staytypenames1)
              alert (message);
              window.location.reload();//page refresh
     }
-    async handleSubmit(event)
+    postStaydata()
     {
         debugger
-        const form = event.currentTarget;
-        console.log("checkform",form.checkValidity())
-        if(form.checkValidity() === false)
-        {
-          event.preventDefault();
-          event.stopPropagation();
+        const obj = {
+            stayId:this.props.getstaybyid.stayId?this.props.getstaybyid.stayId:0,
+            stayName:this.props.getstaybyid.stayName,
+            rateType:this.props.getstaybyid.rateType,
+            stayTypeIds:this.props.getstaybyid.stayTypeIds?this.props.getstaybyid.stayTypeIds:"",
+            contactInfo:this.props.getstaybyid.locationDetails,
+            locationDetails:this.props.getstaybyid.locationDetails,
+            cityId:this.props.getstaybyid.cityId*1
+            };
+        let url = PUT_STAY+ this.props.getstaybyid.stayId;
+        if (this.props.getstaybyid.stayId) {
+            this.props.putData1(action.PUT_STAY,url,obj);
         }
-        else
-        {
-            event.preventDefault();
-            if(this.state.editData.stayId == undefined)
-              this.postDatatoApi()
-            else
-              this.postEditedData()
+        else {
+            this.props.postData1(action.POST_STAY,POST_STAY,obj);
         }
-      this.setState({
-            validated:true
-        })
-
-    } 
- handleReset()
-    {
-        this.setState({
-            editData:[],
-            staytypenames:[]
-            })
+        this.setState({ validated: false });
     }
-    handlemultiselect(e)
+    handleSubmit(event)
+    {
+    event.preventDefault();
+    //this.handlevalidations();
+    const form = event.currentTarget;
+    console.log("checkform", form.checkValidity());
+    this.setState({ validated: true });
+    if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    else {
+        event.preventDefault();
+        this.postStaydata();
+    }   
+  } 
+    /* handlemultiselect(e)
     {
         debugger
         let data= Array.prototype.map.call(e, function(item) { return item.stayTypeId; }).join(",");
@@ -219,10 +216,49 @@ console.log("stays",staytypenames1)
            StayTypeIds:data
        })
        
+    } */
+    handleReset() {
+        this.props.resetData(action.RESET_DATA,"getstaybyid");
+            this.setState({ validated: false });
+      }
+    editReacord(id) {
+        this.props.getData(action.GET_STAY_BYID, GET_STAY_BYID+id)
+
+       /*  let staytypeids=(this.props.getstaybyid.stayTypeIds).split(",");
+        var staytypenames1=[]
+    
+        staytypeids.map(obj=>
+            this.state.staytypes.map((item)=>{
+                if(parseInt(obj) == item.stayTypeId)
+                {
+                  staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
+                }
+            }))
+    console.log("stays",staytypenames1)
+            this.setState({
+                staytypenames:staytypenames1
+            }) */
+
+
+    }
+
+    updateStay = (e, paramName) => {
+        var value
+        if(paramName === "stayTypeIds")
+        {
+            let data= Array.prototype.map.call(e, function(item) { return item.stayTypeId; }).join(",");
+            value=data;
+        }
+        else
+        {
+            value=e.target.value;
+        }
+        this.props.updatePropAccData(paramName,value,"getstaybyid");
+        this.setState({ refreshflag: !this.state.refreshflag });
     }
 
     render() {
-	    return (
+        return (
          <div>
             
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
@@ -237,6 +273,10 @@ console.log("stays",staytypenames1)
                                 <i class="mdi mdi-wan"></i>
                             </span> StayInfo
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -258,7 +298,8 @@ console.log("stays",staytypenames1)
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">StayName</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.stayName}  class="form-control"  onChange={(e)=>this.staynameOperation(e)}/>
+                                                        <input required type="text" value={this.props.getstaybyid.stayName?this.props.getstaybyid.stayName:""}  
+                                                        class="form-control"  onChange={(e)=>this.updateStay(e,"stayName")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -266,7 +307,8 @@ console.log("stays",staytypenames1)
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">RateType</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.rateType} class="form-control" onChange={(e)=>this.ratetypeOperation(e)}/>
+                                                        <input required type="text" value={this.props.getstaybyid.rateType?this.props.getstaybyid.rateType:""} 
+                                                        class="form-control" onChange={(e)=>this.updateStay(e,"rateType")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -277,7 +319,8 @@ console.log("stays",staytypenames1)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayTypeIds</label>
                                                     <div class="col-sm-9">
-                                                    <Multiselect selectedValues={this.state.staytypenames}  options={this.state.staytypes} displayValue={"stayTypeName"} class="form-control" onSelect={(e)=>this.handlemultiselect(e)} onRemove={(e)=>this.handlemultiselect(e)} /> 
+                                                    <Multiselect selectedValues={this.props.staytypeids}  options={this.props.getstaytype} displayValue={"stayTypeName"} 
+                                                    class="form-control" onSelect={(e)=>this.updateStay(e,"stayTypeIds")} onRemove={(e)=>this.updateStay(e,"stayTypeIds")} /> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -285,7 +328,8 @@ console.log("stays",staytypenames1)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">ContactInfo</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.contactInfo}  class="form-control"  onChange={(e)=>this.contactinfoOperation(e)}/>
+                                                        <input required type="text" value={this.props.getstaybyid.contactInfo?this.props.getstaybyid.contactInfo:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateStay(e,"contactInfo")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -293,7 +337,8 @@ console.log("stays",staytypenames1)
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Location Details</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" defaultValue={this.state.editData.locationDetails}   class="form-control"  onChange={(e)=>this.locationdetailsOperation(e)}/>
+                                                        <input required type="text" value={this.props.getstaybyid.locationDetails?this.props.getstaybyid.locationDetails:""}  
+                                                         class="form-control"  onChange={(e)=>this.updateStay(e,"locationDetails")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -301,8 +346,10 @@ console.log("stays",staytypenames1)
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">City</label>
                                                     <div class="col-sm-9">
-                                                    <select class="form-control travellerMode" onChange={(e)=>this.cityIdOperation(e)}>
-                                                       {this.state.cities.map(obj=>
+                                                    <select class="form-control travellerMode"  value={this.props.getstaybyid.cityId?this.props.getstaybyid.cityId:"0"} 
+                                                    onChange={(e)=>this.updateStay(e,"cityId")}>
+                                                        <option value={0}>Select</option>
+                                                       {this.props.cities.map(obj=>
                                                       <option value={obj.cityId}>{obj.cityName}</option>
                                                         )}
                                                     </select>
@@ -395,13 +442,17 @@ console.log("stays",staytypenames1)
         return {
         getstay:state.goAdvStore.getstay,
         getstaybyid:state.goAdvStore.getstaybyid,
-        cities:state.goAdvStore.cities
+        cities:state.goAdvStore.cities,
+        getstaytype:state.goAdvStore.getstaytype,
+        message: state.goAdvStore.message,
+          messageData: state.goAdvStore.messageData,
+          staytypeids:state.goAdvStore.staytypeids
            //states:state.goAdvStore.getstatebycountry
             //cities:state.goAdvStore.citybyid
             //cities:state.goAdvStore.citybyid
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1})(Stay);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(Stay);
     
     //export default Stay
 
