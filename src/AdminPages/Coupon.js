@@ -5,7 +5,7 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 var condition = false;
@@ -16,6 +16,11 @@ class Coupon extends Component {
             validated: false,
             refreshflag: false
         }
+    }
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
     }
     componentDidMount() {
         this.props.getData(action.GET_ALL_COUPON, GET_ALL_COUPON)
@@ -30,10 +35,11 @@ class Coupon extends Component {
     postCouponData() {
         debugger
         const obj = {
-            couponId: this.props.couponbyid.couponId ? this.props.couponbyid.couponId : 0,
+            couponId: this.props.couponbyid.couponId?this.props.couponbyid.couponId : 0,
             couponValue: this.props.couponbyid.couponValue * 1,
             couponCode: this.props.couponbyid.couponCode,
-            couponPercentage: this.props.couponbyid.couponPercentage * 1
+            couponPercentage: this.props.couponbyid.couponPercentage * 1,
+            isDeleted:this.props.couponbyid.couponId?false:true
         };
         let url = PUT_COUPON + this.props.couponbyid.couponId;
         if (this.props.couponbyid.couponId) {
@@ -214,7 +220,7 @@ const mapStateToProps = (state) => {
         messageData: state.goAdvStore.messageData
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData })(Coupon);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,removeErrormsg })(Coupon);
 
    // export default Coupon
 

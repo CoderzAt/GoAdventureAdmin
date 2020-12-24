@@ -6,7 +6,7 @@ import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar';
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -18,6 +18,11 @@ class TravelInfo extends Component {
            validated:false,
            refreshflag:false
             }
+    }
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
     }
    componentDidMount()
      {
@@ -37,8 +42,9 @@ class TravelInfo extends Component {
             vehicleContactNumber:this.props.gettravelinfobyid.vehicleContactNumber*1,
             agencyName:this.props.gettravelinfobyid.agencyName,
             locationDetails:this.props.gettravelinfobyid.locationDetails,
-            cityId:this.props.gettravelinfobyid.cityId*1
-};
+            cityId:this.props.gettravelinfobyid.cityId*1,
+            isDeleted: this.props.gettravelinfobyid.travelInfoId?false:true
+       };
     let url = PUT_TRAVELONFO+ this.props.gettravelinfobyid.travelInfoId;
     if (this.props.gettravelinfobyid.travelInfoId) {
         this.props.putData1(action.PUT_TRAVELINFO,url,obj);
@@ -184,15 +190,7 @@ class TravelInfo extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {/* <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">CityId</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="number"   class="form-control"  onChange={(e)=>this.cityIdOperation(e)}/>
-                                                    </div>
-                                                </div>
-                                            </div>
- */}                                        </div>
+                                                          </div>
                                        
                 
                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
@@ -275,7 +273,7 @@ class TravelInfo extends Component {
          
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(TravelInfo);
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg})(TravelInfo);
     
     
     //export default TravelInfo

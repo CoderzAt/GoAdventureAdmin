@@ -5,7 +5,7 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -16,6 +16,11 @@ class StayType extends Component {
         validated:false,
         refreshflag:false
          }
+    }
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
     }
     componentDidMount()
      {
@@ -28,7 +33,8 @@ class StayType extends Component {
             stayTypeId:this.props.getstaytypebyid.stayTypeId?this.props.getstaytypebyid.stayTypeId:0,
             stayTypeName:this.props.getstaytypebyid.stayTypeName,
             stayTypeDescription:this.props.getstaytypebyid.stayTypeDescription,
-            maxCapacity:this.props.getstaytypebyid.maxCapacity*1
+            maxCapacity:this.props.getstaytypebyid.maxCapacity*1,
+            isDeleted: this.props.getstaytypebyid.stayTypeId?false:true
      };
     let url = PUT_STAYTYPE+ this.props.getstaytypebyid.stayTypeId;
     if (this.props.getstaytypebyid.stayTypeId) {
@@ -106,7 +112,6 @@ class StayType extends Component {
                                     <h4 class="card-title">Staytype</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
-                                            
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">StayType Name</label>
@@ -136,19 +141,8 @@ class StayType extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
-                                            {/* <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">CityId</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="number"   class="form-control"  onChange={(e)=>this.cityIdOperation(e)}/>
-                                                    </div>
-                                                </div>
-                                            </div>
- */}                                        </div>
-                                       
-                
-                                       <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
+                                        </div>
+                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
@@ -193,9 +187,7 @@ class StayType extends Component {
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                       </div>)
-
-                                  }
-
+                                      }
                                 ]}
                                 data={this.props.getstaytype}
                                 showPagination={true}
@@ -223,11 +215,9 @@ class StayType extends Component {
          getstaytype:state.goAdvStore.getstaytype,
           message: state.goAdvStore.message,
           messageData: state.goAdvStore.messageData
-          //states:state.goAdvStore.getstatebycountry
-          //cities:state.goAdvStore.citybyid
-          //cities:state.goAdvStore.citybyid
+          
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(StayType)
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(StayType)
     //export default StayType
 

@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,traveltypepostapi,loadData,traveltypegetapi,traveltypebyid,travelupdateapi,GET_TRAVELTYPE_BYID,GET_TRAVELTYPE,POST_TRAVELTYPE,PUT_TRAVELTYPE} from '../Shared/Services'
+import {GET_TRAVELTYPE_BYID,GET_TRAVELTYPE,POST_TRAVELTYPE,PUT_TRAVELTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -21,7 +21,11 @@ class Traveltype extends Component {
            
        }
     }
-
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
+    }
   
     componentDidMount()
      {
@@ -36,7 +40,8 @@ class Traveltype extends Component {
         travelTypeId:this.props.gettraveltypebyid.travelTypeId?this.props.gettraveltypebyid.travelTypeId:0,
         travelTypeName:this.props.gettraveltypebyid.travelTypeName,
         travelTypeDescription:this.props.gettraveltypebyid.travelTypeDescription,
-        maxCapacity:this.props.gettraveltypebyid.maxCapacity*1
+        maxCapacity:this.props.gettraveltypebyid.maxCapacity*1,
+        isDeleted: this.props.gettraveltypebyid.travelTypeId ? false : true
         };
     let url = PUT_TRAVELTYPE+ this.props.gettraveltypebyid.travelTypeId;
     if (this.props.gettraveltypebyid.travelTypeId) {
@@ -216,6 +221,7 @@ class Traveltype extends Component {
  )
         }
     }
+    
     const mapStateToProps = (state) => {
         return {
             gettraveltypebyid:state.goAdvStore.gettraveltypebyid,
@@ -224,7 +230,7 @@ class Traveltype extends Component {
           messageData: state.goAdvStore.messageData
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(Traveltype);
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(Traveltype);
     
     //export default Traveltype
 

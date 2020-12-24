@@ -7,7 +7,7 @@ import {  POST_CITY,  PUT_CITY} from "../Shared/Services";
 import Sidebar from "./Sidebar";
 import { connect } from "react-redux";
 import { getCities,  getStates,  getCitybyid,  getCitybystate,
-  postData1,  putData1, updatePropData, resetData} from "../Adminstore/actions/goAdvActions";
+  postData1,  putData1, updatePropData, resetData,removeErrormsg} from "../Adminstore/actions/goAdvActions";
 import * as action from "../Adminstore/actions/actionTypes";
 import "./admin.scss";
 import * as validation from "../Shared/Validations";
@@ -17,11 +17,6 @@ class City extends Component {
     super(props);
     this.state = {
       validated: false,
-      //statenames:[],
-      cityname: null,
-      citydescription: null,
-      citycode: null,
-      stateid: "0",
       refreshflag: false,
       // cities:[],
       errors: {
@@ -30,6 +25,11 @@ class City extends Component {
     };
   }
 
+  componentWillMount()
+  {
+    this.props.removeErrormsg()
+
+  }
   componentDidMount() {
     if (this.props.match.params.cid !== undefined) {
       valuefromurl = parseInt(this.props.match.params.cid);
@@ -55,7 +55,9 @@ class City extends Component {
       cityName: this.props.cityData.cityName,
       cityCode: this.props.cityData.cityCode,
       cityDesc: this.props.cityData.cityDesc,
-      stateId: this.props.cityData.stateId*1
+      stateId: this.props.cityData.stateId*1,
+      isDeleted:this.props.cityData.cityId?false:true
+      
     };
     let url = PUT_CITY + this.props.cityData.cityId;
     if(this.props.cityData.cityId) {
@@ -101,6 +103,7 @@ class City extends Component {
     this.setState({ validated: false });
   }
 
+  
   updateCity = (e, paramName) => {
     debugger
     this.props.updatePropData(paramName, e.target.value, "cityData");
@@ -308,7 +311,8 @@ export default connect(mapStateToProps, {
   postData1,
   putData1,
   updatePropData,
-  resetData
+  resetData,
+  removeErrormsg
 })(City);
 
 //export default City

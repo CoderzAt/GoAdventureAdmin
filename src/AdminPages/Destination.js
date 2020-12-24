@@ -7,7 +7,7 @@ import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid,
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -27,7 +27,11 @@ class Destination extends Component {
            editData:[]
        }
     }
-
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
+    }
    async componentDidMount()
     {
      this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
@@ -40,9 +44,9 @@ class Destination extends Component {
       destinationId:this.props.getdestinationbyid.destinationId?this.props.getdestinationbyid.destinationId:0,
                 destinationName:this.props.getdestinationbyid.destinationName,
                 description:this.props.getdestinationbyid.description,
-                title:this.props.getdestinationbyid.title,
-                promoImage:this.props.getdestinationbyid.promoimage,
-                formFile:this.state.formFile
+                title:this.props.getdestinationbyid.title
+                //promoImage:this.props.getdestinationbyid.promoimage,
+                //formFile:this.state.formFile
        };
     let url = PUT_DESTINATION+this.props.getdestinationbyid.destinationId;
     if (this.props.getdestinationbyid.destinationId) {
@@ -275,7 +279,7 @@ updateDestination = (e, paramName) => {
         messageData: state.goAdvStore.messageData */
       }
     }
-    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(Destination);
+    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(Destination);
 
 
     //export default Destination

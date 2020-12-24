@@ -83,6 +83,7 @@ export const GET_COUNTRIES="GetAllMdCountrys";
 export const GET_COUNTRY_BYID="GetMdCountryById?id=";
 export const POST_COUNTRY="createMdCountry";
 export const PUT_COUNTRY="updateMdCountry?id=";
+export const DELETE_COUNTRY="deleteMdCountry?id=";
 //state
 export const statepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdState";
 export const getcounties="https://ga-api.azurewebsites.net/api/v1/GetAllMdCountrys";
@@ -204,6 +205,13 @@ export const bookingpostapi="https://ga-api.azurewebsites.net/api/v1/createBooki
 export const bookingupdateapi="https://ga-api.azurewebsites.net/api/v1/updateBookings?id=";
 export const getbookingbyid="https://ga-api.azurewebsites.net/api/v1/getBookingsByid?id=";
 
+
+export const GET_BOOKING="getAllBookings";
+export const GET_BOOKING_BYID="getBookingsByid?id=";
+export const POST_BOOKING="createBookings";
+export const PUT_BOOKING="updateBookings?id=";
+
+
 //Itenary
 export const itenarypostapi="https://ga-api.azurewebsites.net/api/v1/createItenary";
 export const itenarygetapi="https://ga-api.azurewebsites.net/api/v1/getAllItenary";
@@ -262,6 +270,8 @@ export const getpackageplaces="https://ga-api.azurewebsites.net/api/v1/GetAllPac
 
 //user
 export const getallusers="https://ga-api.azurewebsites.net/api/v1/GetAllUsers";
+
+export const GET_USER="GetAllUsers";
 
 //coupon
 export const getallcoupons="https://ga-api.azurewebsites.net/api/v1/getAllCoupon";

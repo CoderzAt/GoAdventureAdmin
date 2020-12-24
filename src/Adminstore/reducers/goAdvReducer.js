@@ -1,5 +1,7 @@
 import * as actions from '../actions/actionTypes';
 
+import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
+
 const initalState ={
     isPkgLoading: false,
     packages:[],
@@ -46,6 +48,7 @@ const initalState ={
     puteventtype:[],
     getitenary:[],
     getitenarybyid:[],
+    geteditorState:EditorState.createEmpty(),
     putitenary:[],
     postitenary:[],
     getplcetovisit:[],
@@ -80,14 +83,22 @@ const initalState ={
     gettraveltypebyid:[],
     posttraveltype:[],
     puttraveltype:[],
-    staytypeids:"",
+    staytypeids:[],
+    traveltypeids:[],
     message: false,
     messageData: {},
     gettripbypackageid:[],
     gettripbyid:[],
     gettrip:[],
     posttrip:[],
-    puttrip:[]
+    puttrip:[],
+    getbooking:[],
+    getbookingbyid:[],
+    putbooking:[],
+    postboking:[],
+    getuser:[],
+    activityids:[],
+    accessoryids:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -273,10 +284,34 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_TRIP_BYID}_FULFILLED` : {
+            debugger
+            let staytypeids=(action.payload.data.stayTypeIds).split(",");
+            var staytypenames1=[]
+        
+            staytypeids.map(obj=>
+                state.getstaytype.map((item)=>{
+                    if(parseInt(obj) == item.stayTypeId)
+                    {
+                      staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
+                    }
+                }))
+
+                let traveltypeids=(action.payload.data.travelTypeIds).split(",")
+                var traveltypenames=[]
+                traveltypeids.map(obj=>
+                    state.gettraveltype.map((item)=>{
+                        if(parseInt(obj) == item.travelTypeId)
+                        {
+                          traveltypenames.push({travelTypeName:item.travelTypeName,travelTypeId:item.travelTypeId}); //reusability
+                        }
+                    }))
+                
             return{
                 ...state,
                 isTrbidLoading: false,
-                gettripbyid: action.payload.data
+                gettripbyid: action.payload.data,
+                staytypeids:staytypenames1,
+                traveltypeids:traveltypenames
             }
         }
         case `${actions.GET_TRIP_BYID}_REJECTED` : {
@@ -334,7 +369,11 @@ const goAdvReducer = (state =initalState, action) => {
             updatedCityData[action.payload.promName] = action.payload.value;
             return{
                 ...state,
-				        [action.payload.propName]: updatedCityData
+                        [action.payload.propName]: updatedCityData,
+                        traveltypeids:{},
+                        staytypeids:{},
+                        accessoryids:{},
+                        activityids:{}
             }
         }
         case `${actions.GET_COUNTRIES}_FULFILLED` : {
@@ -1133,7 +1172,12 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isgetItenarybyidLoading: false,
-                getitenarybyid: action.payload.data
+                getitenarybyid: action.payload.data,
+                geteditorState:EditorState.createWithContent(
+                    ContentState.createFromBlockArray(
+                      convertFromHTML(action.payload.data.iternaryDescription?action.payload.data.iternaryDescription:'<p></p>')
+                    )
+                  )
             }
         }
         case `${actions.GET_ITENARY_BYID}_REJECTED` : {
@@ -1280,10 +1324,10 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.PUT_PLACETOVISIT}_FULFILLED` : {
             let updateCityData = {countryId: 0}, msgData = {};
             if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the placetovisit";
+              msgData.message = "Error while updating the placetovisit";
               msgData.isSuccess = false;
             } else {
-              msgData.message = "placetovisit added successfully.";
+              msgData.message = "placetovisit updated successfully.";
               msgData.isSuccess = true;
             }
             return{
@@ -1712,14 +1756,26 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_STAY_BYID}_FULFILLED` : {
-            let staytypeids=action.payload.data.stayTypeIds;
-            let data= Array.prototype.map.call(staytypeids, function(item) { return item.stayTypeId; }).join(",");
-            
+            debugger
+            let staytypeids1=action.payload.data.stayTypeIds;
+            //let data= Array.prototype.map.call(staytypeids, function(item) { return item.stayTypeId; }).join(",");
+
+            let staytypeids=(action.payload.data.stayTypeIds).split(",");
+            var staytypenames1=[]
+        
+            staytypeids.map(obj=>
+                state.getstaytype.map((item)=>{
+                    if(parseInt(obj) == item.stayTypeId)
+                    {
+                      staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
+                    }
+                }))
+       
             return{
                 ...state,
                 isgetStaybyidLoading: false,
                 getstaybyid: action.payload.data,
-                staytypeids:data
+                staytypeids:staytypenames1
             }
         }
         case `${actions.GET_STAY_BYID}_REJECTED` : {
@@ -2059,7 +2115,9 @@ const goAdvReducer = (state =initalState, action) => {
                 postrip: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettripbyid:{}
+                gettripbyid:{},
+                traveltypeids:{},
+                staytypeids:{}
              }
         }
         case `${actions.POST_TRIP}_REJECTED` : {
@@ -2089,13 +2147,164 @@ const goAdvReducer = (state =initalState, action) => {
                 putrip: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettripbyid:{}
+                gettripbyid:{},
+                traveltypeids:{},
+                staytypeids:{}
              }
         }
         case `${actions.PUT_TRIP}_REJECTED` : {
             return{
                 ...state,
                 isputTripLoading: false,
+            }
+        }
+
+        case `${actions.GET_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                isgetBookingLoading: true
+            }
+        }
+        case `${actions.GET_BOOKING}_FULFILLED` : {
+            return{
+                ...state,
+                isgetBookingLoading: false,
+                getbooking: action.payload.data
+            }
+        }
+        case `${actions.GET_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isgetBookingLoading: false,
+            }
+        }
+
+        case `${actions.GET_BOOKING_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetBookingbyidLoading: true
+            }
+        }
+        case `${actions.GET_BOOKING_BYID}_FULFILLED` : {
+            debugger
+            let accessoryids=(action.payload.data.accessories).split(",");
+            var accessorynames1=[]
+        
+            accessoryids.map(obj=>
+                state.accessories.map((item)=>{
+                    if(parseInt(obj) == item.accessoryName)
+                    {
+                        accessorynames1.push({accessoryName:item.accessoryName,accessoriesId:item.accessoriesId}); //reusability
+                    }
+                }))
+
+                let activityids=(action.payload.data.activityIds).split(",");
+                var activitynames1=[]
+            
+                activityids.map(obj=>
+                    state.activities.map((item)=>{
+                        if(parseInt(obj) == item.activityName)
+                        {
+                            activitynames1.push({activityName:item.activityName,activityId:item.activityId}); //reusability
+                        }
+                    }))
+            return{
+                ...state,
+                isgetBookingbyidLoading: false,
+                getbookingbyid: action.payload.data,
+                accessoryids:accessorynames1,
+                activityids:activitynames1
+            }
+        }
+        case `${actions.GET_BOOKING_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetBookingbyidLoading: false,
+               
+            }
+        }
+        case `${actions.PUT_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                isputBookingLoading: true
+            }
+        }
+        case `${actions.PUT_BOOKING}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Booking";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "booking updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputBookingLoading: false,
+                putbooking: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getbookingbyid:{},
+                accessoryids:{},
+                activityids:{}
+             }
+        }
+        case `${actions.PUT_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isputBookingLoading: false,
+            }
+        }
+        case `${actions.POST_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                ispostBookingLoading: true
+            }
+        }
+        case `${actions.POST_BOOKING}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Booking";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "booking updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostBookingLoading: false,
+                postbooking: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getbookingbyid:{},
+                accessoryids:{},
+                activityids:{}
+             }
+        }
+        case `${actions.POST_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                ispostBookingLoading: false,
+            }
+        }
+
+        case `${actions.GET_USER}_PENDING` : {
+            return{
+                ...state,
+                isgetUserLoading: true
+            }
+        }
+        case `${actions.GET_USER}_FULFILLED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
+                getuser: action.payload.data
+            }
+        }
+        case `${actions.GET_USER}_REJECTED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
             }
         }
 
@@ -2119,6 +2328,23 @@ const goAdvReducer = (state =initalState, action) => {
 				        [propName]: updatedAccessoryData
             }
         }
+        case `${actions.REMOVE_ERROR_MSG}` : {
+            debugger
+            return{
+                ...state,
+                messageData:action.payload.value,
+                message:false
+
+            }
+        } 
+        case `${actions.EDITOR_STATE}` : {
+            debugger
+            return{
+                ...state,
+                geteditorState:action.payload.value
+
+            }
+        } 
         
         default: return state;
     }

@@ -7,8 +7,10 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import {getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
+
+
 
 
 import {gettingMultiselectValues} from '../Shared/ReauasbleFunctions'
@@ -46,7 +48,11 @@ class Stay extends Component {
            
        }
     }
-   async componentDidMount()
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+   }
+   componentDidMount()
      {
       this.props.getData(action.GET_STAY,GET_STAY)
       this.props.getData(action.GET_CITIES,GET_CITIES)
@@ -181,7 +187,8 @@ class Stay extends Component {
             stayTypeIds:this.props.getstaybyid.stayTypeIds?this.props.getstaybyid.stayTypeIds:"",
             contactInfo:this.props.getstaybyid.locationDetails,
             locationDetails:this.props.getstaybyid.locationDetails,
-            cityId:this.props.getstaybyid.cityId*1
+            cityId:this.props.getstaybyid.cityId*1,
+            isDeleted:this.props.getstaybyid.stayId?false:true
             };
         let url = PUT_STAY+ this.props.getstaybyid.stayId;
         if (this.props.getstaybyid.stayId) {
@@ -222,6 +229,7 @@ class Stay extends Component {
             this.setState({ validated: false });
       }
     editReacord(id) {
+        this.props.getData(action.GET_STAY,GET_STAY);
         this.props.getData(action.GET_STAY_BYID, GET_STAY_BYID+id)
 
        /*  let staytypeids=(this.props.getstaybyid.stayTypeIds).split(",");
@@ -356,15 +364,7 @@ class Stay extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {/* <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">CityId</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="number"   class="form-control"  onChange={(e)=>this.cityIdOperation(e)}/>
-                                                    </div>
-                                                </div>
-                                            </div>
- */}                                        </div>
+                                                          </div>
                                        
                 
                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
@@ -452,7 +452,7 @@ class Stay extends Component {
             //cities:state.goAdvStore.citybyid
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(Stay);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg})(Stay);
     
     //export default Stay
 

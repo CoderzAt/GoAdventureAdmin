@@ -1,150 +1,37 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import { Link} from "react-router-dom";
-import {postData,loadData,postactivityapi,activitybyid,activityupdateapi,getactivities,GET_ACTIVITY_BYID,GE,GET_ACTIVITIES,PUT_ACTIVITY,POST_ACTIVITY} from '../Shared/Services'
+import {GET_ACTIVITY_BYID,GE,GET_ACTIVITIES,PUT_ACTIVITY,POST_ACTIVITY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import parse from 'html-react-parser'
-
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw } from 'draft-js';
-import { act } from 'react-dom/test-utils';
 import { connect } from 'react-redux';
-import {getActivity,getData,putData1,postData1,resetData,updatePropAccData} from '../Adminstore/actions/goAdvActions';
+import {getActivity,getData,putData1,postData1,resetData,updatePropAccData,removeErrormsg} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
-/* import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js' */
-
-
 
 var condition=false;
 class Activity extends Component {
     constructor(props) {
         super(props);
        this.state = {
-        activityName:null,
-        activityGenre:null,
-        editData:[]
-        //activities:[]
+       validated:false,
+       refreshflag:false
            }
     }
-
-   /*  async loadtabledata()
+    componentWillMount()
     {
-
-        let countries1=await loadData(getcounties);
-        this.setState({
-                countries:countries1
-            }
-        )
-    } */
- /* componentDidUpdate() //this is for rendering the code for every update
-    {
-        debugger
-        //we need to keep a condition here ...if new data is submitted then only we have to call this function
-       
-        this.loadtabledata()  //is there any problem with hitting the api's too many times
-        condition=false;
-        
-     } */
-     async componentDidMount()
+      this.props.removeErrormsg()
+   }
+      componentDidMount()
      {
         this.props.getActivity()
      }
-    activitynamenameOperation(event)
-    {
-      this.setState({
-            activityName:event.target.value
-        })
-    }
-    activitygenreOpearation(event)
-    {
-        this.setState({
-            activityGenre:event.target.value
-        })
-
-    }
-
-   /*  deleteRecord(id)
-    {
-        alert("in delete id no is"+id)
-        fetch(deletecountry+id, {
-            method: 'DELETE'
-          });
-
-    } */
-   async editReacord(id)
-    {
-        
-        let url=GET_ACTIVITY_BYID+id;
-
-        this.props.getData(action.GET_ACTIVITY_BYID,url)
-
-        let editdata=this.props.getactivitybyid;
-      /*   this.setState({
-            editData:editdata
-        }) */
-
-        this.setState({
-            activityName:editdata.activityName,
-            activityGenre:editdata.activityGenre
-                    })
-    }
-     async postEditedData()
-    {
-        debugger
-        
-        const obj={
-            activityId:this.state.editData.activityId,
-            activityName:this.state.activityName,
-            activityGenre:this.state.activityGenre,
-                  }
-
-        let editurl=PUT_ACTIVITY+this.state.editData.activityId;
-        //this.props.putData1(action)
-        let editeddata=await postData(obj,editurl,'Put')
-
-        alert(editeddata)
-
-        window.location.reload();//page refresh
-
-    }
-    async postDatatoApi()
-    {
-        debugger
-        condition=true;
-        const obj={
-            activityId:this.props.activitybyid.activityId?this.props.activitybyid.activityId:0,
-            activityName:this.props.getactivitybyid.activityName,
-            activityGenre:this.props.getactivitybyid.activityGenre
-              }
-             
-     this.props.postData1(action.POST_ACTIVITY,POST_ACTIVITY,obj)
-            /*  let message=await  postData(obj,postactivityapi,'Post');
-             
-             alert (message); */
-             //window.location.reload();//page refresh
-    }
-
-    postActivityData() {
+     postActivityData() {
         debugger
         const obj = {
             activityId:this.props.getactivitybyid.activityId?this.props.getactivitybyid.activityId:0,
             activityName:this.props.getactivitybyid.activityName,
-            activityGenre:this.props.getactivitybyid.activityGenre
+            activityGenre:this.props.getactivitybyid.activityGenre,
+            isDeleted:this.props.getactivitybyid.activityId?false:true
         };
         let url = PUT_ACTIVITY +this.props.getactivitybyid.activityId;
         if (this.props.getactivitybyid.activityId) {
@@ -318,7 +205,7 @@ updateActivity = (e, paramName) => {
             messageData: state.goAdvStore.messageData
          }
     }
-    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1,resetData,updatePropAccData})(Activity);
+    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1,resetData,updatePropAccData,removeErrormsg})(Activity);
     
 
    // export default Activity

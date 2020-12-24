@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES,GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID,GET_DESTINATION,PUT_PLACETOVISIT} from '../Shared/Services'
+import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT } from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import {getDestination, getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import { getDestination, getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 class PlacestoVisit extends Component {
@@ -16,7 +16,7 @@ class PlacestoVisit extends Component {
             validated: false,
             //citynames:[],
             destinationnames: [],
-           // placetypes: [],
+            // placetypes: [],
             placename: null,
             placegenre: null,
             placedescription: null,
@@ -30,7 +30,10 @@ class PlacestoVisit extends Component {
             hidedestination: ""
         }
     }
+    componentWillMount() {
+        this.props.removeErrormsg()
 
+    }
     async componentDidMount() {
         debugger
 
@@ -71,37 +74,37 @@ class PlacestoVisit extends Component {
         })
 
 
-        
+
         this.props.getData(action.GET_CITIES, GET_CITIES)
-        this.props.getData(action.GET_DESTINATION,GET_DESTINATION);
-        this.props.getData(action.GET_PLACETYPE,GET_PLACETYPE)
+        this.props.getData(action.GET_DESTINATION, GET_DESTINATION);
+        this.props.getData(action.GET_PLACETYPE, GET_PLACETYPE)
 
     }
 
 
-    postPlacetovisitData()
-    {
+    postPlacetovisitData() {
         debugger
-    const obj = {
-        placeId:this.props.getplacetovisitbyid.placeId?this.props.getplacetovisitbyid.placeId:0,
-        placeName: this.props.getplacetovisitbyid.placename,
-        placeGenre: this.props.getplacetovisitbyid.placegenre,
-        destinationId: parseInt(this.props.getplacetovisitbyid.destinationId),
-        description: this.props.getplacetovisitbyid.placedescription,
-        placeTypeId: parseInt(this.props.getplacetovisitbyid.placeTypeId),
-        cityId: parseInt(this.props.getplacetovisitbyid.cityId)
-      };
-    let url = PUT_PLACETOVISIT+ this.props.getplacetovisitbyid.placeId;
-    if (this.props.getplacetovisitbyid.placeId) {
-        this.props.putData1(action.PUT_PLACETOVISIT,url,obj);
-    }
-    else {
-        this.props.postData1(action.POST_PLACETOVISIT,POST_PLACETOVISIT,obj);
-    }
-    this.setState({ validated: false });
+        const obj = {
+            placeId: this.props.getplacetovisitbyid.placeId ? this.props.getplacetovisitbyid.placeId : 0,
+            placeName: this.props.getplacetovisitbyid.placeName,
+            placeGenre: this.props.getplacetovisitbyid.placeGenre,
+            destinationId: parseInt(this.props.getplacetovisitbyid.destinationId),
+            description: this.props.getplacetovisitbyid.description,
+            placeTypeId: parseInt(this.props.getplacetovisitbyid.placeTypeId),
+            cityId: parseInt(this.props.getplacetovisitbyid.cityId),
+            isDeleted: this.props.getplacetovisitbyid.placeId ? false : true
+        };
+        let url = PUT_PLACETOVISIT + this.props.getplacetovisitbyid.placeId;
+        if (this.props.getplacetovisitbyid.placeId) {
+            this.props.putData1(action.PUT_PLACETOVISIT, url, obj);
+        }
+        else {
+            this.props.postData1(action.POST_PLACETOVISIT, POST_PLACETOVISIT, obj);
+        }
+        this.setState({ validated: false });
     }
 
-     handleSubmit(event) {
+    handleSubmit(event) {
         event.preventDefault();
         //this.handlevalidations();
         const form = event.currentTarget;
@@ -114,19 +117,19 @@ class PlacestoVisit extends Component {
         else {
             event.preventDefault();
             this.postPlacetovisitData();
-        }   
+        }
     }
 
     handleReset() {
-        this.props.resetData(action.RESET_DATA,"getplacetovisitbyid");
-            this.setState({ validated: false });
-      }
+        this.props.resetData(action.RESET_DATA, "getplacetovisitbyid");
+        this.setState({ validated: false });
+    }
     editReacord(id) {
-        this.props.getData(action.GET_PLACETOVISIT_BYID, GET_PLACETOVISIT_BYID+id)
+        this.props.getData(action.GET_PLACETOVISIT_BYID, GET_PLACETOVISIT_BYID + id)
     }
 
     updatePlacetovisit = (e, paramName) => {
-        this.props.updatePropAccData(paramName,e.target.value,"getplacetovisitbyid");
+        this.props.updatePropAccData(paramName, e.target.value, "getplacetovisitbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
 
@@ -146,10 +149,10 @@ class PlacestoVisit extends Component {
                                         <i class="mdi mdi-home-map-marker"></i>
                                     </span>Place To Visit
                         </h3>
-                        {this.props.message ?
+                                {this.props.message ?
                                     <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
                                     null
-                        }
+                                }
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -172,8 +175,8 @@ class PlacestoVisit extends Component {
                                                             <label for="placeTypeName"
                                                                 class="col-sm-3 col-form-label">Name</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" value={this.props.getplacetovisitbyid.placeName?this.props.getplacetovisitbyid.placeName:""} class="form-control" id="placeTypeName"
-                                                                    onChange={(e) => this.updatePlacetovisit(e,"placeName")} placeholder="Name" />
+                                                                <input type="text" value={this.props.getplacetovisitbyid.placeName ? this.props.getplacetovisitbyid.placeName : ""} class="form-control" id="placeTypeName"
+                                                                    onChange={(e) => this.updatePlacetovisit(e, "placeName")} placeholder="Name" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -181,8 +184,8 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label for="genre" class="col-sm-3 col-form-label">Genre</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" value={this.props.getplacetovisitbyid.placeGenre?this.props.getplacetovisitbyid.placeGenre:""} class="form-control" id="genre"
-                                                                    onChange={(e) => this.updatePlacetovisit(e,"placeGenre")} placeholder="Genre" />
+                                                                <input type="text" value={this.props.getplacetovisitbyid.placeGenre ? this.props.getplacetovisitbyid.placeGenre : ""} class="form-control" id="genre"
+                                                                    onChange={(e) => this.updatePlacetovisit(e, "placeGenre")} placeholder="Genre" />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -192,9 +195,9 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Destination</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.destinationId?this.props.getplacetovisitbyid.destinationId:"0"} 
-                                                                onChange={(e) => this.updatePlacetovisit(e,"destinationId")}>
-                                                                   <option value={0}>Select</option>
+                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.destinationId ? this.props.getplacetovisitbyid.destinationId : "0"}
+                                                                    onChange={(e) => this.updatePlacetovisit(e, "destinationId")}>
+                                                                    <option value={0}>Select</option>
                                                                     {this.props.getdestination.map(obj =>
                                                                         <option value={obj.destinationId}>{obj.destinationName}</option>
                                                                     )}
@@ -207,9 +210,9 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Place Type</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.placeTypeId?this.props.getplacetovisitbyid.placeTypeId:"0"} 
-                                                                onchange={(e) => this.updatePlacetovisit(e,"placeTypeId")}>
-                                                                   <option value={0}>Select</option>
+                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.placeTypeId ? this.props.getplacetovisitbyid.placeTypeId : "0"}
+                                                                    onChange={(e) => this.updatePlacetovisit(e, "placeTypeId")}>
+                                                                    <option value={0}>Select</option>
                                                                     {this.props.placetype.map(obj =>
                                                                         <option value={obj.placeTypeId}>{obj.placeTypeName}</option>
                                                                     )}
@@ -223,8 +226,8 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">City</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId?this.props.getplacetovisitbyid.cityId:"0"} 
-                                                                onChange={(e) => this.updatePlacetovisit(e,"cityId")}>
+                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0"}
+                                                                    onChange={(e) => this.updatePlacetovisit(e, "cityId")}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.cities.map(obj =>
                                                                         <option value={obj.cityId}>{obj.cityName}</option>
@@ -250,8 +253,8 @@ class PlacestoVisit extends Component {
                                                             <label for="placeTypeDescription"
                                                                 class="col-sm-3 col-form-label">Description</label>
                                                             <div class="col-sm-9">
-                                                                <textarea class="form-control" value={this.props.getplacetovisitbyid.description?this.props.getplacetovisitbyid.description:""} id="placeTypeDescription"
-                                                                    onChange={(e) => this.updatePlacetovisit(e,"description")} rows="4"></textarea>
+                                                                <textarea class="form-control" value={this.props.getplacetovisitbyid.description ? this.props.getplacetovisitbyid.description : ""} id="placeTypeDescription"
+                                                                    onChange={(e) => this.updatePlacetovisit(e, "description")} rows="4"></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -359,15 +362,15 @@ class PlacestoVisit extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        cities:state.goAdvStore.cities,
-        placetype:state.goAdvStore.placetype,
-        getdestination:state.goAdvStore.getdestination,
-        getplcetovisit:state.goAdvStore.getplcetovisit,
-        getplacetovisitbyid:state.goAdvStore.getplacetovisitbyid,
+        cities: state.goAdvStore.cities,
+        placetype: state.goAdvStore.placetype,
+        getdestination: state.goAdvStore.getdestination,
+        getplcetovisit: state.goAdvStore.getplcetovisit,
+        getplacetovisitbyid: state.goAdvStore.getplacetovisitbyid,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1,getDestination,updatePropAccData,resetData })(PlacestoVisit);
+export default connect(mapStateToProps, { getData, postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg })(PlacestoVisit);
     //export default PlacestoVisit
 

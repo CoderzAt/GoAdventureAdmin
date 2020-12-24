@@ -6,7 +6,7 @@ import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
@@ -28,6 +28,11 @@ class Itenary extends Component {
             iternaryDescription: null,
             editorState: EditorState.createEmpty()
         }
+    }
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
     }
     componentDidMount() {
 
@@ -52,10 +57,10 @@ class Itenary extends Component {
             packageId: parseInt(this.props.getitenarybyid.packageId),
             dayNumber: parseInt(this.props.getitenarybyid.dayNumber),
             summary: this.props.getitenarybyid.summary,
-            iternaryDescription: "",
+            iternaryDescription: ""/* this.state.iternaryDescription *//* this.props.getitenarybyid.iternaryDescription */,
             benefitTags: this.props.getitenarybyid.benefitTags,
-            packagePlaceIds: this.props.getitenarybyid.packagePlaceIds
-
+            packagePlaceIds: this.props.getitenarybyid.packagePlaceIds,
+            isDeleted: this.props.getitenarybyid.itenaryId?false:true
         };
         let url = PUT_ITENARY + this.props.getitenarybyid.itenaryId;
         if (this.props.getitenarybyid.itenaryId) {
@@ -97,15 +102,40 @@ class Itenary extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_ITENARY_BYID, GET_ITENARY_BYID + id)
+
+       /*  this.setState({editorState:EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML('<div>"hi rajendar"<div>')
+            )
+          )}) */
     }
     updateItenary = (e, paramName) => {
-        this.props.updatePropAccData(paramName, e.target.value, "getitenarybyid");
+        debugger
+        var value
+        if(paramName === "iternaryDescription")
+        {
+           value=draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+           console.log("hi",value)
+        }
+        else
+        {
+            value=e.target.value;
+        }
+        this.props.updatePropAccData(paramName,value, "getitenarybyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
 
+    itenarydescriptionOpearation()
+    {
+        
+           this.setState({iternaryDescription:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))})
+           //console.log("editor",data)
+    }
 
     render() {
+       
         return (
+
             <div>
 
                 <div class="container-fluid page-body-wrapper" style={{ paddingTop: 80 }}>
@@ -179,7 +209,7 @@ class Itenary extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">BenfitTags</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.getitenarybyid.benefitTags}
+                                                                <input required type="text" value={this.props.getitenarybyid.benefitTags?this.props.getitenarybyid.benefitTags:""}
                                                                     class="form-control" onChange={(e) => this.updateItenary(e, "benefitTags")} />
                                                             </div>
                                                         </div>
@@ -201,10 +231,10 @@ class Itenary extends Component {
                                                             <div class="col-sm-12">
                                                                 {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
                                                                 <Editor
-                                                                    editorState={this.state.editorState}
+                                                                    editorState={this.props.geteditorState}
                                                                     wrapperClassName="demo-wrapper"
                                                                     editorClassName="demo-editor"
-                                                                    onEditorStateChange={this.onEditorStateChange}
+                                                                    onEditorStateChange={this.props.editorState}
                                                                     onChange={(e) => this.itenarydescriptionOpearation(e)}
                                                                 />
                                                             </div>
@@ -286,12 +316,13 @@ const mapStateToProps = (state) => {
         getitenary: state.goAdvStore.getitenary,
         getitenarybyid: state.goAdvStore.getitenarybyid,
         packages: state.goAdvStore.packages,
+        geteditorState:state.goAdvStore.geteditorState,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData
         //cities:state.goAdvStore.citybyid
         //cities:state.goAdvStore.citybyid
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData })(Itenary);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg })(Itenary);
     //export default Itenary
 

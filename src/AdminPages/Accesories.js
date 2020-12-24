@@ -59,11 +59,13 @@ class Accessories extends Component {
     postAccessoryData() {
         debugger
         const obj = {
-            accessoriesId: this.props.getaccessorybyid.accessoriesId ? this.props.getaccessorybyid.accessoriesId : 0,
+            accessoriesId: this.props.getaccessorybyid.accessoriesId ? this.props.getaccessorybyid.accessoriesId:0,
             accessoryName: this.props.getaccessorybyid.accessoryName,
             saleOrRent: this.props.getaccessorybyid.saleOrRent,
-            salePrice: this.props.getaccessorybyid.salePrice * 1,
-            rentPrice: this.props.getaccessorybyid.rentPrice * 1
+            salePrice: this.props.getaccessorybyid.salePrice?this.props.getaccessorybyid.salePrice*1:0,
+            rentPrice: this.props.getaccessorybyid.rentPrice?this.props.getaccessorybyid.rentPrice*1:0,
+            isAvailable:JSON.parse(this.props.getaccessorybyid.isAvailable),
+            isDeleted:this.props.getaccessorybyid.accessoriesId?false:true
         };
         let url = PUT_ACCESSORIES + this.props.getaccessorybyid.accessoriesId;
         if (this.props.getaccessorybyid.accessoriesId) {
@@ -180,8 +182,21 @@ class Accessories extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-
+                                                
+                                                <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">IsAvailable</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control" value={this.props.getaccessorybyid.isAvailable?`${this.props.getaccessorybyid.isAvailable}`:"0"} onChange={(e) => this.updateAccessory(e, "isAvailable")}>
+                                                                    <option value={0}>Select</option>
+                                                                    <option value={true}>YES</option>
+                                                                    <option value={false}>NO</option>
+                                                                </select>
+                                                                <div style={{ color: "red" }}>{this.state.errors.saleOrrent}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    </div>
                                                 <div class="row" style={{ margin: "auto", textAlign: "center"/* marg:auto;text-align: center} */ }}>
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>

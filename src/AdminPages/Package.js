@@ -7,7 +7,7 @@ import {postData,packagepostapi,getdestinations,loadData,getpackages,packageupda
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -31,6 +31,11 @@ class Package extends Component {
            packagesT:[],
            editData:[]
        }
+    }
+
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
     }
     async componentDidMount()
     {
@@ -61,7 +66,8 @@ class Package extends Component {
             inclusions:this.props.packagebyid.inclusions,
             exclusions:this.props.packagebyid.exclusions,
             packageDescription:this.props.packagebyid.packagedescription,
-            promoImage:this.props.packagebyid.promoimage
+            promoImage:this.props.packagebyid.promoimage,
+            isDeleted: this.packagebyid.packageId.eventLevelId ? false : true
             };
         let url = PUT_PACKAGE+ this.props.packagebyid.packageId;
         if (this.props.packagebyid.packageId) {
@@ -341,65 +347,7 @@ class Package extends Component {
         </div>
         </div>
         </div>
-		{/* <div style={{paddingLeft:400,paddingTop:110,backgroundColor:"black"}} >
-            <div class="card" style={{width:600 }}>
-  <div class="card-body">
-    <h3 class="card-title">New Package</h3>
-    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)}>
-                  <Form.Group >
-                    <label htmlFor="packagename">Package Name</label>
-                    <Form.Control   type="text" id="packagename"  onChange={(e)=>this.packagenameOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="packagetype">Package Type</label>
-                    <Form.Control   type="text" id="packagetype"  onChange={(e)=>this.packagetypeOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="packageduration">Package Duration</label>
-                    <Form.Control   type="text" id="packageduration"  onChange={(e)=>this.packagedurationOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group>
-                  <label for="travellerMode">Destination</label>
-                  <select class="form-control travellerMode" onChange={(e)=>this.destinationOpeartion(e)}>
-                  {this.state.destinationnames.map(obj=>
-                  <option value={obj.destinationId}>{obj.destinationName}</option>
-                    )}
-                    </select>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="couponcode">CouponCode</label>
-                    <Form.Control   type="text" id="couponcode"  onChange={(e)=>this.couponecodeoperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="couponexpirydate">CouponExpiryDate</label>
-                    <Form.Control   type="text" id="couponexpirydate"  onChange={(e)=>this.couponexpirydateOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="couponuserusagecount">CouponUserUsageCount</label>
-                    <Form.Control   type="number" id="couponuserusagecount"  onChange={(e)=>this.couponuserusagecountOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="inclusions">Inclusions</label>
-                    <Form.Control   type="text" id="inclusions"  onChange={(e)=>this.inclusionsOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="exclusions">exclusions</label>
-                    <Form.Control   type="text" id="exclusions"  onChange={(e)=>this.exclusionsOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="packagedescription">Package Description</label>
-                    <Form.Control   type="text" id="packagedescription"  onChange={(e)=>this.packagedescriptionOperation(e)}  required/>
-                  </Form.Group>
-                  <Form.Group >
-                    <label htmlFor="promoimage">Promo Image</label>
-                    <Form.Control   type="text" id="promoimage"  onChange={(e)=>this.promoimageOperation(e)}  required/>
-                  </Form.Group>
-                  <button type="submit" class="btn btn-primary" >submit</button>
-    </Form>
-  </div>
-  
-</div>
-        </div> */}
+		
         </div>
      )
         }
@@ -414,6 +362,6 @@ class Package extends Component {
           messageData: state.goAdvStore.messageData
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData })(Package);
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(Package);
     //export default Package
 

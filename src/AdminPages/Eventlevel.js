@@ -6,13 +6,9 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData } from '../Adminstore/actions/goAdvActions';
-import * as action from '../Adminstore/actions/actionTypes'
+import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import * as action from '../Adminstore/actions/actionTypes';
 
-
-
-
-var condition = false;
 class Eventlevel extends Component {
     constructor(props) {
         super(props);
@@ -20,6 +16,9 @@ class Eventlevel extends Component {
             validated: false,
             refreshflag: false
         }
+    }
+    componentWillMount() {
+        this.props.removeErrormsg()
     }
 
     componentDidMount() {
@@ -42,7 +41,8 @@ class Eventlevel extends Component {
             eventLevelId: this.props.geteventlevelbyid.eventLevelId ? this.props.geteventlevelbyid.eventLevelId : 0,
             eventLevelCode: this.props.geteventlevelbyid.eventLevelCode,
             eventLevelDesc: this.props.geteventlevelbyid.eventLevelDesc,
-            statusId: this.props.geteventlevelbyid.statusId * 1
+            statusId: this.props.geteventlevelbyid.statusId * 1,
+            isDeleted: this.props.geteventlevelbyid.eventLevelId ? false : true
         };
         let url = PUT_EVENTLEVEL + this.props.geteventlevelbyid.eventLevelId;
         if (this.props.geteventlevelbyid.eventLevelId) {
@@ -231,7 +231,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData })(Eventlevel);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg })(Eventlevel);
 
 
     //export default Eventlevel

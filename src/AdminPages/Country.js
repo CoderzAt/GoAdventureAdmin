@@ -13,7 +13,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
 import TextInput from'../Shared/TextInput';
 import { connect } from 'react-redux';
-import {getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 var condition=false;
@@ -23,61 +23,18 @@ class Country extends Component {
         super(props);
        this.state = {
            validated:false,
-           countryname:null,
-           countrydescription:'<div>hi<div>',
-           countrycode:null,
-           countries:[],
-           viewData:[],
-           editorState:EditorState.createEmpty()
-           
-           
-       }
+           refreshflag:false
+           }
+    }
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
     }
     componentDidMount()
      {
       this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
      }
-    
-    countrydescriptionOperation(event)
-    {
-        //alert(draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())))
-        
-   this.setState({
-            countrydescription:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
-        })
-
-    }
-    onEditorStateChange = (editorState) => {
-    this.setState({
-          editorState,
-        });
-      } 
-   
-   
-  async editReacord(id)
-    {
-        
-        let url=GET_COUNTRY_BYID+id;
-       // let editdata=await loadData(url)
-
-        this.props.getData(action.GET_COUNTRY_BYID,url);
-
-
-        let editdata=this.props.getcountrybyid
-        /*  this.setState({
-            viewData:editdata
-        }) */
-
-        this.setState({
-            countryname:editdata.countryName,
-            countrycode:editdata.countryCode,
-            editorState: EditorState.createWithContent(
-                ContentState.createFromBlockArray(
-                  convertFromHTML(editdata.countryDesc)
-                )
-              )
-        })
-    }
         postCountrydata()
     {
         debugger
@@ -85,7 +42,8 @@ class Country extends Component {
         countryId:this.props.getcountrybyid.countryId?this.props.getcountrybyid.countryId:0,
         countryName:this.props.getcountrybyid.countryName,
         countryCode:this.props.getcountrybyid.countryCode,
-        countryDesc:this.props.getcountrybyid.countryDesc
+        countryDesc:this.props.getcountrybyid.countryDesc,
+        isDeleted:this.props.getcountrybyid.countryId?false:true
         };
         let url = PUT_COUNTRY+this.props.getcountrybyid.countryId;
         if (this.props.getcountrybyid.countryId) {
@@ -123,26 +81,10 @@ class Country extends Component {
     }
 
     updateCountry = (e, paramName) => {
-        
-        var value
-        if(paramName === "countryDesc")
-        {
-            value=draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));  
-        }
-        else
-        {
-            value=e.target.value
-        }
-        this.props.updatePropAccData(paramName,value,"getcountrybyid");
+        this.props.updatePropAccData(paramName,e.target.value,"getcountrybyid");
         this.setState({ refreshflag:!this.state.refreshflag });
     }
     render() {
-         editorstate=EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(this.props.getcountrybyid.countryDesc?this.props.getcountrybyid.countryDesc:'<div><div>')
-            )
-          )
-        
 	    return (
          <div>
             
@@ -208,17 +150,9 @@ class Country extends Component {
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-12">
                                                     <div>
-                                                       
-                                                       {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
-                                                       <Editor
-                                                 editorState={editorstate}
-                                                 wrapperClassName="demo-wrapper"
-                                                 editorClassName="demo-editor"
-                                                 onEditorStateChange={this.onEditorStateChange}
-                                                 onChange={(e)=>this.updateCountry(e,"countryDesc")}
-                                                      />
-                                                      
-                                                      </div>
+                                                        <textarea required value={this.props.getcountrybyid.countryDesc?this.props.getcountrybyid.countryDesc:""} class="form-control" 
+                                                        id="placeTypeDescription" rows="4" onChange={(e)=>this.updateCountry(e,"countryDesc")}></textarea> 
+                                                    </div>
                                                   </div>
                                                 </div>
                                             </div>
@@ -325,7 +259,7 @@ class Country extends Component {
             messageData: state.goAdvStore.messageData
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(Country);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg})(Country);
     
 
     //export default Country

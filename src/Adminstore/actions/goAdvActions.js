@@ -105,6 +105,27 @@ export const putData1 =(actiontype,url,obj)=>
       });
    }
 }
+export const deleteRecord=(actiontype,url)=>
+{
+   debugger
+   const svcconfig = {
+      headers: { Pragma: 'no-cache' }
+   }
+   return dispatch => {
+      dispatch({
+         type:actiontype,
+           payload:axios.delete(`${services.BASE_URL}${url}`)
+           .then(response=>{
+            return response
+         })
+         .catch(
+            error=>
+            {
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
+            })
+         });
+   }
+}
 
 export const getDestination = () => {
    const svcconfig = {
@@ -369,6 +390,26 @@ export const updatePropData = (param, value, propName) => {
       });
    }
 }
+
+export const removeErrormsg = () => {
+   return dispatch => {
+      dispatch({
+         type: actions.REMOVE_ERROR_MSG,
+         payload: {value:{}}
+      });
+   }
+}
+
+export const editorState = (editorState) => {
+   return dispatch => {
+      dispatch({
+         type: actions.EDITOR_STATE,
+         payload:{value:editorState}
+      });
+   }
+}
+
+
 
 
 

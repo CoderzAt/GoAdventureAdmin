@@ -6,50 +6,27 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import {getCities,getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 class EventType extends Component {
     constructor(props) {
         super(props);
        this.state = {
-        eventTypeCode:null,
-        eventTypeDesc:null,
-        statusId: 1,
-       // editData:[],
-       // eventtypes:[],
-        //status:[],
-        
+           validated:false,
+           refreshflag:false
            }
     }
-
-   
-    componentDidMount()
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+    }
+   componentDidMount()
      {
        this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
        this.props.getData(action.GET_STATUS,GET_STATUS)
     } 
-    eventtypecodeOperation(event)
-    {
-      this.setState({
-            eventTypeCode:event.target.value
-        })
-    }
-    eventtypedescriptionOpearation(event)
-    {
-        this.setState({
-            eventTypeDesc:event.target.value
-        })
-
-    }
-    statusidOpearation(event)
-    {
-        this.setState({
-            statusId:event.target.value
-        })
-
-    }
-
+  
    /*  deleteRecord(id)
     {
         alert("in delete id no is"+id)
@@ -58,59 +35,6 @@ class EventType extends Component {
           });
 
     } */
-    async editReacord(id)
-    {
-        
-        let url=GET_EVENTTYPE_BYID+id;
-
-        this.props.getData(action.GET_EVENTTYPE_BYID,url)
-        let editdata=this.props.geteventtypebyid;
-      /*   let editdata=await loadData(url)
-        this.setState({
-            editData:editdata
-        })
- */
-        this.setState({
-            eventTypeCode:editdata.eventTypeCode,
-            eventTypeDesc:editdata.eventTypeDesc,
-            statusId:editdata.statusId
-            
-             })
-    } 
-     async postEditedData()
-    {
-        debugger
-        
-        const obj={
-            eventTypeId:parseInt(this.state.editData.eventTypeId),
-            eventTypeCode:this.state.eventTypeCode,
-            eventTypeDesc:this.state.eventTypeDesc,
-            statusId:parseInt(this.state.statusId)
-                  }
-
-        let editurl=eventtypeupdateapi+this.state.editData.eventTypeId;
-        let editeddata=await postData(obj,editurl,'Put')
-
-        alert(editeddata)
-
-        window.location.reload();//page refresh
-
-    }
-     async postDatatoApi()
-    {
-        debugger
-        
-        const obj={
-            eventTypeId: 0,
-            eventTypeCode:this.state.eventTypeCode,
-            eventTypeDesc:this.state.eventTypeDesc,
-            statusId:parseInt(this.state.statusId)
-              }
-             let message=await  postData(obj,eventtypepostapi,'Post');
-             
-             alert (message);
-             window.location.reload();//page refresh
-    }
     postEventtypeData()
     {
         debugger
@@ -118,7 +42,8 @@ class EventType extends Component {
             eventTypeId:this.props.geteventtypebyid.eventTypeId?this.props.geteventtypebyid.eventTypeId:0,
             eventTypeCode:this.props.geteventtypebyid.eventTypeCode,
             eventTypeDesc:this.props.geteventtypebyid.eventTypeDesc,
-            statusId:this.props.geteventtypebyid.statusId*1
+            statusId:this.props.geteventtypebyid.statusId*1,
+            isDeleted: this.props.geteventtypebyid.eventTypeId?false:true
         };
         let url = PUT_EVENTTYPE + this.props.geteventtypebyid.eventTypeId;
         if (this.props.geteventtypebyid.eventTypeId) {
@@ -302,13 +227,10 @@ class EventType extends Component {
            getstatus:state.goAdvStore.getstatus,
            message: state.goAdvStore.message,
            messageData: state.goAdvStore.messageData
-           
-            //cities:state.goAdvStore.citybyid
-            //cities:state.goAdvStore.citybyid
-        }
+           }
     }
     
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(EventType);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg})(EventType);
 
     //export default EventType
 

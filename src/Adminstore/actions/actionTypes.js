@@ -46,6 +46,7 @@ export const GET_COUNTRIES="GET_COUNTRIES";
 export const GET_COUNTRY_BYID="GET_COUNTRY_BYID";
 export const POST_COUNTRY="POST_COUNTRY";
 export const PUT_COUNTRY="PUT_COUNTRY";
+export const DELETE_COUNTRY="DELETE_COUNTRY";
 
 //city
 export const GET_CITIES="GET_CITIES";
@@ -81,6 +82,15 @@ export const GET_PLACETOVISIT="GET_PLACETOVISIT";
 export const POST_PLACETOVISIT="POST_PLACETOVISIT";
 export const PUT_PLACETOVISIT="PUT_PLACETOVISIT";
 export const GET_PLACETOVISIT_BYID="GET_PLACETOVISIT_BYID";
+
+//booking
+export const GET_BOOKING="GET_BOOKING"
+export const GET_BOOKING_BYID="GET_BOOKING_BYID";
+export const POST_BOOKING="POST_BOOKING";
+export const PUT_BOOKING="PUT_BOOKING";
+
+//user
+export const GET_USER="GET_USER";
 
 //placetype
 export const GET_PLACETYPE="GET_PLACETYPE";
@@ -137,6 +147,11 @@ export const RESET_DATA="RESET_DATA";
 
 
 //post
+
+//removerror msg
+export const REMOVE_ERROR_MSG="REMOVE_ERROR_MSG";
+
+export const EDITOR_STATE="EDITOR_STATE";
 
 
 
