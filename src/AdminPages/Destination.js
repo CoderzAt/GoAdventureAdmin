@@ -7,7 +7,7 @@ import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid,
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -30,30 +30,41 @@ class Destination extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
-  
+
     }
    async componentDidMount()
     {
      this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
     }
-   
+
     postDestinationdata()
     {
       debugger
     const obj = {
-      destinationId:this.props.getdestinationbyid.destinationId?this.props.getdestinationbyid.destinationId:0,
-                destinationName:this.props.getdestinationbyid.destinationName,
-                description:this.props.getdestinationbyid.description,
-                title:this.props.getdestinationbyid.title
+      DestinationId:this.props.getdestinationbyid.destinationId?this.props.getdestinationbyid.destinationId:0,
+                DestinationName:this.props.getdestinationbyid.destinationName,
+                Description:this.props.getdestinationbyid.description,
+                Title:this.props.getdestinationbyid.title,
+                PromoImage: "image.jpg",
+                isDeleted: false,
+                formFile: ""
                 //promoImage:this.props.getdestinationbyid.promoimage,
                 //formFile:this.state.formFile
        };
+       var bodyFormData = new FormData();
+       bodyFormData.set('DestinationId', 0);
+       bodyFormData.set('DestinationName', this.props.getdestinationbyid.destinationName);
+       bodyFormData.set('Description', this.props.getdestinationbyid.description);
+       bodyFormData.set('Title', this.props.getdestinationbyid.title);
+       bodyFormData.set('PromoImage', this.state.formFile.name);
+       bodyFormData.set('isDeleted', false);
+       bodyFormData.append('formFile', this.state.formFile);
     let url = PUT_DESTINATION+this.props.getdestinationbyid.destinationId;
     if (this.props.getdestinationbyid.destinationId) {
         this.props.putData1(action.PUT_DESTINATION,url,obj);
     }
     else {
-        this.props.postData1(action.POST_DESTINATION,POST_DESTINATION,obj);
+        this.props.putDataWithFile(action.POST_DESTINATION,POST_DESTINATION,bodyFormData);
     }
     this.setState({ validated: false });
     }
@@ -71,7 +82,7 @@ class Destination extends Component {
       else {
           event.preventDefault();
           this.postDestinationdata();
-      }    
+      }
 
     }
     handleReset() {
@@ -82,8 +93,7 @@ class Destination extends Component {
 {
 debugger
   console.log(e.target.files[0])
-  console.log("contentdisposition",e.target.files[0])
-
+  console.log("contentdisposition",e.target.files[0]);
   this.setState({
     formFile:e.target.files[0]
   })
@@ -99,10 +109,10 @@ updateDestination = (e, paramName) => {
 	    return (
 
         <div>
-       
+
    <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
        <Sidebar/>
-       
+
        <div class="main-panel">
            <div class="content-wrapper">
            <div class="page-header">
@@ -155,11 +165,11 @@ updateDestination = (e, paramName) => {
                                                          <div class="col-sm-9">
                                                          <span class="input-group-append">
                                                          <input
-                                                                
+
                                                                   class="file-upload-browse btn btn-gradient-primary"
                                                                     type="file"
                                                                     onChange={this.saveFile}/>
-                                                        
+
                                                         </span>
                                                         </div>
                                                     {/* <div class="col-sm-9">
@@ -186,9 +196,9 @@ updateDestination = (e, paramName) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
-                                       
+
                                         <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
@@ -208,22 +218,22 @@ updateDestination = (e, paramName) => {
                                     {
                                         Header: "DestinationId",
                                         accessor: "destinationId"
-                                        
+
                                     },
                                   {
                                     Header: "DestinationName",
                                     accessor: "destinationName"
-                                    
+
                                   },
                                   {
                                     Header: "Title",
                                     accessor: "title"
-                                    
+
                                   },
                                   {
                                     Header: "PromoImage",
                                     accessor: "promoImage"
-                                    
+
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
@@ -241,7 +251,7 @@ updateDestination = (e, paramName) => {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
                                           <Link style={{ color:'#A9A9A9'}}  to={`/admin/placetovisit/${row.value}/${"destination"}`}> <i class="mdi mdi-eye-outline"></i></Link>
                                           </button>
-                                         
+
                                       </div>)
 
                                   }
@@ -249,9 +259,9 @@ updateDestination = (e, paramName) => {
                                 data={this.props.getdestination}
                                 showPagination={true}
                                 defaultPageSize={5}
-                                
+
                          />
-      
+
                          </div>
         </div>
         </div>
@@ -260,11 +270,11 @@ updateDestination = (e, paramName) => {
         </div>
         </div>
         </div>
-        
-        
 
 
-        
+
+
+
         </div>
      )
         }
@@ -279,8 +289,7 @@ updateDestination = (e, paramName) => {
         messageData: state.goAdvStore.messageData */
       }
     }
-    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(Destination);
+    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile })(Destination);
 
 
     //export default Destination
-
