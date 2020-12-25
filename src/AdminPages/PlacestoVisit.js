@@ -305,29 +305,41 @@ class PlacestoVisit extends Component {
                                             </div>
                                             <div className="table-responsive">
                                                 <ReactTable columns={[
-                                                    {
+                                                   /* {
                                                         Header: "PlaceId",
                                                         accessor: "placeId"
 
-                                                    },
+                                                    },*/
                                                     {
-                                                        Header: "PlaceName",
-                                                        accessor: "placeName"
+                                                        Header: "Name",
+                                                        accessor: "placeName",
+                                                        headerStyle: {
+                                                            textAlign: 'left',
+                                                            fontWeight: 'bold'
+                                                        }
 
                                                     },
                                                     {
-                                                        Header: "PlaceGenre",
-                                                        accessor: "placeGenre"
+                                                        Header: "Genre",
+                                                        accessor: "placeGenre",
+                                                        headerStyle: {
+                                                            textAlign: 'left',
+                                                            fontWeight: 'bold'
+                                                        }
 
                                                     },
                                                     {
-                                                        Header: "PlaceDescription",
-                                                        accessor: "description"
+                                                        Header: "Description",
+                                                        accessor: "description",
+                                                        headerStyle: {
+                                                            textAlign: 'left',
+                                                            fontWeight: 'bold'
+                                                        }
 
                                                     },
                                                     {
                                                         id: 'id', // Required because our accessor is not a string
-                                                        Header: 'Actions',
+                                                        Header: '',
                                                         accessor: d => d.placeId,
                                                         maxWidth: 300,
                                                         Cell: row => (

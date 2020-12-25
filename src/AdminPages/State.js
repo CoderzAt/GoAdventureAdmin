@@ -228,29 +228,41 @@ class State extends Component {
                       <div className="table-responsive">
                         <TableWithSelection />
                         <ReactTable columns={[
-                          {
+                         /* {
                             Header: "StateId",
                             accessor: "stateId"
 
-                          },
+                          },*/
                           {
-                            Header: "StateName",
-                            accessor: "stateName"
+                            Header: "Name",
+                            accessor: "stateName",
+                            headerStyle: {
+                                textAlign: 'left',
+                                fontWeight: 'bold'
+                            }
 
                           },
                           {
-                            Header: "StateCode",
-                            accessor: "stateCode"
+                            Header: "Code",
+                            accessor: "stateCode",
+                            headerStyle: {
+                                textAlign: 'left',
+                                fontWeight: 'bold'
+                            }
 
                           },
                           {
-                            Header: "CountryDescription",
-                            accessor: "stateDesc"
+                            Header: "Description",
+                            accessor: "stateDesc",
+                            headerStyle: {
+                                textAlign: 'left',
+                                fontWeight: 'bold'
+                            }
 
                           },
                           {
                             id: 'id', // Required because our accessor is not a string
-                            Header: 'Actions',
+                            Header: '',
                             accessor: d => d.stateId,
                             maxWidth: 300,
                             Cell: row => (

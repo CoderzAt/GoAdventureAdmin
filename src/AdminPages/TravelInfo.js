@@ -211,23 +211,35 @@ class TravelInfo extends Component {
                                       <ReactTable columns={[
                                    
                                   {
-                                    Header: "VehckeName",
-                                    accessor: "vehicleName"
+                                    Header: "Name",
+                                    accessor: "vehicleName",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
-                                    Header: "VehicleOwner",
-                                    accessor: "vehicleOwner"
+                                    Header: "Owner",
+                                    accessor: "vehicleOwner",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
-                                    Header: "VehicleContactNumber",
-                                    accessor: "vehicleContactNumber"
+                                    Header: "Contact Number",
+                                    accessor: "vehicleContactNumber",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     accessor: d => d.travelInfoId,
                                     maxWidth:300,
                                     Cell: row => (

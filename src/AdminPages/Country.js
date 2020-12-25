@@ -222,39 +222,42 @@ class Country extends Component {
                                     <h4 class="card-title">Countries</h4>
                                     <div class="table-responsive"></div>
                                     <ReactTable columns={[
-                                    {
+                                  /* {
                                         Header: "CountryId",
                                         accessor:"countryId",
                                         headerStyle:{
                                             textAlign:'left'
                                         }
-                                    },
+                                    },*/
                                   {
-                                    Header: "CountryName",
+                                    Header: "Name",
                                     accessor: "countryName",
                                     headerStyle:{
-                                        textAlign:'left'
+                                        textAlign:'left',
+                                        fontWeight: 'bold'
                                     },
                                   },
                                   {
-                                    Header: "CountryCode",
+                                    Header: "Code",
                                     accessor: "countryCode",
                                     headerStyle:{
-                                        textAlign:'left'
+                                        textAlign:'left',
+                                        fontWeight: 'bold'
                                     }
 
                                   },
                                   {
-                                    Header: "CountryDescription",
+                                    Header: "Description",
                                     accessor: "countryDesc",
                                     headerStyle:{
-                                        textAlign:'left'
+                                        textAlign:'left',
+                                        fontWeight: 'bold'
                                     }
 
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     headerStyle:{
                                         textAlign:'left'
                                     },

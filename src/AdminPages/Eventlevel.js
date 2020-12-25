@@ -171,17 +171,25 @@ class Eventlevel extends Component {
 
                                                 {
                                                     Header: "Code",
-                                                    accessor: "eventLevelCode"
+                                                    accessor: "eventLevelCode",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
                                                     Header: "Description",
-                                                    accessor: "eventLevelDesc"
+                                                    accessor: "eventLevelDesc",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
-                                                    Header: 'Actions',
+                                                    Header: '',
                                                     accessor: d => d.eventLevelId,
                                                     maxWidth: 300,
                                                     Cell: row => (

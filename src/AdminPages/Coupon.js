@@ -165,23 +165,35 @@ class Coupon extends Component {
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
                                                 {
-                                                    Header: "couponValue",
-                                                    accessor: "couponValue"
+                                                    Header: "Value",
+                                                    accessor: "couponValue",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
-                                                    Header: "couponCode",
-                                                    accessor: "couponCode"
+                                                    Header: "Code",
+                                                    accessor: "couponCode",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
-                                                    Header: "couponPercentage",
-                                                    accessor: "couponPercentage"
+                                                    Header: "Percentage",
+                                                    accessor: "couponPercentage",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
-                                                    Header: 'Actions',
+                                                    Header: '',
                                                     accessor: d => d.couponId,
                                                     maxWidth: 300,
                                                     Cell: row => (

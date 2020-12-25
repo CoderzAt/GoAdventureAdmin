@@ -386,22 +386,34 @@ class Stay extends Component {
                                    
                                   {
                                     Header: "Name",
-                                    accessor: "stayName"
+                                    accessor: "stayName",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     Header: "RateType",
-                                    accessor: "rateType"
+                                    accessor: "rateType",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     Header: "StayType",
-                                    accessor: "stayType"
+                                    accessor: "stayType",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     accessor: d => d.stayId,
                                     maxWidth:300,
                                     Cell: row => (

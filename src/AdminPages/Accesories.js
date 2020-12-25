@@ -217,37 +217,42 @@ class Accessories extends Component {
                                                     Header: "Name",
                                                     accessor: "accessoryName",
                                                     headerStyle: {
-                                                        textAlign: 'left'
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
                                                     }
                                                 },
                                                 {
-                                                    Header: "Borrowtype",
+                                                    Header: "Borrow Type",
                                                     accessor: "saleOrRent",
                                                     headerStyle: {
-                                                        textAlign: 'left'
-                                                    },
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
                                                 },
                                                 {
-                                                    Header: "SalePrice",
+                                                    Header: "Sale Price",
                                                     accessor: "salePrice",
                                                     headerStyle: {
-                                                        textAlign: 'left'
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
                                                     }
 
                                                 },
                                                 {
-                                                    Header: "RentPrice",
+                                                    Header: "Rent Price",
                                                     accessor: "rentPrice",
                                                     headerStyle: {
-                                                        textAlign: 'left'
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
                                                     }
 
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
-                                                    Header: 'Actions',
+                                                    Header: '',
                                                     headerStyle: {
-                                                        textAlign: 'left'
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
                                                     },
                                                     accessor: d => d.accessoriesId,
                                                     maxWidth: 300,

@@ -293,29 +293,41 @@ class Package extends Component {
                                <h4 class="card-title">List</h4>
                    <div className="table-responsive">
                    <ReactTable columns={[
-                                    {
+                                   /* {
                                         Header: "PackageId",
                                         accessor: "packageId"
                                         
-                                    },
+                                    },*/
                                   {
-                                    Header: "PackageName",
-                                    accessor: "packageName"
+                                    Header: "Name",
+                                    accessor: "packageName",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
-                                    Header: "PackageType",
-                                    accessor: "packageType"
+                                    Header: "Type",
+                                    accessor: "packageType",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     Header: "Duration",
-                                    accessor: "duration"
+                                    accessor: "duration",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     accessor: d => d.packageId,
                                     maxWidth:300,
                                     Cell: row => (

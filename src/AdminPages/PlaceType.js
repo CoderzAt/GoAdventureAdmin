@@ -158,24 +158,32 @@ class PlaceType extends Component {
                                             <h4 class="card-title">List</h4>
                                             <div className="table-responsive">
                                                 <ReactTable columns={[
-                                                    {
+                                                  /*  {
                                                         Header: "PlaceTypeId",
                                                         accessor: "placeTypeId"
 
-                                                    },
+                                                    },*/
                                                     {
-                                                        Header: "PlaceTypeName",
-                                                        accessor: "placeTypeName"
+                                                        Header: "Name",
+                                                        accessor: "placeTypeName",
+                                                        headerStyle: {
+                                                            textAlign: 'left',
+                                                            fontWeight: 'bold'
+                                                        }
 
                                                     },
                                                     {
-                                                        Header: "PlaceTypeDescription",
-                                                        accessor: "placeTypeDescription"
+                                                        Header: "Description",
+                                                        accessor: "placeTypeDescription",
+                                                        headerStyle: {
+                                                            textAlign: 'left',
+                                                            fontWeight: 'bold'
+                                                        }
 
                                                     },
                                                     {
                                                         id: 'id', // Required because our accessor is not a string
-                                                        Header: 'Actions',
+                                                        Header: '',
                                                         accessor: d => d.placeTypeId,
                                                         maxWidth: 300,
                                                         Cell: row => (

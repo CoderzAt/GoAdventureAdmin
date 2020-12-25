@@ -173,17 +173,25 @@ class EventType extends Component {
                                     
                                   {
                                     Header: "Code",
-                                    accessor: "eventTypeCode"
+                                    accessor: "eventTypeCode",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     Header: "Description",
-                                    accessor: "eventTypeDesc"
+                                    accessor: "eventTypeDesc",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     accessor: d => d.eventTypeId,
                                     maxWidth:300,
                                     Cell: row => (

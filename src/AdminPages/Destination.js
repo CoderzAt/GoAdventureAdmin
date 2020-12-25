@@ -215,29 +215,41 @@ updateDestination = (e, paramName) => {
                                <h4 class="card-title">Destinations</h4>
                    <div className="table-responsive">
                    <ReactTable columns={[
-                                    {
+                                 /*   {
                                         Header: "DestinationId",
                                         accessor: "destinationId"
 
-                                    },
+                                    },*/
                                   {
-                                    Header: "DestinationName",
-                                    accessor: "destinationName"
+                                    Header: "Name",
+                                    accessor: "destinationName",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
 
                                   },
                                   {
                                     Header: "Title",
-                                    accessor: "title"
+                                    accessor: "title",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
 
                                   },
                                   {
                                     Header: "PromoImage",
-                                    accessor: "promoImage"
+                                    accessor: "promoImage",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
 
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     accessor: d => d.destinationId,
                                     maxWidth:300,
                                     Cell: row => (

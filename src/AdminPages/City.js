@@ -226,25 +226,37 @@ class City extends Component {
                       <div className="table-responsive"></div>
                       <ReactTable
                         columns={[
-                          {
+                          /*{
                             Header: "Cityd",
                             accessor: "cityId",
-                          },
+                          },*/
                           {
-                            Header: "CityName",
+                            Header: "Name",
                             accessor: "cityName",
+                            headerStyle:{
+                                textAlign:'left',
+                                fontWeight: 'bold'
+                            }
                           },
                           {
-                            Header: "CityCode",
+                            Header: "Code",
                             accessor: "cityCode",
+                            headerStyle:{
+                                textAlign:'left',
+                                fontWeight: 'bold'
+                            }
                           },
                           {
-                            Header: "CityDescription",
+                            Header: "Description",
                             accessor: "cityDesc",
+                            headerStyle:{
+                                textAlign:'left',
+                                fontWeight: 'bold'
+                            }
                           },
                           {
                             id: "id", // Required because our accessor is not a string
-                            Header: "Actions",
+                            Header: "",
                             accessor: (d) => d.cityId,
                             maxWidth: 300,
                             Cell: (row) => (

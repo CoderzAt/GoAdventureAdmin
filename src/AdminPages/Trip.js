@@ -341,17 +341,25 @@ class Trip extends Component {
 
                                                 {
                                                     Header: "Name",
-                                                    accessor: "tripName"
+                                                    accessor: "tripName",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
-                                                    Header: "BasePrice",
-                                                    accessor: "basePrice"
+                                                    Header: "Base Price",
+                                                    accessor: "basePrice",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
-                                                    Header: 'Actions',
+                                                    Header: '',
                                                     accessor: d => d.tripId,
                                                     maxWidth: 300,
                                                     Cell: row => (

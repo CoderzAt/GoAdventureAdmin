@@ -149,17 +149,25 @@ updateActivity = (e, paramName) => {
                                     
                                   {
                                     Header: "Name",
-                                    accessor: "activityName"
+                                    accessor: "activityName",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     Header: "Genre",
-                                    accessor: "activityGenre"
+                                    accessor: "activityGenre",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     accessor: d => d.activityId,
                                     maxWidth:300,
                                     Cell: row => (

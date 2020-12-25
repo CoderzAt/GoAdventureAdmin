@@ -186,21 +186,24 @@ class Costcentre extends Component {
                                                     Header: "Name",
                                                     accessor: "costCenterName",
                                                     headerStyle: {
-                                                        textAlign: 'left'
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
                                                     }
                                                 },
                                                 {
                                                     Header: "Type",
                                                     accessor: "costCenterType",
                                                     headerStyle: {
-                                                        textAlign: 'left'
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
                                                     },
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
-                                                    Header: 'Actions',
+                                                    Header: '',
                                                     headerStyle: {
-                                                        textAlign: 'left'
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
                                                     },
                                                     accessor: d => d.costCenterId,
                                                     maxWidth: 300,

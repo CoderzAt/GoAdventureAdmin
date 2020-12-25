@@ -170,22 +170,34 @@ class Traveltype extends Component {
                                    
                                   {
                                     Header: "Name",
-                                    accessor: "travelTypeName"
+                                    accessor: "travelTypeName",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     Header: "Description",
-                                    accessor: "travelTypeDescription"
+                                    accessor: "travelTypeDescription",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
-                                    Header: "MaxCapacity",
-                                    accessor: "maxCapacity"
+                                    Header: "Capacity",
+                                    accessor: "maxCapacity",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
                                     
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
+                                    Header: '',
                                     accessor: d => d.travelTypeId,
                                     maxWidth:300,
                                     Cell: row => (

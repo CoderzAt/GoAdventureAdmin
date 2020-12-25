@@ -263,20 +263,32 @@ class Itenary extends Component {
                                                 {
                                                     Header: "Summary",
                                                     accessor: "summary",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
                                                     Header: "Description",
-                                                    accessor: "iternaryDescription"
+                                                    accessor: "iternaryDescription",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
 
                                                 },
                                                 {
                                                     Header: "BenefitTags",
-                                                    accessor: "benefitTags"
+                                                    accessor: "benefitTags",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
-                                                    Header: 'Actions',
+                                                    Header: '',
                                                     accessor: d => d.itenaryId,
                                                     maxWidth: 300,
                                                     Cell: row => (
