@@ -105,6 +105,25 @@ export const putData1 =(actiontype,url,obj)=>
       });
    }
 }
+export const putDataWithFile =(actiontype,url,obj)=> {
+   const svcconfig = {
+      headers: { Pragma: 'no-cache', 'Content-Type': 'multipart/form-data' }
+   }
+   return dispatch => {
+      dispatch({
+         type:actiontype,
+           payload:axios.post(`${services.BASE_URL}${url}`,obj, svcconfig)
+          .then(response=>{
+             console.log("putdata",response)
+             return response;
+          })
+          .catch(error=>
+            {
+               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
+            })
+      });
+   }
+}
 export const deleteRecord=(actiontype,url)=>
 {
    debugger

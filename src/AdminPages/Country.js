@@ -23,27 +23,52 @@ class Country extends Component {
         super(props);
        this.state = {
            validated:false,
-           refreshflag:false
-           }
+           countryname:null,
+           countrydescription:'<div>hi<div>',
+           countrycode:null,
+           countries:[],
+           viewData:[],
+           editorState:EditorState.createEmpty()
+       }
     }
-    componentWillMount()
-    {
-      this.props.removeErrormsg()
-  
-    }
-    componentDidMount()
-     {
+    componentDidMount() {
       this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
-     }
-        postCountrydata()
-    {
+    }
+    componentDidUpdate(prevProps, prevState, snapshotValue) {
+      if(this.props.getcountrybyid.countryDesc !== prevProps.getcountrybyid.countryDesc) {
+        if( this.props.getcountrybyid.countryDesc) {
+          const contentBlocks = convertFromHTML(this.props.getcountrybyid.countryDesc);
+          const contentState = ContentState.createFromBlockArray(contentBlocks);
+          this.setState({
+            editorState: EditorState.createWithContent(contentState)
+          });
+        } else {
+          this.setState({
+            editorState: EditorState.createEmpty()
+          });
+        }
+      }
+    }
+    countrydescriptionOperation(event) {
+        //alert(draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())))
+        this.setState({
+            countrydescription:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))
+        })
+    }
+    onEditorStateChange = (editorState) => {
+      this.setState({
+          editorState
+      });
+    }
+
+    postCountrydata() {
         debugger
         const obj = {
-        countryId:this.props.getcountrybyid.countryId?this.props.getcountrybyid.countryId:0,
-        countryName:this.props.getcountrybyid.countryName,
-        countryCode:this.props.getcountrybyid.countryCode,
-        countryDesc:this.props.getcountrybyid.countryDesc,
-        isDeleted:this.props.getcountrybyid.countryId?false:true
+          countryId:this.props.getcountrybyid.countryId?this.props.getcountrybyid.countryId:0,
+          countryName:this.props.getcountrybyid.countryName,
+          countryCode:this.props.getcountrybyid.countryCode,
+          countryDesc:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+          isDeleted: false
         };
         let url = PUT_COUNTRY+this.props.getcountrybyid.countryId;
         if (this.props.getcountrybyid.countryId) {
@@ -52,7 +77,6 @@ class Country extends Component {
             this.props.postData1(action.POST_COUNTRY,POST_COUNTRY,obj);
         }
         this.setState({ validated: false });
-
     }
     handleSubmit(event)
     {
@@ -75,13 +99,22 @@ class Country extends Component {
         this.props.resetData(action.RESET_DATA,"getcountrybyid");
         this.setState({ validated: false });
     }
-    editReacord(id)
-    {
-    this.props.getData(action.GET_COUNTRY_BYID,GET_COUNTRY_BYID+id);
+    editReacord(id) {
+      this.props.getData(action.GET_COUNTRY_BYID,GET_COUNTRY_BYID+id);
     }
 
     updateCountry = (e, paramName) => {
-        this.props.updatePropAccData(paramName,e.target.value,"getcountrybyid");
+
+        var value
+        if(paramName === "countryDesc")
+        {
+            value=draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+        }
+        else
+        {
+            value=e.target.value
+        }
+        this.props.updatePropAccData(paramName,value,"getcountrybyid");
         this.setState({ refreshflag:!this.state.refreshflag });
     }
     deleteRecord(id)
@@ -90,15 +123,21 @@ class Country extends Component {
     this.props.deleteRecord(action.DELETE_COUNTRY,DELETE_COUNTRY+id)
     }
     render() {
+         editorstate=EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(this.props.getcountrybyid.countryDesc?this.props.getcountrybyid.countryDesc:'<div><div>')
+            )
+          )
+
 	    return (
          <div>
-            
+
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
-            
+
             <div class="main-panel">
                 <div class="content-wrapper">
-                    
+
                      <div class="page-header">
                         <h3 class="page-title">
                             <span class="page-title-icon bg-gradient-primary text-white mr-2">
@@ -118,7 +157,7 @@ class Country extends Component {
                                 </li>
                             </ul>
                         </nav>
-                    </div> 
+                    </div>
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
@@ -129,12 +168,12 @@ class Country extends Component {
                                         {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
                                         <TextInput value={this.state.country} defaultValue={this.state.viewData.countryCode} type="text" name="countryCode" onChange={(value)=>this.countrycodeOpearation(value)}/>
                                             */}
-                                          
+
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" value={this.props.getcountrybyid.countryName?this.props.getcountrybyid.countryName:""} 
+                                                        <input required type="text" value={this.props.getcountrybyid.countryName?this.props.getcountrybyid.countryName:""}
                                                         class="form-control" onChange={(e)=>this.updateCountry(e,"countryName")}/>
                                                     </div>
                                                 </div>
@@ -143,7 +182,7 @@ class Country extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Code</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" value={this.props.getcountrybyid.countryCode?this.props.getcountrybyid.countryCode:""} 
+                                                        <input required type="text" value={this.props.getcountrybyid.countryCode?this.props.getcountrybyid.countryCode:""}
                                                         class="form-control" onChange={(e)=>this.updateCountry(e,"countryCode")} />
                                                     </div>
                                                 </div>
@@ -155,15 +194,23 @@ class Country extends Component {
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-12">
                                                     <div>
-                                                        <textarea required value={this.props.getcountrybyid.countryDesc?this.props.getcountrybyid.countryDesc:""} class="form-control" 
-                                                        id="placeTypeDescription" rows="4" onChange={(e)=>this.updateCountry(e,"countryDesc")}></textarea> 
-                                                    </div>
+
+                                                       {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
+                                                       <Editor
+                                                 editorState={this.state.editorState}
+                                                 wrapperClassName="demo-wrapper"
+                                                 editorClassName="demo-editor"
+                                                 onEditorStateChange={this.onEditorStateChange}
+                                                 //onChange={(e)=>this.updateCountry(e,"countryDesc")}
+                                                      />
+
+                                                      </div>
                                                   </div>
                                                 </div>
                                             </div>
                                         </div>
-                                       
-                
+
+
                                         <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
@@ -200,7 +247,7 @@ class Country extends Component {
                                     headerStyle:{
                                         textAlign:'left'
                                     }
-                                    
+
                                   },
                                   {
                                     Header: "CountryDescription",
@@ -208,7 +255,7 @@ class Country extends Component {
                                     headerStyle:{
                                         textAlign:'left'
                                     }
-                                    
+
                                   },
                                   {
                                     id:'id', // Required because our accessor is not a string
@@ -236,10 +283,10 @@ class Country extends Component {
                                 ]}
                                 data={this.props.countries}
                                 showPagination={true}
-                                
+
                                 defaultPageSize={5}
 
-                               
+
                          />
                          </div>
                                     </div>
@@ -247,12 +294,12 @@ class Country extends Component {
                                     </div>
                                     </div>
                     </div>
-                
+
             </div>
-            
+
         </div>
-        
-    
+
+
  )
         }
     }
@@ -267,5 +314,5 @@ class Country extends Component {
     export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Country);
     
 
-    //export default Country
 
+    //export default Country
