@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT } from '../Shared/Services'
+import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT,DELETE_PLACETOVISIT } from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getDestination, getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getDestination, getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 class PlacestoVisit extends Component {
@@ -132,7 +132,11 @@ class PlacestoVisit extends Component {
         this.props.updatePropAccData(paramName, e.target.value, "getplacetovisitbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
-
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_PLACETOVISIT,DELETE_PLACETOVISIT+id)
+    }
     render() {
         return (
 
@@ -278,7 +282,7 @@ class PlacestoVisit extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">List</h4>
+                                            <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="col-md-6" hidden={this.state.hidecity}>
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">City</label>
@@ -347,7 +351,7 @@ class PlacestoVisit extends Component {
                                                                 <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
                                                                     <i class="mdi mdi-pencil-outline"></i>
                                                                 </button>
-                                                                <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                                <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                     <i class="mdi mdi-delete-outline"></i>
                                                                 </button>
                                                             </div>)
@@ -383,6 +387,6 @@ const mapStateToProps = (state) => {
         messageData: state.goAdvStore.messageData
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg })(PlacestoVisit);
+export default connect(mapStateToProps, { getData, postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg,deleteRecord })(PlacestoVisit);
     //export default PlacestoVisit
 

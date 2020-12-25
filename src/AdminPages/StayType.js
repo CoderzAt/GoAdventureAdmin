@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_STAYTYPE,GET_STAYTYPE_BYID,POST_STAYTYPE,PUT_STAYTYPE} from '../Shared/Services'
+import {GET_STAYTYPE,GET_STAYTYPE_BYID,POST_STAYTYPE,PUT_STAYTYPE,DELETE_STAYTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -26,6 +26,11 @@ class StayType extends Component {
      {
      this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
      }  
+     refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
+    }
     postStaytypedata()
     {
         debugger
@@ -74,7 +79,11 @@ class StayType extends Component {
         this.props.updatePropAccData(paramName,e.target.value,"getstaytypebyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
-
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_STAYTYPE,DELETE_STAYTYPE+id)
+    }
     render() {
 	    return (
          <div>
@@ -155,7 +164,7 @@ class StayType extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">List</h4>
+                                    <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                     <div class="table-responsive"></div>
                                       <ReactTable columns={[
                                   {
@@ -195,7 +204,7 @@ class StayType extends Component {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                       </div>)
@@ -230,6 +239,6 @@ class StayType extends Component {
           
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(StayType)
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord })(StayType)
     //export default StayType
 

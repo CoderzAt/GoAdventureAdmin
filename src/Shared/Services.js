@@ -43,6 +43,7 @@ export const GET_ALL_ACCESSORIES="GetAllAccessories";
 export const POST_ACCESSORIES="CreateAccessory";
 export const PUT_ACCESSORIES="UpdateAccessories?id=";
 export const GET_ACCESSORIES_BYID="GetAccessoryById?id=";
+export const DELETE_ACCESSORIES="DeleteAccessory?id=";
 //costCentre
 export const costcentrepostapi="https://ga-api.azurewebsites.net/api/v1/createMdCostCenter";
 export const getallcostcentreapi="https://ga-api.azurewebsites.net/api/v1/getAllMdCostCenter";
@@ -53,7 +54,7 @@ export const GET_COSTCENTRE="getAllMdCostCenter";
 export const GET_COSTCENTRE_BYID="getMdCostCenterBy?id=";
 export const POST_COSTCENTRE="createMdCostCenter";
 export const PUT_COSTCENTRE="updateMdCostCenter?id=";
-
+export const DELETE_COSTCENTRE="deleteMdCostCenter?id=";
 //destination
 export const destinationpostapi="https://ga-api.azurewebsites.net/api/v1/createDestination";
 export const getdestinationbyid="https://ga-api.azurewebsites.net/api/v1/getDestinationByid?id=";
@@ -63,6 +64,7 @@ export const GET_DESTINATION="getAllDestination";
 export const GET_DESTINATION_BYID="getDestinationByid?id=";
 export const POST_DESTINATION="createDestination";
 export const PUT_DESTINATION="updateDestination?id=";
+export const DELETE_DESTINATION="deleteDestination?id=";
 //placetype
 export const placetypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdPlaceType";
 export const getplacetypebyid="https://ga-api.azurewebsites.net/api/v1/GetMdPlaceTypeById?id="
@@ -72,6 +74,7 @@ export const GET_PLACETYPE="GetAllMdPlaceTypes";
 export const POST_PLACETYPE="CreateMdPlaceType";
 export const GET_PLACETYPE_BYID="GetMdPlaceTypeById?id=";
 export const PUT_PLACETYPE="UpdateMdPlaceType?id=";
+export const DELETE_PLACETYPE="DeleteMdPlaceType?id=";
 
 //country
 export const countrypostapi="https://ga-api.azurewebsites.net/api/v1/createMdCountry";
@@ -97,6 +100,7 @@ export const POST_STATE="CreateMdState";
 export const PUT_STATE="UpdateMdState?id=";
 export const GET_STATE_BYID="GetMdStateById?id=";
 export const GET_STATE_BYCOUNTRYID="GetStateByCountry?countryId=";
+export const DELETE_STATE="DeleteMdState?id=";
 //city
 export const citypostapi="https://ga-api.azurewebsites.net/api/v1/createMdCity";
 export const getstates="https://ga-api.azurewebsites.net/api/v1/GetAllMdStates";
@@ -107,11 +111,10 @@ export const getcitybystate="https://ga-api.azurewebsites.net/api/v1/GetCityBySt
 
 export const POST_CITY="createMdCity";
 export const PUT_CITY="updateMdCity?id=";
-
-
 export const GET_CITIES="getAllMdCitys";
 export const GET_CITY_BYID="getMdCityById?id=";
 export const GET_CITY_STATEID="GetCityByState?stateId=";
+export const DELETE_CITY="deleteMdCity?id=";
 //placetovisit
 export const placetovisitpostapi="https://ga-api.azurewebsites.net/api/v1/CreatePlaceToVisit";
 export const getdestinations="https://ga-api.azurewebsites.net/api/v1getAllDestination";
@@ -128,7 +131,7 @@ export const GET_PLACETOVISIT="GetAllPlaceToVisits";
 export const POST_PLACETOVISIT="CreatePlaceToVisit";
 export const PUT_PLACETOVISIT="UpdatePlaceToVisit?id=";
 export const GET_PLACETOVISIT_BYID="GetPlaceToVisitById?id=";
-
+export const DELETE_PLACETOVISIT="DeletePlaceToVisit?id=";
 
 //package
 export const packagepostapi="https://ga-api.azurewebsites.net/api/v1/CreatePackage";
@@ -141,7 +144,7 @@ export const GET_ALL_PACKAGES="GetAllPackages";
 export const GET_PACKAGE_BYID="GetPackageById?id=";
 export const POST_PACKAGE="CreatePackage";
 export const PUT_PACKAGE="UpdatePackage?id=";
-
+export const DELETE_PACKAGE="DeletePackage?id=";
 //Traveltype
 export const traveltypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdTravelType";
 export const traveltypegetapi="https://ga-api.azurewebsites.net/api/v1/GetAllMdTravelTypes";
@@ -152,7 +155,7 @@ export const GET_TRAVELTYPE="GetAllMdTravelTypes";
 export const GET_TRAVELTYPE_BYID="GetMdTravelTypeById?id=";
 export const POST_TRAVELTYPE="CreateMdTravelType";
 export const PUT_TRAVELTYPE="UpdateMdTravelType?id=";
-
+export const DELETE_TRAVELTYPE="DeleteMdTravelType?id=";
 //travelinfo
 export const travelinfopostapi="https://ga-api.azurewebsites.net/api/v1/CreateTravelInfo";
 export const getalltravelinfo="https://ga-api.azurewebsites.net/api/v1/GetAllTravelInfo";
@@ -163,7 +166,7 @@ export const GET_TRAVELINFO="GetAllTravelInfo";
 export const GET_TRAVELINFO_BYID="GetTravelInfoById?id=";
 export const POST_TRAVELINFO="CreateTravelInfo";
 export const PUT_TRAVELONFO="UpdateTravelInfo?id=";
-
+export const DELETE_TRAVELINFO="DeleteTravelInfo?id=";
 //stay
 export const staypostapi="https://ga-api.azurewebsites.net/api/v1/CreateStay";
 export const getstays="https://ga-api.azurewebsites.net/api/v1/GetAllStays";
@@ -174,7 +177,7 @@ export const GET_STAY="GetAllStays";
 export const POST_STAY="CreateStay";
 export const GET_STAY_BYID="GetStayById?id=";
 export const PUT_STAY="UpdateStay?id=";
-
+export const DELETE_STAY="DeleteStay?id=";
 //staytype
 export const getstaytypes="https://ga-api.azurewebsites.net/api/v1/GetAllStayTypes";
 export const staytypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateStayType";
@@ -185,7 +188,7 @@ export const GET_STAYTYPE="GetAllStayTypes";
 export const GET_STAYTYPE_BYID="GetStayTypeById?id=";
 export const POST_STAYTYPE="CreateStayType";
 export const PUT_STAYTYPE="UpdateStayType?id="
-
+export const DELETE_STAYTYPE="DeleteStayType?id=";
 //Trip
 export const trippostapi="https://ga-api.azurewebsites.net/api/v1/CreateTrip";
 export const tripupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateTrip?id=";
@@ -198,7 +201,7 @@ export const GET_TRIP_BYPACKAGEID="GetTripByPackage?packageID=";
 export const GET_TRIP="GetAllTrips";
 export const POST_TRIP="CreateTrip";
 export const PUT_TRIP="UpdateTrip?id=";
-
+export const DELETE_TRIP="DeleteTrip?id=";
 //booking
 export const getbookings="https://ga-api.azurewebsites.net/api/v1/getAllBookings";
 export const bookingpostapi="https://ga-api.azurewebsites.net/api/v1/createBookings";
@@ -210,7 +213,7 @@ export const GET_BOOKING="getAllBookings";
 export const GET_BOOKING_BYID="getBookingsByid?id=";
 export const POST_BOOKING="createBookings";
 export const PUT_BOOKING="updateBookings?id=";
-
+export const DELETE_BOOKING="deleteBookings?id=";
 
 //Itenary
 export const itenarypostapi="https://ga-api.azurewebsites.net/api/v1/createItenary";
@@ -224,7 +227,7 @@ export const GET_ITENARY="getAllItenary";
 export const POST_ITENARY="createItenary";
 export const PUT_ITENARY="updateItenary?id=";
 export const GET_ITENARY_BYID="getItenaryByid?id=";
-
+export const DELETE_ITENARY="deleteItenary?id=";
 //activity
 export const postactivityapi="https://ga-api.azurewebsites.net/api/v1/createMdActivity";
 export const getactivities="https://ga-api.azurewebsites.net/api/v1/getAllMdActivitys";
@@ -235,7 +238,7 @@ export const GET_ACTIVITIES="getAllMdActivitys";
 export const POST_ACTIVITY="createMdActivity";
 export const PUT_ACTIVITY="updateMdActivity?id=";
 export const GET_ACTIVITY_BYID="getMdActivityById?id=";
-
+export const DELETE_ACTIVITY="deleteMdActivity?id=";
 //eventlevel
 export const eventlevelpostapi="https://ga-api.azurewebsites.net/api/v1/createMdEventLevel";
 export const geteventlevels="https://ga-api.azurewebsites.net/api/v1/GetAllMdEventLevels";
@@ -247,7 +250,7 @@ export const GET_EVENTLEVEL="GetAllMdEventLevels";
 export const POST_EVENTLEVEL="createMdEventLevel";
 export const PUT_EVENTLEVEL="updateMdEventLevel?id=";
 export const GET_EVENTLEVEL_BYID="GetMdEventLevelById?id=";
-
+export const DELETE_EVENTLEVEL="DeleteMdEventLevel?id=";
 //status
 export const getstatusapi="https://ga-api.azurewebsites.net/api/v1/GetAllMdStatus";
 
@@ -263,7 +266,7 @@ export const GET_EVENTTYPE="GetAllMdEventTypes";
 export const GET_EVENTTYPE_BYID="GetMdEventTypeById?id=";
 export const POST_EVENTTYPE="CreateMdEventType";
 export const PUT_EVENTTYPE="UpdateMdEventType?id=";
-
+export const DELETE_EVENTTYPE="DeleteMdEventType?id=";
 
 //packageplace
 export const getpackageplaces="https://ga-api.azurewebsites.net/api/v1/GetAllPackagePlaces";
@@ -283,6 +286,6 @@ export const GET_ALL_COUPON="getAllCoupon";
 export const GET_COUPON_BYID="getCouponByid?id=";
 export const POST_COUPON="createCoupon";
 export const PUT_COUPON="updateCoupon?id=";
-
+export const DELETE_COUPON="deleteCoupon?id=";
 //calendar
 export const GET_CALENDAR="GetCalenderList?month=12&year=2020";

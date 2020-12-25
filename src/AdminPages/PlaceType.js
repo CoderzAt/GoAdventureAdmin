@@ -4,10 +4,10 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 
-import { GET_PLACETYPE_BYID, GET_PLACETYPE, POST_PLACETYPE, PUT_PLACETYPE } from '../Shared/Services'
+import { GET_PLACETYPE_BYID, GET_PLACETYPE, POST_PLACETYPE, PUT_PLACETYPE,DELETE_PLACETYPE } from '../Shared/Services'
 import { namevalidation } from '../Shared/Validations'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -26,10 +26,14 @@ class PlaceType extends Component {
     componentWillMount() {
         this.props.removeErrormsg()
     }
-    async componentDidMount() {
+    componentDidMount() {
         this.props.getData(action.GET_PLACETYPE, GET_PLACETYPE);
     }
-
+    refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_PLACETYPE, GET_PLACETYPE);
+    }
     validateForm(errors) {
         debugger
         let valid = true;
@@ -85,7 +89,11 @@ class PlaceType extends Component {
         this.props.updatePropAccData(paramName, e.target.value, "getplacetypebyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
-
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_PLACETYPE,DELETE_PLACETYPE+id)
+    }
     render() {
         return (
             <div>
@@ -155,7 +163,7 @@ class PlaceType extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">List</h4>
+                                            <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div className="table-responsive">
                                                 <ReactTable columns={[
                                                   /*  {
@@ -191,7 +199,7 @@ class PlaceType extends Component {
                                                                 <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
                                                                     <i class="mdi mdi-pencil-outline"></i>
                                                                 </button>
-                                                                <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                                <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                     <i class="mdi mdi-delete-outline"></i>
                                                                 </button>
                                                             </div>)
@@ -225,6 +233,6 @@ const mapStateToProps = (state) => {
 
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg })(PlaceType);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(PlaceType);
    // export default PlaceType
 

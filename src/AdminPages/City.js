@@ -3,11 +3,11 @@ import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
-import {  POST_CITY,  PUT_CITY} from "../Shared/Services";
+import {  POST_CITY,  PUT_CITY,DELETE_CITY} from "../Shared/Services";
 import Sidebar from "./Sidebar";
 import { connect } from "react-redux";
 import { getCities,  getStates,  getCitybyid,  getCitybystate,
-  postData1,  putData1, updatePropData, resetData,removeErrormsg} from "../Adminstore/actions/goAdvActions";
+  postData1,  putData1, updatePropData, resetData,removeErrormsg,deleteRecord} from "../Adminstore/actions/goAdvActions";
 import * as action from "../Adminstore/actions/actionTypes";
 import "./admin.scss";
 import * as validation from "../Shared/Validations";
@@ -39,10 +39,16 @@ class City extends Component {
     }
     this.props.getStates();
   }
-
-  deleteRecord(id) {
-    alert("in delete" + id);
+  refresh(e)
+  {
+      e.preventDefault();
+      this.props.getCities();
   }
+  deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_CITY,DELETE_CITY+id)
+    }
   editRecord(id) {
     this.props.getCitybyid(id);
     this.setState({ validated: false });
@@ -211,7 +217,7 @@ class City extends Component {
                 <div className="col-12 grid-margin stretch-card">
                   <div className="card">
                     <div className="card-body">
-                      <h4 className="card-title">Cities</h4>
+                      <h4 className="card-title">Cities<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                       <div className="col-md-6">
                         <div className="form-group row">
                           <label className="col-sm-3 col-form-label">State</label>
@@ -270,9 +276,7 @@ class City extends Component {
                                   }}>
                                   <i className="mdi mdi-pencil-outline"></i>
                                 </button>
-                                <button type="button" className="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {
-                                    this.deleteRecord(row.value);
-                                  }} value={row.value} >
+                                <button type="button" className="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}}  value={row.value} >
                                   <i className="mdi mdi-delete-outline"></i>
                                 </button>
                                 <button type="button" className="btn btn-gradient-primary btn-rounded btn-icon" value={row.value}
@@ -327,7 +331,8 @@ export default connect(mapStateToProps, {
   putData1,
   updatePropData,
   resetData,
-  removeErrormsg
+  removeErrormsg,
+  deleteRecord
 })(City);
 
 //export default City

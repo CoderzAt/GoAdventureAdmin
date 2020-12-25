@@ -34,6 +34,11 @@ class Country extends Component {
     componentDidMount() {
       this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
     }
+    refresh(e)
+  {
+      e.preventDefault();
+      this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
+  }
     componentDidUpdate(prevProps, prevState, snapshotValue) {
       if(this.props.getcountrybyid.countryDesc !== prevProps.getcountrybyid.countryDesc) {
         if( this.props.getcountrybyid.countryDesc) {
@@ -224,7 +229,7 @@ class Country extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Countries</h4>
+                                    <h4 class="card-title">Countries<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                     <div class="table-responsive"></div>
                                     <ReactTable columns={[
                                   /* {

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { postData, GET_ALL_ACCESSORIES, POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID } from '../Shared/Services'
+import { postData, GET_ALL_ACCESSORIES, POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID,DELETE_ACCESSORIES } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getAccessories, getData, postData1, putData1, updatePropAccData, resetData } from '../Adminstore/actions/goAdvActions';
+import { getAccessories, getData, postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 var condition = false;
@@ -22,6 +22,11 @@ class Accessories extends Component {
         }
     }
     componentDidMount() {
+        this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
+    }
+    refresh(e)
+    {
+        e.preventDefault();
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
     }
     saleorrentOpearation(event) {
@@ -67,11 +72,23 @@ class Accessories extends Component {
             isAvailable:JSON.parse(this.props.getaccessorybyid.isAvailable),
             isDeleted:this.props.getaccessorybyid.accessoriesId?false:true
         };
+        var bodyFormData = new FormData();
+        bodyFormData.set('accessoriesId', this.props.getaccessorybyid.accessoriesId ? this.props.getaccessorybyid.accessoriesId:0);
+        bodyFormData.set('accessoryName', this.props.getaccessorybyid.accessoryName);
+        bodyFormData.set('saleOrRent', this.props.getaccessorybyid.saleOrRent);
+        bodyFormData.set('salePrice', this.props.getaccessorybyid.salePrice?this.props.getaccessorybyid.salePrice*1:0);
+        bodyFormData.set('rentPrice', this.props.getaccessorybyid.rentPrice?this.props.getaccessorybyid.rentPrice*1:0);
+        bodyFormData.set('isAvailable', JSON.parse(this.props.getaccessorybyid.isAvailable));
+        //bodyFormData.set('PromoImage', this.state.formFile.name);
+        bodyFormData.set('isDeleted', this.props.getaccessorybyid.accessoriesId?false:true);
+        bodyFormData.append('formFile', this.state.formFile);
         let url = PUT_ACCESSORIES + this.props.getaccessorybyid.accessoriesId;
         if (this.props.getaccessorybyid.accessoriesId) {
-            this.props.putData1(action.PUT_ACCESSORIES, url, obj);
+            //this.props.putData1(action.PUT_ACCESSORIES, url, obj);
+            this.props.putDataWithFile(action.PUT_ACCESSORIES,url,bodyFormData);
         } else {
-            this.props.postData1(action.POST_ACCESSORIES, POST_ACCESSORIES, obj);
+            //this.props.postData1(action.POST_ACCESSORIES, POST_ACCESSORIES, obj);
+            this.props.postDataWithFile(action.POST_ACCESSORIES,POST_ACCESSORIES,bodyFormData);
         }
         this.setState({ validated: false });
     }
@@ -99,9 +116,23 @@ class Accessories extends Component {
         this.props.updatePropAccData(paramName, e.target.value, "getaccessorybyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
+    saveFile=(e)=>
+    {
+    debugger
+    console.log(e.target.files[0])
+    console.log("contentdisposition",e.target.files[0]);
+    this.setState({
+        formFile:e.target.files[0]
+    })
+    }
     editReacord(id)
     {
         this.props.getData(action.GET_ACCESSORIES_BYID,GET_ACCESSORIES_BYID+id)
+    }
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_ACCESSORIES,DELETE_ACCESSORIES+id)
     }
     render() {
         return (
@@ -182,7 +213,34 @@ class Accessories extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                
+                                                    <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label for="placeTypeDescription"
+                                                            class="col-sm-3 col-form-label">Promo Image</label>
+                                                            <div class="col-sm-9">
+                                                            <span class="input-group-append">
+                                                            <input
+
+                                                                    class="file-upload-browse btn btn-gradient-primary"
+                                                                        type="file"
+                                                                        onChange={this.saveFile}/>
+
+                                                            </span>
+                                                            </div>
+                                                        {/* <div class="col-sm-9">
+                                                            <input type="file" name="img[]" class="file-upload-default"/>
+                                                            <div class="input-group col-xs-12">
+                                                                <input type="text" defaultValue={this.state.editData.promoImage} class="form-control file-upload-info"
+                                                                    onChange={(e)=>this.promoimageOpeartion(e)} disabled="" placeholder="Upload Image"/>
+                                                                <span class="input-group-append">
+                                                                    <button
+                                                                        class="file-upload-browse btn btn-gradient-primary"
+                                                                        type="button">Upload</button>
+                                                                </span>
+                                                            </div>
+                                                        </div> */}
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">IsAvailable</label>
@@ -210,7 +268,7 @@ class Accessories extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">Accessories</h4>
+                                            <h4 class="card-title">Accessories<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
                                                 {
@@ -261,7 +319,7 @@ class Accessories extends Component {
                                                             <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
                                                                 <i class="mdi mdi-pencil-outline"></i>
                                                             </button>
-                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}}  value={row.value} >
                                                                 <i class="mdi mdi-delete-outline"></i>
                                                             </button>
                                                         </div>)
@@ -291,7 +349,7 @@ const mapStateToProps = (state) => {
         messageData: state.goAdvStore.messageData
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData })(Accessories);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile })(Accessories);
 
 
     //export default Accessories

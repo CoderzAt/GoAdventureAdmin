@@ -18,13 +18,12 @@ const sidebarItems=[/* {name:"Dashboard",icon:"mdi mdi-home menu-icon"} */,
 {name:"Activity",icon:"mdi mdi-package-variant menu-icon",route:"/admin/activity"},
 {name:"Itenary",icon:"mdi mdi-package-variant menu-icon",route:"/admin/itenary"},
 {name:"Stay",icon:"mdi mdi-package-variant menu-icon",route:"/admin/stay"},
-{name:"StayType",icon:"mdi mdi-package-variant menu-icon",route:"/admin/staytype"},
-{name:"Travelinfo",icon:"mdi mdi-package-variant menu-icon",route:"/admin/travelinfo"},
-{name:"Traveltype",icon:"mdi mdi-package-variant menu-icon",route:"/admin/traveltype"},
-{name:"Placetype",icon:"mdi mdi-package-variant menu-icon",route:"/admin/placetype"},
+{name:"Stay Types",icon:"mdi mdi-package-variant menu-icon",route:"/admin/staytype"},
+{name:"Travel Info",icon:"mdi mdi-package-variant menu-icon",route:"/admin/travelinfo"},
+{name:"Travel Types",icon:"mdi mdi-package-variant menu-icon",route:"/admin/traveltype"},
 {name:"Eventype",icon:"mdi mdi-package-variant menu-icon",route:"/admin/eventtype"},
-{name:"Eventlevel",icon:"mdi mdi-package-variant menu-icon",route:"/admin/eventlevel"},
-{name:"Costcentre",icon:"mdi mdi-package-variant menu-icon",route:"/admin/costcentre"}
+{name:"Event Levels",icon:"mdi mdi-package-variant menu-icon",route:"/admin/eventlevel"},
+{name:"Cost Center",icon:"mdi mdi-package-variant menu-icon",route:"/admin/costcentre"}
 ]
 class Sidebar extends Component {
     constructor(props) {

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import { Link } from "react-router-dom";
-import { GET_EVENTLEVEL_BYID, GET_EVENTLEVEL, POST_EVENTLEVEL, PUT_EVENTLEVEL, GET_STATUS } from '../Shared/Services'
+import { GET_EVENTLEVEL_BYID, GET_EVENTLEVEL, POST_EVENTLEVEL, PUT_EVENTLEVEL, GET_STATUS,DELETE_EVENTLEVEL } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
 
 class Eventlevel extends Component {
@@ -25,15 +25,16 @@ class Eventlevel extends Component {
         this.props.getData(action.GET_EVENTLEVEL, GET_EVENTLEVEL)
         this.props.getData(action.GET_STATUS, GET_STATUS)
     }
-
-    /*  deleteRecord(id)
-     {
-         alert("in delete id no is"+id)
-         fetch(deletecountry+id, {
-             method: 'DELETE'
-           });
- 
-     } */
+    refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_EVENTLEVEL, GET_EVENTLEVEL)
+    }
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_EVENTLEVEL,DELETE_EVENTLEVEL+id)
+    }
 
     postEventlevelData() {
         debugger
@@ -165,7 +166,7 @@ class Eventlevel extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">Eventlevels</h4>
+                                            <h4 class="card-title">Event Levels<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
 
@@ -197,7 +198,7 @@ class Eventlevel extends Component {
                                                             <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
                                                                 <i class="mdi mdi-pencil-outline"></i>
                                                             </button>
-                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                 <i class="mdi mdi-delete-outline"></i>
                                                             </button>
 
@@ -239,7 +240,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg })(Eventlevel);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(Eventlevel);
 
 
     //export default Eventlevel

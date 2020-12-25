@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,traveltypegetapi,gettrips,getaccessories,getactivities,getallusers,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER} from '../Shared/Services'
+import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,traveltypegetapi,gettrips,getaccessories,getactivities,getallusers,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import * as validation from '../Shared/Validations'
 
 import { connect } from 'react-redux';
-import { getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import { Multiselect } from 'multiselect-react-dropdown';
 
@@ -63,6 +63,11 @@ class Booking extends Component {
        this.props.getData(action.GET_AVCTIVITIES,GET_ACTIVITIES)
        this.props.getData(action.GET_USER,GET_USER)
         }   //there is an issue with api
+        refresh(e)
+     {
+         e.preventDefault();
+         this.props.getData(action.GET_BOOKING,GET_BOOKING);
+     }
     tripOperation(event)
     {
       this.setState({
@@ -374,6 +379,11 @@ class Booking extends Component {
         this.props.updatePropAccData(paramName,value,"getbookingbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_BOOKING,DELETE_BOOKING+id)
+    }
     render() {
 	    return (
          <div>
@@ -644,7 +654,7 @@ class Booking extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Bookings</h4>
+                                    <h4 class="card-title">Bookings<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                     <div class="table-responsive"></div>
                                       <ReactTable columns={[
                                    
@@ -673,7 +683,7 @@ class Booking extends Component {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}}  value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                       </div>)
@@ -709,7 +719,7 @@ class Booking extends Component {
           activityids:state.goAdvStore.activityids
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg})(Booking);
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Booking);
     
     //export default Booking
 

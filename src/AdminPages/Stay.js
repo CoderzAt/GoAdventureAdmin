@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY,GET_CITIES,GET_STAYTYPE} from '../Shared/Services'
+import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY,GET_CITIES,GET_STAYTYPE,DELETE_STAY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -74,6 +74,11 @@ class Stay extends Component {
 
 
      }  
+     refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_STAY,GET_STAY)
+    }
      staynameOperation(event)
     {
       this.setState({
@@ -132,14 +137,11 @@ class Stay extends Component {
             locationDetails:editdata.locationDetails
            })
     } 
-    /* deleteRecord(id)
+    deleteRecord(id)
     {
-        alert("in delete id no is"+id)
-        fetch(deletecountry+id, {
-            method: 'DELETE'
-          });
-
-    }*/
+        debugger
+    this.props.deleteRecord(action.DELETE_STAY,DELETE_STAY+id)
+    }
  
      async postEditedData()
     {
@@ -380,7 +382,7 @@ class Stay extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">List</h4>
+                                    <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                     <div class="table-responsive"></div>
                                       <ReactTable columns={[
                                    
@@ -421,7 +423,7 @@ class Stay extends Component {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                       </div>)
@@ -464,7 +466,7 @@ class Stay extends Component {
             //cities:state.goAdvStore.citybyid
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg})(Stay);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Stay);
     
     //export default Stay
 

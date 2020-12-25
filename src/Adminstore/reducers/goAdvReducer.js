@@ -65,6 +65,7 @@ const initalState ={
     putplacetype:[],
     getstatebycountry:[],
     deletecountry:[],
+    
     poststate:[],
     putstate:[],
     getstatebyid:[],
@@ -99,7 +100,28 @@ const initalState ={
     postboking:[],
     getuser:[],
     activityids:[],
-    accessoryids:[]
+    accessoryids:[],
+    deletepackage:[],
+    deleteaccessory:[],
+    deletetrip:[],
+    deleteitenary:[],
+    deleteactivity:[],
+    deletecostcenter:[],
+    deletecity:[],
+    deletecoupon:[],
+    deleteeventlevel:[],
+    deletestate:[],
+    deletestatus:[],
+    deleteeventtype:[],
+    deleteplacetovisit:[],
+    deletebooking:[],
+    deleteplacetype:[],
+    deletestay:[],
+    deletestaytype:[],
+    deletetravelinfo:[],
+    deletetraveltype:[],
+    deletedestination:[]
+
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -2376,7 +2398,608 @@ const goAdvReducer = (state =initalState, action) => {
 
             }
         } 
-        
+        case `${actions.DELETE_PACKAGE}_PENDING` : {
+            return{
+                ...state,
+                isdeletePackageLoading: true
+            }
+        }
+        case `${actions.DELETE_PACKAGE}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Package";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Package deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeletePackageLoading: false,
+                deletepackage:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_PACKAGE}_REJECTED` : {
+            return{
+                ...state,
+                isdeletePackageLoading: false,
+            }
+        }
+case `${actions.DELETE_ACCESSORIES}_PENDING` : {
+            return{
+                ...state,
+                isdeleteAccessoryLoading: true
+            }
+        }
+        case `${actions.DELETE_ACCESSORIES}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Accessory";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Accessory deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteAccessoryLoading: false,
+                deleteaccessory:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_ACCESSORIES}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteAccessoryLoading: false,
+            }
+        }
+		case `${actions.DELETE_TRIP}_PENDING` : {
+            return{
+                ...state,
+                isdeleteTripLoading: true
+            }
+        }
+        case `${actions.DELETE_TRIP}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Trip";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Trip deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteTripLoading: false,
+                deletetrip:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_TRIP}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteTripLoading: false,
+            }
+        }
+		case `${actions.DELETE_ITENARY}_PENDING` : {
+            return{
+                ...state,
+                isdeleteItenaryLoading: true
+            }
+        }
+        case `${actions.DELETE_ITENARY}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Itenary";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Itenary deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteItenaryLoading: false,
+                deleteitenary:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_ITENARY}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteItenaryLoading: false,
+            }
+        }
+		case `${actions.DELETE_ACTIVITY}_PENDING` : {
+            return{
+                ...state,
+                isdeleteActivityLoading: true
+            }
+        }
+        case `${actions.DELETE_ACTIVITY}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Activity";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Activity deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteActivityLoading: false,
+                deleteactivity:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_ACTIVITY}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteActivityLoading: false,
+            }
+        }
+		case `${actions.DELETE_COSTCENTRE}_PENDING` : {
+            return{
+                ...state,
+                isdeleteCostCenterLoading: true
+            }
+        }
+        case `${actions.DELETE_COSTCENTRE}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the CostCenter";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "CostCenter deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteCostCenterLoading: false,
+                deletecostcenter:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_COSTCENTRE}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteCostCenterLoading: false,
+            }
+        }
+		
+		case `${actions.DELETE_CITY}_PENDING` : {
+            return{
+                ...state,
+                isdeleteCityLoading: true
+            }
+        }
+        case `${actions.DELETE_CITY}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the City";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "City deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteCityLoading: false,
+                deletecity:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_CITY}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteCityLoading: false,
+            }
+        }
+		case `${actions.DELETE_COUPON}_PENDING` : {
+            return{
+                ...state,
+                isdeleteCouponLoading: true
+            }
+        }
+        case `${actions.DELETE_COUPON}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Coupon";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Coupon deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteCouponLoading: false,
+                deletecoupon:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_COUPON}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteCouponLoading: false,
+            }
+        }
+		case `${actions.DELETE_EVENTLEVEL}_PENDING` : {
+            return{
+                ...state,
+                isdeleteEventLevelLoading: true
+            }
+        }
+        case `${actions.DELETE_EVENTLEVEL}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the EventLevel";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "EventLevel deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteEventLevelLoading: false,
+                deleteeventlevel:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_EVENTLEVEL}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteEventLevelLoading: false,
+            }
+        }
+		case `${actions.DELETE_STATUS}_PENDING` : {
+            return{
+                ...state,
+                isdeleteStatusLoading: true
+            }
+        }
+        case `${actions.DELETE_STATUS}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Status";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Status deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteStatusLoading: false,
+                deletestatus:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_STATUS}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteStatusLoading: false,
+            }
+        }
+		case `${actions.DELETE_EVENTTYPE}_PENDING` : {
+            return{
+                ...state,
+                isdeleteEventTypeLoading: true
+            }
+        }
+        case `${actions.DELETE_EVENTTYPE}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the EventType";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "EventType deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteEventTypeLoading: false,
+                deleteeventtype:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_EVENTTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteEventTypeLoading: false,
+            }
+        }
+		case `${actions.DELETE_PLACETOVISIT}_PENDING` : {
+            return{
+                ...state,
+                isdeletePlaceToVisitLoading: true
+            }
+        }
+        case `${actions.DELETE_PLACETOVISIT}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the PlaceToVisit";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "PlaceToVisit deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeletePlaceToVisitLoading: false,
+                deleteplacetovisit:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_PLACETOVISIT}_REJECTED` : {
+            return{
+                ...state,
+                isdeletePlaceToVisitLoading: false,
+            }
+        }
+		case `${actions.DELETE_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                isdeleteBookingLoading: true
+            }
+        }
+        case `${actions.DELETE_BOOKING}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Booking";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Booking deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteBookingLoading: false,
+                deletebooking:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteBookingLoading: false,
+            }
+        }
+		case `${actions.DELETE_PLACETYPE}_PENDING` : {
+            return{
+                ...state,
+                isdeletePlaceTypeLoading: true
+            }
+        }
+        case `${actions.DELETE_PLACETYPE}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the PlaceType";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "PlaceType deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeletePlaceTypeLoading: false,
+                deleteplacetype:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_PLACETYPE}_REJECTED` : {
+            return{
+                ...state,
+                isdeletePlaceTypeLoading: false,
+            }
+        }
+		case `${actions.DELETE_STATE}_PENDING` : {
+            return{
+                ...state,
+                isdeleteStateLoading: true
+            }
+        }
+        case `${actions.DELETE_STATE}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the State";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "State deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteStateLoading: false,
+                deletestate:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_STATE}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteStateLoading: false,
+            }
+        }
+		case `${actions.DELETE_STAY}_PENDING` : {
+            return{
+                ...Stay,
+                isdeleteStayLoading: true
+            }
+        }
+        case `${actions.DELETE_STAY}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Stay";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Stay deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...Stay,
+                isdeleteStayLoading: false,
+                deletestay:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_STAY}_REJECTED` : {
+            return{
+                ...Stay,
+                isdeleteStayLoading: false,
+            }
+        }
+		case `${actions.DELETE_STAYTYPE}_PENDING` : {
+            return{
+                ...StayType,
+                isdeleteStayTypeLoading: true
+            }
+        }
+        case `${actions.DELETE_STAYTYPE}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the StayType";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "StayType deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...StayType,
+                isdeleteStayTypeLoading: false,
+                deletestaytype:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_STAYTYPE}_REJECTED` : {
+            return{
+                ...StayType,
+                isdeleteStayTypeLoading: false,
+            }
+        }
+		case `${actions.DELETE_TRAVELINFO}_PENDING` : {
+            return{
+                ...TravelInfo,
+                isdeleteTravelInfoLoading: true
+            }
+        }
+        case `${actions.DELETE_TRAVELINFO}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Travel Info";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Travel Info deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...TravelInfo,
+                isdeleteTravelInfoLoading: false,
+                deletetravelinfo:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_TRAVELINFO}_REJECTED` : {
+            return{
+                ...TravelInfo,
+                isdeleteTravelInfoLoading: false,
+            }
+        }
+		case `${actions.DELETE_TRAVELTYPE}_PENDING` : {
+            return{
+                ...TravelType,
+                isdeleteTravelTypeLoading: true
+            }
+        }
+        case `${actions.DELETE_TRAVELTYPE}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Travel Type";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Travel Type deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...TravelType,
+                isdeleteTravelTypeLoading: false,
+                deletetraveltype:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_TRAVELTYPE}_REJECTED` : {
+            return{
+                ...TravelType,
+                isdeleteTravelTypeLoading: false,
+            }
+        }
+		case `${actions.DELETE_DESTINATION}_PENDING` : {
+            return{
+                ...Destination,
+                isdeleteDestinationLoading: true
+            }
+        }
+        case `${actions.DELETE_DESTINATION}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Destination";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Destination deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...Destination,
+                isdeleteDestinationLoading: false,
+                deletedestination:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_DESTINATION}_REJECTED` : {
+            return{
+                ...Destination,
+                isdeleteDestinationLoading: false,
+            }
+        }
+		
         default: return state;
     }
 

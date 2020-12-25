@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_TRAVELTYPE_BYID,GET_TRAVELTYPE,POST_TRAVELTYPE,PUT_TRAVELTYPE} from '../Shared/Services'
+import {GET_TRAVELTYPE_BYID,GET_TRAVELTYPE,POST_TRAVELTYPE,PUT_TRAVELTYPE,DELETE_TRAVELTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -31,7 +31,11 @@ class Traveltype extends Component {
      {
     this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
     } 
-    
+    refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
+    }
  
     postTraveltypeData()
     {
@@ -81,6 +85,11 @@ class Traveltype extends Component {
     updateTraveltype = (e, paramName) => {
         this.props.updatePropAccData(paramName,e.target.value,"gettraveltypebyid");
         this.setState({ refreshflag: !this.state.refreshflag });
+    }
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_TRAVELTYPE,DELETE_TRAVELTYPE+id)
     }
     render() {
 	    return (
@@ -164,7 +173,7 @@ class Traveltype extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">List</h4>
+                                    <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                     <div class="table-responsive"></div>
                                      <ReactTable columns={[
                                    
@@ -205,7 +214,7 @@ class Traveltype extends Component {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                       </div>)
@@ -242,7 +251,7 @@ class Traveltype extends Component {
           messageData: state.goAdvStore.messageData
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(Traveltype);
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord})(Traveltype);
     
     //export default Traveltype
 

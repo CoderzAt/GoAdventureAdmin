@@ -3,11 +3,11 @@ import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
-import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid, destinationupdateapi,GET_DESTINATION_BYID,GET_DESTINATION,POST_DESTINATION,PUT_DESTINATION} from '../Shared/Services'
+import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid, destinationupdateapi,GET_DESTINATION_BYID,GET_DESTINATION,POST_DESTINATION,PUT_DESTINATION,DELETE_DESTINATION} from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -32,11 +32,15 @@ class Destination extends Component {
       this.props.removeErrormsg()
 
     }
-   async componentDidMount()
+   componentDidMount()
     {
      this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
     }
-
+    refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
+    }
     postDestinationdata()
     {
       debugger
@@ -45,26 +49,27 @@ class Destination extends Component {
                 DestinationName:this.props.getdestinationbyid.destinationName,
                 Description:this.props.getdestinationbyid.description,
                 Title:this.props.getdestinationbyid.title,
-                PromoImage: "image.jpg",
+                //PromoImage: "image.jpg",
                 isDeleted: false,
                 formFile: ""
                 //promoImage:this.props.getdestinationbyid.promoimage,
                 //formFile:this.state.formFile
        };
        var bodyFormData = new FormData();
-       bodyFormData.set('DestinationId', 0);
+       bodyFormData.set('DestinationId', this.props.getdestinationbyid.destinationId?this.props.getdestinationbyid.destinationId:0);
        bodyFormData.set('DestinationName', this.props.getdestinationbyid.destinationName);
        bodyFormData.set('Description', this.props.getdestinationbyid.description);
        bodyFormData.set('Title', this.props.getdestinationbyid.title);
-       bodyFormData.set('PromoImage', this.state.formFile.name);
+       //bodyFormData.set('PromoImage', this.state.formFile.name);
        bodyFormData.set('isDeleted', false);
        bodyFormData.append('formFile', this.state.formFile);
     let url = PUT_DESTINATION+this.props.getdestinationbyid.destinationId;
     if (this.props.getdestinationbyid.destinationId) {
-        this.props.putData1(action.PUT_DESTINATION,url,obj);
+        //this.props.putData1(action.PUT_DESTINATION,url,obj);
+        this.props.putDataWithFile(action.PUT_DESTINATION,url,bodyFormData);
     }
     else {
-        this.props.putDataWithFile(action.POST_DESTINATION,POST_DESTINATION,bodyFormData);
+        this.props.postDataWithFile(action.POST_DESTINATION,POST_DESTINATION,bodyFormData);
     }
     this.setState({ validated: false });
     }
@@ -105,6 +110,11 @@ updateDestination = (e, paramName) => {
   this.props.updatePropAccData(paramName,e.target.value,"getdestinationbyid");
   this.setState({ refreshflag: !this.state.refreshflag });
 }
+deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_DESTINATION,DELETE_DESTINATION+id)
+    }
     render() {
 	    return (
 
@@ -121,6 +131,10 @@ updateDestination = (e, paramName) => {
                                 <i class="mdi mdi-home-map-marker"></i>
                             </span>Destination
                         </h3>
+                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                                }
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -212,7 +226,7 @@ updateDestination = (e, paramName) => {
                    <div class="col-12 grid-margin stretch-card">
                        <div class="card">
                            <div class="card-body">
-                               <h4 class="card-title">Destinations</h4>
+                               <h4 class="card-title">Destinations<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                    <div className="table-responsive">
                    <ReactTable columns={[
                                  /*   {
@@ -257,7 +271,7 @@ updateDestination = (e, paramName) => {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
@@ -294,14 +308,14 @@ updateDestination = (e, paramName) => {
     const mapStateToProps = (state) => {
       return {
         getdestination:state.goAdvStore.getdestination,
-        getdestinationbyid:state.goAdvStore.getdestinationbyid
+        getdestinationbyid:state.goAdvStore.getdestinationbyid,
           /* gettraveltypebyid:state.goAdvStore.gettraveltypebyid,
-          gettraveltype:state.goAdvStore.gettraveltype,
+          gettraveltype:state.goAdvStore.gettraveltype,*/
        message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData */
+        messageData: state.goAdvStore.messageData 
       }
     }
-    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile })(Destination);
+    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord })(Destination);
 
 
     //export default Destination

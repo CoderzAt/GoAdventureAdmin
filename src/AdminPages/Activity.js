@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_ACTIVITY_BYID,GE,GET_ACTIVITIES,PUT_ACTIVITY,POST_ACTIVITY} from '../Shared/Services'
+import {GET_ACTIVITY_BYID,GE,GET_ACTIVITIES,PUT_ACTIVITY,POST_ACTIVITY,DELETE_ACTIVITY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import {getActivity,getData,putData1,postData1,resetData,updatePropAccData,removeErrormsg} from '../Adminstore/actions/goAdvActions';
+import {getActivity,getData,putData1,postData1,resetData,updatePropAccData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 var condition=false;
@@ -24,6 +24,11 @@ class Activity extends Component {
       componentDidMount()
      {
         this.props.getActivity()
+     }
+     refresh(e)
+     {
+         e.preventDefault();
+         this.props.getActivity()
      }
      postActivityData() {
         debugger
@@ -72,7 +77,11 @@ updateActivity = (e, paramName) => {
     this.props.updatePropAccData(paramName, e.target.value,"getactivitybyid");
     this.setState({refreshflag: !this.state.refreshflag});
   }
-
+  deleteRecord(id)
+  {
+      debugger
+  this.props.deleteRecord(action.DELETE_ACTIVITY,DELETE_ACTIVITY+id)
+  }
     render() {
 	    return (
          <div>
@@ -143,7 +152,7 @@ updateActivity = (e, paramName) => {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Activities</h4>
+                                    <h4 class="card-title">Activities<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                     <div class="table-responsive"></div>
                                     <ReactTable columns={[
                                     
@@ -175,7 +184,7 @@ updateActivity = (e, paramName) => {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}}  value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                           
@@ -213,7 +222,7 @@ updateActivity = (e, paramName) => {
             messageData: state.goAdvStore.messageData
          }
     }
-    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1,resetData,updatePropAccData,removeErrormsg})(Activity);
+    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1,resetData,updatePropAccData,removeErrormsg,deleteRecord})(Activity);
     
 
    // export default Activity

@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { loadData, gettripbyid, GET_TRIP, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID, POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE } from '../Shared/Services'
+import { loadData, gettripbyid, GET_TRIP, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID, POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -9,7 +9,7 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import { gettingMultiselectValues } from '../Shared/ReauasbleFunctions'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -27,7 +27,7 @@ class Trip extends Component {
         }
 
     }
-    async componentDidMount() {
+    componentDidMount() {
         debugger
         var url
 
@@ -47,15 +47,11 @@ class Trip extends Component {
     componentWillMount() {
         this.props.removeErrormsg()
     }
-    /* deleteRecord(id)
-  {
-      alert("in delete id no is"+id)
-      fetch(deletecountry+id, {
-          method: 'DELETE'
-        });
-
-  }*/
-
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_TRIP,DELETE_TRIP+id)
+    }
 
     postTripdata() {
         debugger
@@ -322,7 +318,7 @@ class Trip extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">Trips</h4>
+                                            <h4 class="card-title">Trips<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Package</label>
@@ -367,7 +363,7 @@ class Trip extends Component {
                                                             <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
                                                                 <i class="mdi mdi-pencil-outline"></i>
                                                             </button>
-                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                 <i class="mdi mdi-delete-outline"></i>
                                                             </button>
                                                         </div>)
@@ -401,6 +397,6 @@ const mapStateToProps = (state) => {
         messageData: state.goAdvStore.messageData
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg })(Trip);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(Trip);
     //export default Trip
 

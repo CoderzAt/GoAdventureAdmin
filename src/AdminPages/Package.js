@@ -3,11 +3,11 @@ import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
-import {postData,packagepostapi,getdestinations,loadData,getpackages,packageupdateapi,GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION} from '../Shared/Services'
+import {postData,packagepostapi,getdestinations,loadData,getpackages,packageupdateapi,GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION,DELETE_PACKAGE} from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -37,13 +37,17 @@ class Package extends Component {
     {
       this.props.removeErrormsg()
     }
-    async componentDidMount()
+    componentDidMount()
     {
         this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
         this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
     }
 
-    
+    refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
+    }
     packagedescriptionOperation(event)
     {
         this.setState({
@@ -55,26 +59,40 @@ class Package extends Component {
     {
         debugger
         const obj = {
-            packageId:this.props.packagebyid.packageId?this.props.packagebyid.packageId:0,
-            packageName:this.props.packagebyid.packagename,
-            packageType:this.props.packagebyid.packagetype,
+            PackageId:this.props.packagebyid.packageId?this.props.packagebyid.packageId:0,
+            PackageName:this.props.packagebyid.packagename,
+            PackageType:this.props.packagebyid.packagetype,
             duration:this.props.packagebyid.packageduration,
-            destinationId:parseInt(this.props.packagebyid.destination),
-            couponCode:this.props.packagebyid.couponcode,
-            couponExpiryDate:this.props.packagebyid.couponexpirydate,
-            couponUserUsageCount:parseInt(this.props.packagebyid.couponuserusagecount),
-            inclusions:this.props.packagebyid.inclusions,
-            exclusions:this.props.packagebyid.exclusions,
-            packageDescription:this.props.packagebyid.packagedescription,
-            promoImage:this.props.packagebyid.promoimage,
-            isDeleted: this.packagebyid.packageId.eventLevelId ? false : true
+            DestinationId:parseInt(this.props.packagebyid.destination),
+            //CouponCode:this.props.packagebyid.couponcode,
+            //CouponExpiryDate:this.props.packagebyid.couponexpirydate,
+            //CouponUserUsageCount:parseInt(this.props.packagebyid.couponuserusagecount),
+            Inclusions:this.props.packagebyid.inclusions,
+            Exclusions:this.props.packagebyid.exclusions,
+            PackageDescription:this.props.packagebyid.packagedescription,
+            //PromoImage:this.props.packagebyid.promoimage,
+            IsDeleted:  false ,
             };
+        var bodyFormData = new FormData();
+        bodyFormData.set('PackageId', this.props.packagebyid.packageId?this.props.packagebyid.packageId:0);
+        bodyFormData.set('PackageName', this.props.packagebyid.packageName);
+        bodyFormData.set('PackageType', this.props.packagebyid.packageType);
+        bodyFormData.set('duration', this.props.packagebyid.duration);
+        bodyFormData.set('DestinationId', parseInt(this.props.packagebyid.destinationId));
+        //bodyFormData.set('CouponCode', this.props.packagebyid.couponcode);
+        //bodyFormData.set('CouponExpiryDate', this.props.packagebyid.couponexpirydate);
+        //bodyFormData.set('CouponUserUsageCount', parseInt(this.props.packagebyid.couponuserusagecount));
+        bodyFormData.set('Inclusions', this.props.packagebyid.inclusions);
+        bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
+        bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
+        bodyFormData.set('IsDeleted',  false );
+        bodyFormData.append('formFile', this.state.formFile);
         let url = PUT_PACKAGE+ this.props.packagebyid.packageId;
         if (this.props.packagebyid.packageId) {
-            this.props.putData1(action.PUT_PACKAGE,url,obj);
+            this.props.putDataWithFile(action.PUT_PACKAGE,url,bodyFormData);
         }
         else {
-            this.props.postData1(action.POST_PACKAGE,POST_PACKAGE,obj);
+            this.props.postDataWithFile(action.POST_PACKAGE,POST_PACKAGE,bodyFormData);
         }
         this.setState({ validated: false });
     }
@@ -97,9 +115,17 @@ class Package extends Component {
 
     }
     handleReset() {
-        this.props.resetData(action.RESET_DATA,"packagebyid");
-            this.setState({ validated: false });
-      }
+        this.props.resetData(action.RESET_DATA, "packagebyid");
+        this.setState({ validated: false });
+    }
+    saveFile = (e) => {
+        debugger
+        console.log(e.target.files[0])
+        console.log("contentdisposition", e.target.files[0]);
+        this.setState({
+            formFile: e.target.files[0]
+        })
+    }
     editReacord(id) {
         this.props.getData(action.GET_PACKAGE_BYID, GET_PACKAGE_BYID+id)
     }
@@ -107,7 +133,11 @@ class Package extends Component {
         this.props.updatePropAccData(paramName,e.target.value,"packagebyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
-
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_PACKAGE,DELETE_PACKAGE+id)
+    }
     render() {
 	    return (
 
@@ -124,7 +154,11 @@ class Package extends Component {
                                 <i class="mdi mdi-home-map-marker"></i>
                             </span>Package
                         </h3>
-                        <nav aria-label="breadcrumb">
+                            {this.props.message ?
+                                <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                null
+                            }
+                            <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
                                 </li>
@@ -193,7 +227,17 @@ class Package extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription"
                                                         class="col-sm-3 col-form-label">Promo Image</label>
-                                                    <div class="col-sm-9">
+                                                        <div class="col-sm-9">
+                                                         <span class="input-group-append">
+                                                         <input
+
+                                                                  class="file-upload-browse btn btn-gradient-primary"
+                                                                    type="file"
+                                                                    onChange={this.saveFile}/>
+
+                                                        </span>
+                                                        </div>
+                                                    {/*<div class="col-sm-9">
                                                         <input type="file" name="img[]" class="file-upload-default"/>
                                                         <div class="input-group col-xs-12">
                                                             <input type="text" value={this.state.editData.promoImage} class="form-control file-upload-info"
@@ -204,7 +248,7 @@ class Package extends Component {
                                                                     type="button">Upload</button>
                                                             </span>
                                                         </div>
-                                                    </div>
+                                                    </div>*/}
                                                 </div>
                                             </div>
                                         </div>
@@ -290,7 +334,7 @@ class Package extends Component {
                    <div class="col-12 grid-margin stretch-card">
                        <div class="card">
                            <div class="card-body">
-                               <h4 class="card-title">List</h4>
+                               <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                    <div className="table-responsive">
                    <ReactTable columns={[
                                    /* {
@@ -335,7 +379,7 @@ class Package extends Component {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
@@ -374,6 +418,6 @@ class Package extends Component {
           messageData: state.goAdvStore.messageData
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg })(Package);
+      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,putDataWithFile,postDataWithFile,deleteRecord })(Package);
     //export default Package
 

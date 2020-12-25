@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { deletecountry,PUT_ITENARY, POST_ITENARY, GET_ITENARY_BYID, GET_ITENARY, GET_ALL_PACKAGES } from '../Shared/Services'
+import { deletecountry,PUT_ITENARY, POST_ITENARY, GET_ITENARY_BYID, GET_ITENARY, GET_ALL_PACKAGES,DELETE_ITENARY } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
@@ -14,41 +14,65 @@ import parse from 'html-react-parser'
 
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
+import { EditorState, convertToRaw, ContentState, convertFromHTML,convertFromRaw } from 'draft-js';
 
 
 
 var condition = false;
+var editorstate='<div>hi<div>'
 class Itenary extends Component {
     constructor(props) {
         super(props);
         this.state = {
             validated:false,
-            refreshflag:false,
-            iternaryDescription: null,
+            
+            iternaryDescription: '<div>Hi</div>',
             editorState: EditorState.createEmpty()
         }
     }
-    componentWillMount()
-    {
-      this.props.removeErrormsg()
-  
-    }
+   
     componentDidMount() {
 
         this.props.getData(action.GET_ITENARY, GET_ITENARY)
         this.props.getData(action.GET_ALL_PACKAGES, GET_ALL_PACKAGES);
     }
+    componentDidUpdate(prevProps, prevState, snapshotValue) {
+    {	      if(this.props.getitenarybyid.iternaryDescription !== prevProps.getitenarybyid.iternaryDescription) {
+        if( this.props.getitenarybyid.iternaryDescription) {
+            const contentBlocks = convertFromHTML(this.props.getitenarybyid.iternaryDescription);
+            const contentState = ContentState.createFromBlockArray(contentBlocks);
+            this.setState({
+            editorState: EditorState.createWithContent(contentState)
+            });
+        } else {
+            this.setState({
+            editorState: EditorState.createEmpty()
+            });
+        }
+        }
+    }}
+    
+    itenarydescriptionOpearation(event)
+    {
+        
+           this.setState({iternaryDescription:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))})
+           //console.log("editor",data)
+    }
     onEditorStateChange = (editorState) => {
         this.setState({
-            editorState,
+            editorState
         });
     }
-    deleteRecord(id) {
-        alert("in delete id no is" + id)
-        fetch(deletecountry + id, {
-            method: 'DELETE'
-        });
+    refresh(e)
+    {
+        e.preventDefault();
+        this.props.getData(action.GET_ITENARY, GET_ITENARY)
+    }
+   
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_ITENARY,DELETE_ITENARY+id)
     }
     postItenarydata() {
         debugger
@@ -57,10 +81,10 @@ class Itenary extends Component {
             packageId: parseInt(this.props.getitenarybyid.packageId),
             dayNumber: parseInt(this.props.getitenarybyid.dayNumber),
             summary: this.props.getitenarybyid.summary,
-            iternaryDescription: ""/* this.state.iternaryDescription *//* this.props.getitenarybyid.iternaryDescription */,
+            iternaryDescription: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),/* this.state.iternaryDescription *//* this.props.getitenarybyid.iternaryDescription */
             benefitTags: this.props.getitenarybyid.benefitTags,
             packagePlaceIds: this.props.getitenarybyid.packagePlaceIds,
-            isDeleted: this.props.getitenarybyid.itenaryId?false:true
+            isDeleted: false
         };
         let url = PUT_ITENARY + this.props.getitenarybyid.itenaryId;
         if (this.props.getitenarybyid.itenaryId) {
@@ -88,20 +112,13 @@ class Itenary extends Component {
         }
     }
 
-    /*  handleReset()
-     {
-         this.setState({
-             editData:[],
-             editorState:EditorState.createEmpty()
- 
-         })
-     } */
+   
     handleReset() {
         this.props.resetData(action.RESET_DATA, "getitenarybyid");
         this.setState({ validated: false });
     }
     editReacord(id) {
-        this.props.getData(action.GET_ITENARY_BYID, GET_ITENARY_BYID + id)
+        this.props.getData(action.GET_ITENARY_BYID, GET_ITENARY_BYID + id);
 
        /*  this.setState({editorState:EditorState.createWithContent(
             ContentState.createFromBlockArray(
@@ -125,15 +142,14 @@ class Itenary extends Component {
         this.setState({ refreshflag: !this.state.refreshflag });
     }
 
-    itenarydescriptionOpearation()
-    {
-        
-           this.setState({iternaryDescription:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))})
-           //console.log("editor",data)
-    }
+    
 
     render() {
-       
+        editorstate=EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(this.props.getitenarybyid.iternaryDescription?this.props.getitenarybyid.iternaryDescription:'<div><div>')
+            )
+          )
         return (
 
             <div>
@@ -231,11 +247,10 @@ class Itenary extends Component {
                                                             <div class="col-sm-12">
                                                                 {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
                                                                 <Editor
-                                                                    editorState={this.props.geteditorState}
-                                                                    wrapperClassName="demo-wrapper"
-                                                                    editorClassName="demo-editor"
-                                                                    onEditorStateChange={this.props.editorState}
-                                                                    onChange={(e) => this.itenarydescriptionOpearation(e)}
+                                                                   editorState={this.state.editorState}
+                                                                   wrapperClassName="demo-wrapper"
+                                                                   editorClassName="demo-editor"
+                                                                   onEditorStateChange={this.onEditorStateChange}
                                                                 />
                                                             </div>
                                                         </div>
@@ -257,7 +272,7 @@ class Itenary extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">List</h4>
+                                            <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
                                                 {
@@ -296,7 +311,7 @@ class Itenary extends Component {
                                                             <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
                                                                 <i class="mdi mdi-pencil-outline"></i>
                                                             </button>
-                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { this.deleteRecord(row.value) }} value={row.value} >
+                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                 <i class="mdi mdi-delete-outline"></i>
                                                             </button>
 
@@ -335,6 +350,6 @@ const mapStateToProps = (state) => {
         //cities:state.goAdvStore.citybyid
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg })(Itenary);
+export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg ,deleteRecord})(Itenary);
     //export default Itenary
 
