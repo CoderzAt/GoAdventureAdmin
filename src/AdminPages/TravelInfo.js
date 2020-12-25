@@ -86,7 +86,6 @@ class TravelInfo extends Component {
     render() {
 	    return (
          <div>
-             
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
             <Sidebar/>
             

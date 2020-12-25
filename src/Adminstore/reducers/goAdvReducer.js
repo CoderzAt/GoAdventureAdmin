@@ -64,6 +64,7 @@ const initalState ={
     getplacetypebyid:[],
     putplacetype:[],
     getstatebycountry:[],
+    deletecountry:[],
     poststate:[],
     putstate:[],
     getstatebyid:[],
@@ -447,6 +448,36 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isputCountryLoading: false,
+            }
+        }
+        case `${actions.DELETE_COUNTRY}_PENDING` : {
+            return{
+                ...state,
+                isdeleteCountryLoading: true
+            }
+        }
+        case `${actions.DELETE_COUNTRY}_FULFILLED` : {
+            debugger
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Country";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Country deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteCountryLoading: false,
+                deletecountry:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_COUNTRY}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteCountryLoading: false,
             }
         }
         case `${actions.GET_CITY_BYID}_PENDING` : {

@@ -135,6 +135,7 @@ export const deleteRecord=(actiontype,url)=>
          type:actiontype,
            payload:axios.delete(`${services.BASE_URL}${url}`)
            .then(response=>{
+              console.log("deleteddata",response)
             return response
          })
          .catch(

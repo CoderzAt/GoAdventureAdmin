@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,countrypostapi,getcounties,loadData,deletecountry,getcountrybyid,countryupdateapi,GET_COUNTRIES,GET_COUNTRY_BYID,POST_COUNTRY,PUT_COUNTRY} from '../Shared/Services'
+import {postData,countrypostapi,getcounties,loadData,deletecountry,getcountrybyid,countryupdateapi,GET_COUNTRIES,GET_COUNTRY_BYID,POST_COUNTRY,PUT_COUNTRY,DELETE_COUNTRY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -13,7 +13,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
 import TextInput from'../Shared/TextInput';
 import { connect } from 'react-redux';
-import {getData,postData1,putData1,updatePropAccData,resetData} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 var condition=false;
@@ -116,6 +116,11 @@ class Country extends Component {
         }
         this.props.updatePropAccData(paramName,value,"getcountrybyid");
         this.setState({ refreshflag:!this.state.refreshflag });
+    }
+    deleteRecord(id)
+    {
+        debugger
+    this.props.deleteRecord(action.DELETE_COUNTRY,DELETE_COUNTRY+id)
     }
     render() {
          editorstate=EditorState.createWithContent(
@@ -268,7 +273,7 @@ class Country extends Component {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
                                                             <i class="mdi mdi-pencil-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => {  this.deleteRecord(row.value)}} value={row.value} >
+                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
@@ -309,7 +314,8 @@ class Country extends Component {
             messageData: state.goAdvStore.messageData
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData})(Country);
+    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Country);
+    
 
 
     //export default Country
