@@ -95,8 +95,10 @@ class City extends Component {
     } else {
       event.preventDefault();
       this.postCityData();
+     
     }
     //this.setState({ validated:true});
+    
   }
   handleReset() {
     this.props.resetData(action.RESET_DATA,"cityData");
@@ -110,6 +112,7 @@ class City extends Component {
     this.setState({refreshflag: !this.state.refreshflag});
   }
   render() {
+    
     return (
       <div>
         <div className="container-fluid page-body-wrapper"style={{ paddingTop: 80 }}>
