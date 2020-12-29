@@ -81,6 +81,9 @@ class Country extends Component {
         } else {
             this.props.postData1(action.POST_COUNTRY,POST_COUNTRY,obj);
         }
+        this.setState({
+            editorState: EditorState.createEmpty()
+          });
         this.setState({ validated: false });
     }
     handleSubmit(event)
@@ -96,13 +99,20 @@ class Country extends Component {
         } else {
             event.preventDefault();
             this.postCountrydata();
+           
         }
+        this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
+
     }
 
     handleReset()
     {
         this.props.resetData(action.RESET_DATA,"getcountrybyid");
         this.setState({ validated: false });
+
+        this.setState({
+            editorState: EditorState.createEmpty()
+          });
     }
     editReacord(id) {
       this.props.getData(action.GET_COUNTRY_BYID,GET_COUNTRY_BYID+id);
@@ -168,7 +178,7 @@ class Country extends Component {
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="card-title">Country</h4>
-                                    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
+                                    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)}/*  onReset={(e)=>this.handleReset(e)} */>
                                     <div class="row">
                                         {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
                                         <TextInput value={this.state.country} defaultValue={this.state.viewData.countryCode} type="text" name="countryCode" onChange={(value)=>this.countrycodeOpearation(value)}/>
@@ -257,11 +267,12 @@ class Country extends Component {
 
                                   },
                                   {
-                                    Header: "Description",
-                                    accessor: "countryDesc",
+                                    Header:"Description",
+                                    accessor:"countryDesc",
                                     headerStyle:{
                                         textAlign:'left',
-                                        fontWeight: 'bold'
+                                        fontWeight: 'bold',
+                                        
                                     }
 
                                   },

@@ -24,6 +24,8 @@ class Destination extends Component {
            promoimage:null,
            formFile:null,
            destinations:[],
+           formFile:{},
+           formFilename:"",
            editData:[]
        }
     }
@@ -43,7 +45,8 @@ class Destination extends Component {
     }
     postDestinationdata()
     {
-      debugger
+     
+        debugger
     const obj = {
       DestinationId:this.props.getdestinationbyid.destinationId?this.props.getdestinationbyid.destinationId:0,
                 DestinationName:this.props.getdestinationbyid.destinationName,
@@ -72,6 +75,7 @@ class Destination extends Component {
         this.props.postDataWithFile(action.POST_DESTINATION,POST_DESTINATION,bodyFormData);
     }
     this.setState({ validated: false });
+    
     }
    handleSubmit(event)
     {
@@ -100,8 +104,10 @@ debugger
   console.log(e.target.files[0])
   console.log("contentdisposition",e.target.files[0]);
   this.setState({
-    formFile:e.target.files[0]
+    formFile:e.target.files[0],
+    formFilename:e.target.files[0].name
   })
+  
 }
 editReacord(id) {
   this.props.getData(action.GET_DESTINATION_BYID, GET_DESTINATION_BYID+id)
@@ -182,6 +188,7 @@ deleteRecord(id)
 
                                                                   class="file-upload-browse btn btn-gradient-primary"
                                                                     type="file"
+                                                                     
                                                                     onChange={this.saveFile}/>
 
                                                         </span>

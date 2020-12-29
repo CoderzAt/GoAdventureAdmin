@@ -13,7 +13,7 @@ import * as action from '../Adminstore/actions/actionTypes'
 
 
 
-
+var valuefromurl
 class State extends Component {
   constructor(props) {
     super(props);
@@ -27,18 +27,21 @@ class State extends Component {
       states: [],
       editData: [],
       countryname: null
+    
     }
   }
   componentWillMount()
     {
       this.props.removeErrormsg()
+     
   
     }
     componentDidMount() 
     {
+      
     var url
    if (this.props.match.params.sid != undefined) {
-      let valuefromurl = parseInt(this.props.match.params.sid);
+      valuefromurl = parseInt(this.props.match.params.sid);
       url = GET_STATE_BYCOUNTRYID + valuefromurl;
       this.props.getData(action.GET_STATE_BYCOUNTRYID, url)
     }
@@ -50,6 +53,8 @@ class State extends Component {
     this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
      }
     statebycountryoperation(event) {
+     
+      valuefromurl=event.target.value
     let url = GET_STATE_BYCOUNTRYID + (event.target.value);
     this.props.getData(action.GET_STATE_BYCOUNTRYID, url)
     }
@@ -95,6 +100,12 @@ class State extends Component {
   }
   editReacord(id) {
     this.props.getData(action.GET_STATE_BYID, GET_STATE_BYID+id)
+}
+refresh(e)
+{
+  e.preventDefault()
+  valuefromurl="0"
+  this.props.getData(action.GET_STATES,GET_STATES)
 }
   updateState = (e, paramName) => {
     this.props.updatePropAccData(paramName,e.target.value,"getstatebyid");
@@ -220,7 +231,7 @@ deleteRecord(id)
                         <div class="form-group row">
                           <label class="col-sm-3 col-form-label">Country</label>
                           <div class="col-sm-9">
-                            <select class="form-control travellerMode"  onChange={(e) => this.statebycountryoperation(e)}>
+                            <select class="form-control travellerMode" value={valuefromurl?valuefromurl:"0"}  onChange={(e) => this.statebycountryoperation(e)}>
                               <option value={0}>Select</option>
                               {this.props.countries.map(obj =>
                                 <option value={obj.countryId}>{obj.countryName}</option>

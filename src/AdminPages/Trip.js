@@ -4,7 +4,7 @@ import { loadData, gettripbyid, GET_TRIP, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID, P
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
-
+import dateFormat from 'dateformat';
 import { Multiselect } from 'multiselect-react-dropdown';
 import { gettingMultiselectValues } from '../Shared/ReauasbleFunctions'
 
@@ -59,8 +59,8 @@ class Trip extends Component {
             tripId: this.props.gettripbyid.tripId ? this.props.gettripbyid.tripId : 0,
             tripName: this.props.gettripbyid.tripName,
             packageId: parseInt(this.props.gettripbyid.packageId),
-            startDate: this.props.gettripbyid.startDate,
-            endDate: this.props.gettripbyid.endDate,
+            startDate: dateFormat(this.props.gettripbyid.startDate,"yyyy-mm-dd"),
+            endDate: dateFormat(this.props.gettripbyid.endDate,"yyyy-mm-dd"),
             treckLeaderId: parseInt(this.props.gettripbyid.treckLeaderId),
             strengthLimit: parseInt(this.props.gettripbyid.strengthLimit),
             travelTypeIds: this.props.gettripbyid.travelTypeIds ? this.props.gettripbyid.travelTypeIds : "",
@@ -196,7 +196,7 @@ class Trip extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">StartDate</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.gettripbyid.startDate ? this.props.gettripbyid.startDate : ""}
+                                                                <input required type="date" value={this.props.gettripbyid.startDate ? this.props.gettripbyid.startDate : "" }
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "startDate")} />
                                                             </div>
                                                         </div>
@@ -205,7 +205,7 @@ class Trip extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">EndDate</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.gettripbyid.endDate ? this.props.gettripbyid.endDate : ""}
+                                                                <input required type="date" value={this.props.gettripbyid.endDate ? this.props.gettripbyid.endDate : ""}
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "endDate")} />
                                                             </div>
                                                         </div>
@@ -214,7 +214,7 @@ class Trip extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">TreckLeader Id</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.gettripbyid.treckLeaderId ? this.props.gettripbyid.treckLeaderId : ""}
+                                                                <input required type="number" value={/* this.props.gettripbyid.treckLeaderId ? this.props.gettripbyid.treckLeaderId : "" */3}
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "treckLeaderId")} />
                                                             </div>
                                                         </div>

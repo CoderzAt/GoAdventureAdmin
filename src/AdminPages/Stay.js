@@ -187,7 +187,7 @@ class Stay extends Component {
             stayName:this.props.getstaybyid.stayName,
             rateType:this.props.getstaybyid.rateType,
             stayTypeIds:this.props.getstaybyid.stayTypeIds?this.props.getstaybyid.stayTypeIds:"",
-            contactInfo:this.props.getstaybyid.locationDetails,
+            contactInfo:this.props.getstaybyid.contactInfo,
             locationDetails:this.props.getstaybyid.locationDetails,
             cityId:this.props.getstaybyid.cityId*1,
             isDeleted:this.props.getstaybyid.stayId?false:true
@@ -253,6 +253,7 @@ class Stay extends Component {
     }
 
     updateStay = (e, paramName) => {
+        debugger
         var value
         if(paramName === "stayTypeIds")
         {
@@ -459,8 +460,8 @@ class Stay extends Component {
         cities:state.goAdvStore.cities,
         getstaytype:state.goAdvStore.getstaytype,
         message: state.goAdvStore.message,
-          messageData: state.goAdvStore.messageData,
-          staytypeids:state.goAdvStore.staytypeids
+        messageData: state.goAdvStore.messageData,
+        staytypeids:state.goAdvStore.staytypeids
            //states:state.goAdvStore.getstatebycountry
             //cities:state.goAdvStore.citybyid
             //cities:state.goAdvStore.citybyid

@@ -93,6 +93,9 @@ class Itenary extends Component {
         else {
             this.props.postData1(action.POST_ITENARY, POST_ITENARY, obj);
         }
+        this.setState({
+            editorState: EditorState.createEmpty()
+          });
         this.setState({ validated: false });
     }
 
@@ -116,6 +119,9 @@ class Itenary extends Component {
     handleReset() {
         this.props.resetData(action.RESET_DATA, "getitenarybyid");
         this.setState({ validated: false });
+        this.setState({
+            editorState: EditorState.createEmpty()
+          });
     }
     editReacord(id) {
         this.props.getData(action.GET_ITENARY_BYID, GET_ITENARY_BYID + id);
@@ -145,11 +151,7 @@ class Itenary extends Component {
     
 
     render() {
-        editorstate=EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML(this.props.getitenarybyid.iternaryDescription?this.props.getitenarybyid.iternaryDescription:'<div><div>')
-            )
-          )
+       
         return (
 
             <div>

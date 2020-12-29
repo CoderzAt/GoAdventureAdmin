@@ -3,11 +3,11 @@ import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
-import {  POST_CITY,  PUT_CITY,DELETE_CITY} from "../Shared/Services";
+import {  POST_CITY,  PUT_CITY,DELETE_CITY, GET_CITY_STATEID} from "../Shared/Services";
 import Sidebar from "./Sidebar";
 import { connect } from "react-redux";
 import { getCities,  getStates,  getCitybyid,  getCitybystate,
-  postData1,  putData1, updatePropData, resetData,removeErrormsg,deleteRecord} from "../Adminstore/actions/goAdvActions";
+  postData1,  putData1, updatePropData, resetData,removeErrormsg,deleteRecord,getData} from "../Adminstore/actions/goAdvActions";
 import * as action from "../Adminstore/actions/actionTypes";
 import "./admin.scss";
 import * as validation from "../Shared/Validations";
@@ -33,15 +33,21 @@ class City extends Component {
   componentDidMount() {
     if (this.props.match.params.cid !== undefined) {
       valuefromurl = parseInt(this.props.match.params.cid);
-      this.props.getCitybystate(valuefromurl);
+     this.props.getData(action.GET_CITY_STATEID,GET_CITY_STATEID+valuefromurl)
     } else {
       this.props.getCities();
     }
     this.props.getStates();
   }
+  getCitybystate(e)
+  {
+    valuefromurl=e.target.value;
+    this.props.getData(action.GET_CITY_STATEID,GET_CITY_STATEID+e.target.value)
+  }
   refresh(e)
   {
       e.preventDefault();
+      valuefromurl="0"
       this.props.getCities();
   }
   deleteRecord(id)
@@ -53,6 +59,7 @@ class City extends Component {
     this.props.getCitybyid(id);
     this.setState({ validated: false });
   }
+  
 
   postCityData() {
     debugger
@@ -72,6 +79,7 @@ class City extends Component {
       this.props.postData1(action.POST_CITY, POST_CITY, obj);
     }
     this.setState({ validated: false });
+    
   }
 
   validateForm(errors) {
@@ -222,7 +230,9 @@ class City extends Component {
                         <div className="form-group row">
                           <label className="col-sm-3 col-form-label">State</label>
                           <div className="col-sm-9">
-                            <select className="form-control travellerMode" onChange={(e) => this.props.getCitybystate(e.target.value)}>
+                            <select className="form-control travellerMode" value={valuefromurl?valuefromurl:"0"} 
+                            onChange={(e) => this.getCitybystate(e)}>
+                              <option value={0}>Select</option>
                               {this.props.states.map((obj) => (
                                 <option value={obj.stateId}>
                                   {obj.stateName}
@@ -332,7 +342,7 @@ export default connect(mapStateToProps, {
   updatePropData,
   resetData,
   removeErrormsg,
-  deleteRecord
+  deleteRecord,getData
 })(City);
 
 //export default City

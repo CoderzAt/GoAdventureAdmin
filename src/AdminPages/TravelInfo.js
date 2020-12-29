@@ -44,7 +44,7 @@ class TravelInfo extends Component {
             vehicleNumber:this.props.gettravelinfobyid.vehicleNumber,
             vehicleName:this.props.gettravelinfobyid.vehicleName,
             vehicleOwner:this.props.gettravelinfobyid.vehicleOwner,
-            vehicleContactNumber:this.props.gettravelinfobyid.vehicleContactNumber*1,
+            vehicleContactNumber:this.props.gettravelinfobyid.vehicleContactNumber,
             agencyName:this.props.gettravelinfobyid.agencyName,
             locationDetails:this.props.gettravelinfobyid.locationDetails,
             cityId:this.props.gettravelinfobyid.cityId*1,

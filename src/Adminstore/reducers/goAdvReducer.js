@@ -430,7 +430,7 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 ispostCoutryLoading: false,
-                countries: action.payload.data,
+                postcountry: action.payload.data,
                 message: true,
                 messageData: msgData,
                 getcountrybyid:{}
@@ -2373,12 +2373,29 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.UPDATE_PROP_ACC}` : {
             debugger
+           
 			      console.log(action.payload);
             let propName = action.payload.propName, updatedAccessoryData = state[propName];
             updatedAccessoryData[action.payload.param] = action.payload.value;
-            return{
+
+         /*    if(propName == "getstaybyid")
+            {
+                let staytypeids=(action.payload.value).split(",");
+                var staytypenames1=[]
+            
+                staytypeids.map(obj=>
+                    state.getstaytype.map((item)=>{
+                        if(parseInt(obj) == item.stayTypeId)
+                        {
+                          staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
+                        }
+                    }))
+
+            } 
+ */            return{
                 ...state,
-				        [propName]: updatedAccessoryData
+                        [propName]: updatedAccessoryData,
+                        
             }
         }
         case `${actions.REMOVE_ERROR_MSG}` : {
@@ -2851,7 +2868,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
 		case `${actions.DELETE_STAY}_PENDING` : {
             return{
-                ...Stay,
+                ...state,
                 isdeleteStayLoading: true
             }
         }
@@ -2866,7 +2883,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 msgData.isSuccess = true;
               }
             return{
-                ...Stay,
+                ...state,
                 isdeleteStayLoading: false,
                 deletestay:action.payload.data,
                 message: true,
@@ -2875,13 +2892,13 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_STAY}_REJECTED` : {
             return{
-                ...Stay,
+                ...state,
                 isdeleteStayLoading: false,
             }
         }
 		case `${actions.DELETE_STAYTYPE}_PENDING` : {
             return{
-                ...StayType,
+                ...state,
                 isdeleteStayTypeLoading: true
             }
         }
@@ -2896,7 +2913,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 msgData.isSuccess = true;
               }
             return{
-                ...StayType,
+                ...state,
                 isdeleteStayTypeLoading: false,
                 deletestaytype:action.payload.data,
                 message: true,
@@ -2905,13 +2922,13 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_STAYTYPE}_REJECTED` : {
             return{
-                ...StayType,
+                ...state,
                 isdeleteStayTypeLoading: false,
             }
         }
 		case `${actions.DELETE_TRAVELINFO}_PENDING` : {
             return{
-                ...TravelInfo,
+                ...state,
                 isdeleteTravelInfoLoading: true
             }
         }
@@ -2926,7 +2943,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 msgData.isSuccess = true;
               }
             return{
-                ...TravelInfo,
+                ...state,
                 isdeleteTravelInfoLoading: false,
                 deletetravelinfo:action.payload.data,
                 message: true,
@@ -2935,13 +2952,13 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_TRAVELINFO}_REJECTED` : {
             return{
-                ...TravelInfo,
+                ...state,
                 isdeleteTravelInfoLoading: false,
             }
         }
 		case `${actions.DELETE_TRAVELTYPE}_PENDING` : {
             return{
-                ...TravelType,
+                ...state,
                 isdeleteTravelTypeLoading: true
             }
         }
@@ -2956,7 +2973,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 msgData.isSuccess = true;
               }
             return{
-                ...TravelType,
+                ...state,
                 isdeleteTravelTypeLoading: false,
                 deletetraveltype:action.payload.data,
                 message: true,
@@ -2965,13 +2982,13 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_TRAVELTYPE}_REJECTED` : {
             return{
-                ...TravelType,
+                ...state,
                 isdeleteTravelTypeLoading: false,
             }
         }
 		case `${actions.DELETE_DESTINATION}_PENDING` : {
             return{
-                ...Destination,
+                ...state,
                 isdeleteDestinationLoading: true
             }
         }
@@ -2986,7 +3003,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 msgData.isSuccess = true;
               }
             return{
-                ...Destination,
+                ...state,
                 isdeleteDestinationLoading: false,
                 deletedestination:action.payload.data,
                 message: true,
@@ -2995,7 +3012,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_DESTINATION}_REJECTED` : {
             return{
-                ...Destination,
+                ...state,
                 isdeleteDestinationLoading: false,
             }
         }

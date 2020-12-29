@@ -423,6 +423,7 @@ export const updatePropData = (param, value, propName) => {
     }
  }
 
+ 
  export const resetData = (actiontype,propName) => {
    return dispatch => {
       dispatch({

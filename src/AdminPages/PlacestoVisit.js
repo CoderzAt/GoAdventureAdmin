@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT,DELETE_PLACETOVISIT } from '../Shared/Services'
+import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT } from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getDestination, getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getDestination, getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
-
+var valuefromurl
 class PlacestoVisit extends Component {
     constructor(props) {
         super(props);
@@ -40,7 +40,7 @@ class PlacestoVisit extends Component {
         var url
         if (this.props.match.params.parent == "city") {
             if (this.props.match.params.pid != undefined) {
-                let valuefromurl = parseInt(this.props.match.params.pid);
+                valuefromurl = parseInt(this.props.match.params.pid);
                 url = getplacetovisitbycity + valuefromurl;
             }
             this.setState({
@@ -50,7 +50,7 @@ class PlacestoVisit extends Component {
         }
         else if (this.props.match.params.parent == "destination") {
             if (this.props.match.params.pid != undefined) {
-                let valuefromurl = parseInt(this.props.match.params.pid);
+                valuefromurl = parseInt(this.props.match.params.pid);
                 url = getplacetovisitbydestination + valuefromurl;
             }
 
@@ -124,6 +124,16 @@ class PlacestoVisit extends Component {
         this.props.resetData(action.RESET_DATA, "getplacetovisitbyid");
         this.setState({ validated: false });
     }
+    async refresh(e) {
+        debugger
+        e.preventDefault()
+        valuefromurl = "0"
+        let palcetovisitdata = await loadData(getplacetovisit)
+        this.setState({
+            placetovisitTable: palcetovisitdata
+        })
+        
+    }
     editReacord(id) {
         this.props.getData(action.GET_PLACETOVISIT_BYID, GET_PLACETOVISIT_BYID + id)
     }
@@ -132,10 +142,23 @@ class PlacestoVisit extends Component {
         this.props.updatePropAccData(paramName, e.target.value, "getplacetovisitbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
-    deleteRecord(id)
-    {
+    async placetovisitbycityOperation(e) {
+        valuefromurl = e.target.value
+        let palcetovisitdata = await loadData(getplacetovisitbycity + e.target.value)
+        this.setState({
+            placetovisitTable: palcetovisitdata
+        })
+    }
+    async placetovisitbydestinationOperation(e) {
+        valuefromurl = e.target.value
+        let palcetovisitdata = await loadData(getplacetovisitbydestination + e.target.value)
+        this.setState({
+            placetovisitTable: palcetovisitdata
+        })
+    }
+    deleteRecord(id) {
         debugger
-    this.props.deleteRecord(action.DELETE_PLACETOVISIT,DELETE_PLACETOVISIT+id)
+        this.props.deleteRecord(action.DELETE_PLACETOVISIT, DELETE_PLACETOVISIT + id)
     }
     render() {
         return (
@@ -282,12 +305,13 @@ class PlacestoVisit extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
+                                            <h4 class="card-title">List<button onClick={(e) => this.refresh(e)} style={{ backgroundColor: "transparent", border: "none" }}><i class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="col-md-6" hidden={this.state.hidecity}>
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">City</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control travellerMode" onChange={(e) => this.placetovisitbycityOperation(e)}>
+                                                        <select class="form-control travellerMode" value={valuefromurl ? valuefromurl : "0"} onChange={(e) => this.placetovisitbycityOperation(e)}>
+                                                            <option value={0}>Select</option>
                                                             {this.props.cities.map(obj =>
                                                                 <option value={obj.cityId}>{obj.cityName}</option>
                                                             )}
@@ -299,8 +323,9 @@ class PlacestoVisit extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Destination</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control travellerMode" onChange={(e) => this.placetovisitbydestinationOperation(e)}>
-                                                            {this.state.destinationnames.map(obj =>
+                                                        <select class="form-control travellerMode" value={valuefromurl ? valuefromurl : "0"} onChange={(e) => this.placetovisitbydestinationOperation(e)}>
+                                                            <option value={0}>Select</option>
+                                                            {this.props.getdestination.map(obj =>
                                                                 <option value={obj.destinationId}>{obj.destinationName}</option>
                                                             )}
                                                         </select>
@@ -309,11 +334,11 @@ class PlacestoVisit extends Component {
                                             </div>
                                             <div className="table-responsive">
                                                 <ReactTable columns={[
-                                                   /* {
-                                                        Header: "PlaceId",
-                                                        accessor: "placeId"
-
-                                                    },*/
+                                                    /* {
+                                                         Header: "PlaceId",
+                                                         accessor: "placeId"
+ 
+                                                     },*/
                                                     {
                                                         Header: "Name",
                                                         accessor: "placeName",
@@ -351,7 +376,7 @@ class PlacestoVisit extends Component {
                                                                 <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
                                                                     <i class="mdi mdi-pencil-outline"></i>
                                                                 </button>
-                                                                <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
+                                                                <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { if (window.confirm('Are you sure to delete this record?')) { this.deleteRecord(row.value) }; }} value={row.value} >
                                                                     <i class="mdi mdi-delete-outline"></i>
                                                                 </button>
                                                             </div>)
@@ -387,6 +412,6 @@ const mapStateToProps = (state) => {
         messageData: state.goAdvStore.messageData
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg,deleteRecord })(PlacestoVisit);
+export default connect(mapStateToProps, { getData, postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg, deleteRecord })(PlacestoVisit);
     //export default PlacestoVisit
 
