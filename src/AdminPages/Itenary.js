@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { deletecountry,PUT_ITENARY, POST_ITENARY, GET_ITENARY_BYID, GET_ITENARY, GET_ALL_PACKAGES,DELETE_ITENARY, GET_ITENARY_BYPACKAGEID } from '../Shared/Services'
+import { deletecountry,PUT_ITENARY,PLACETOVISIT_BYDESTINATION,POST_ITENARY, GET_ITENARY_BYID, GET_ITENARY, GET_ALL_PACKAGES,DELETE_ITENARY, GET_ITENARY_BYPACKAGEID } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -15,11 +15,13 @@ import parse from 'html-react-parser'
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw, ContentState, convertFromHTML,convertFromRaw } from 'draft-js';
+import { Multiselect } from 'multiselect-react-dropdown';
 
 
 
 var condition = false;
 var editorstate='<div>hi<div>'
+var valuefromurl
 class Itenary extends Component {
     constructor(props) {
         super(props);
@@ -31,11 +33,12 @@ class Itenary extends Component {
         }
     }
    
+
     componentDidMount() {
         debugger
         var url
-        if (this.props.match.params.pid != undefined) {
-            let valuefromurl = parseInt(this.props.match.params.pid);
+        if (this.props.match.params.pid !== undefined) {
+            valuefromurl = parseInt(this.props.match.params.pid);
             url =GET_ITENARY_BYPACKAGEID+ valuefromurl;
             this.props.getData(action.GET_ITENARY_BYPACKAGEID, url)
         }
@@ -140,6 +143,12 @@ class Itenary extends Component {
             )
           )}) */
     }
+    itenarybypackage(e)
+    {
+        valuefromurl=e.target.value;
+        this.props.getData(action.GET_ITENARY_BYPACKAGEID,GET_ITENARY_BYPACKAGEID+e.target.value)
+
+    }
     updateItenary = (e, paramName) => {
         debugger
         var value
@@ -147,6 +156,29 @@ class Itenary extends Component {
         {
            value=draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
            console.log("hi",value)
+        }
+         else if(paramName === "packageId")
+        {
+            value=e.target.value
+            
+            let destinationid=0
+            this.props.packages.map(obj=>{
+                if(obj.packageId === value*1)
+                {
+                    destinationid=obj.destinationId;
+                }
+            })
+
+            this.props.getData(action.PLACETOVISIT_BYDESTINATION,PLACETOVISIT_BYDESTINATION+destinationid)
+        
+
+            //loop on packages with package id
+        } 
+        else if(paramName === "packagePlaceIds")
+        {
+            let data= Array.prototype.map.call(e, function(item) { return item.placeId; }).join(",");
+            value=data;
+
         }
         else
         {
@@ -203,7 +235,7 @@ class Itenary extends Component {
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getitenarybyid.packageId ? this.props.getitenarybyid.packageId : "0"}
                                                                     onChange={(e) => this.updateItenary(e, "packageId")}>
-                                                                    <option>Select</option>
+                                                                    <option value={0}>Select</option>
                                                                     {this.props.packages.map(obj =>
                                                                         <option value={obj.packageId}>{obj.packageName}</option>
                                                                     )}
@@ -242,10 +274,12 @@ class Itenary extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">package PlaceIds</label>
+                                                            <label class="col-sm-3 col-form-label">package Places</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.getitenarybyid.packagePlaceIds ? this.props.getitenarybyid.packagePlaceIds : ""}
-                                                                    class="form-control" onChange={(e) => this.updateItenary(e, "packagePlaceIds")} />
+                                                            <Multiselect  options={this.props.placetovisitbydestination} displayValue={"placeName"} 
+                                                    class="form-control" onSelect={(e)=>this.updateItenary(e, "packagePlaceIds")} onRemove={(e)=>this.updateItenary(e, "packagePlaceIds")} /> 
+                                                                {/* <input required type="text" value={this.props.getitenarybyid.packagePlaceIds ? this.props.getitenarybyid.packagePlaceIds : ""}
+                                                                    class="form-control" onChange={(e) => this.updateItenary(e, "packagePlaceIds")} /> */}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -283,6 +317,20 @@ class Itenary extends Component {
                                     <div class="card">
                                         <div class="card-body">
                                             <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
+                                            <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Package</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control travellerMode" value={valuefromurl?valuefromurl:"0"}
+                                                                    onChange={(e) => this.itenarybypackage(e)}>
+                                                                    <option value={0}>Select</option>
+                                                                    {this.props.packages.map(obj =>
+                                                                        <option value={obj.packageId}>{obj.packageName}</option>
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        </div>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
                                                 {
@@ -355,7 +403,8 @@ const mapStateToProps = (state) => {
         packages: state.goAdvStore.packages,
         geteditorState:state.goAdvStore.geteditorState,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        placetovisitbydestination:state.goAdvStore.placetovisitbydestination
         //cities:state.goAdvStore.citybyid
         //cities:state.goAdvStore.citybyid
     }

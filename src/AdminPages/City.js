@@ -25,11 +25,11 @@ class City extends Component {
     };
   }
 
-  componentWillMount()
+  /* componentWillMount()
   {
     this.props.removeErrormsg()
 
-  }
+  } */
   componentDidMount() {
     if (this.props.match.params.cid !== undefined) {
       valuefromurl = parseInt(this.props.match.params.cid);
@@ -83,6 +83,7 @@ class City extends Component {
   }
 
   validateForm(errors) {
+    debugger
     let valid = true;
     Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
     return valid;
@@ -90,7 +91,7 @@ class City extends Component {
   handlevalidations() {
     let stateid = this.props.cityData.stateId?this.props.cityData.stateId:"0";
     let errMsg = validation.selectvalidation(stateid);
-    this.setState(prevState => ({
+    this.setState(prevState=>({
         errors: {
             ...prevState.errors,
             selectstate: errMsg
@@ -98,11 +99,13 @@ class City extends Component {
     }))
   }
   handleSubmit(event) {
+    debugger
     event.preventDefault();
     this.handlevalidations();
     const form = event.currentTarget;
     console.log("checkform", form.checkValidity());
     this.setState({ validated: true });
+    
     if (form.checkValidity() === false || this.validateForm(this.state.errors) === false) {
       event.preventDefault();
       event.stopPropagation();
@@ -141,7 +144,7 @@ class City extends Component {
                   City
                 </h3>
                 {this.props.message?
-                  <div className={`message-wrapper ${this.props.messageData.isSuccess? "success":"error"}`}>{this.props.messageData.message}</div> :
+                  <div className={`message-wrapper ${this.props.messageData.isSuccess? "success":"error"}`}>{this.props.messageData.message.map(obj=>(<li>{obj.message}</li>))}</div> :
                   null
                 }
                 <nav aria-label="breadcrumb">

@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import { GET_COUNTRIES,GET_STATES,loadData,getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT } from '../Shared/Services'
+import { GET_COUNTRIES,GET_STATES,GET_STATE_BYCOUNTRYID,GET_CITY_STATEID,loadData,getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT } from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
 import { getDestination, getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
+import * as validation from "../Shared/Validations";
 var valuefromurl
+var selectcitymsg
 class PlacestoVisit extends Component {
     constructor(props) {
         super(props);
@@ -28,10 +30,14 @@ class PlacestoVisit extends Component {
             editData: [],
             hidecity: "",
             hidedestination: "",
-            stateId="0",
-            countryId="0",
-            selectstateerror:"",
-            selectcountryerror:""
+            stateId:"0",
+            countryId:"0",
+            selectcountry:"",
+            selectstate:"",
+            errors:{
+                selectcity:""
+            }
+            
         }
     }
     componentWillMount() {
@@ -76,15 +82,10 @@ class PlacestoVisit extends Component {
         this.setState({
             placetovisitTable: palcetovisitdata
         })
-
-
-
-        this.props.getData(action.GET_CITIES, GET_CITIES)
         this.props.getData(action.GET_DESTINATION, GET_DESTINATION);
         this.props.getData(action.GET_PLACETYPE, GET_PLACETYPE)
         this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
-        this.props.getData(action.GET_STATES,GET_STATES)
-
+        
     }
 
 
@@ -109,14 +110,32 @@ class PlacestoVisit extends Component {
         }
         this.setState({ validated: false });
     }
+    validateForm(errors) {
+        debugger
+        let valid =errors.length>0?false:true;
+       /*  Object.values(errors).forEach((val) => val.length > 0 && (valid = false));*/        
+       return valid;
+      }
+      handlevalidations() {
+        let cityd = this.props.getplacetovisitbyid.cityId?this.props.getplacetovisitbyid.cityId:"0";
+        let errMsg = validation.selectvalidation(cityd);
+        /* this.setState(prevState => ({
+            errors: {
+                ...prevState.errors,
+                selectcity: errMsg
+            }
+        })) */
+        selectcitymsg=errMsg;
+      }
 
     handleSubmit(event) {
+        debugger
         event.preventDefault();
-        //this.handlevalidations();
+        this.handlevalidations();
         const form = event.currentTarget;
         console.log("checkform", form.checkValidity());
         this.setState({ validated: true });
-        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        if (form.checkValidity() === false  || this.validateForm(selectcitymsg) === false ) {
             event.preventDefault();
             event.stopPropagation();
         }
@@ -141,20 +160,63 @@ class PlacestoVisit extends Component {
         
     }
     editReacord(id) {
+        this.props.getData(action.GET_CITIES,GET_CITIES)
         this.props.getData(action.GET_PLACETOVISIT_BYID, GET_PLACETOVISIT_BYID + id)
     }
-    getstates()
+    getstates(e)
     {
-        
-
+        this.setState({
+            countryId:e.target.value
+           })
+        if(e.target.value!== "0")
+        {
+            this.setState({
+                selectcountry:""
+            })  
+            this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+e.target.value)
+        }
     }
-    getcities()
+    getcities(e)
     {
-
+        if(this.state.countryId === "0")
+        {
+            this.setState({
+              
+                   selectcountry:"please select country"
+             
+            })
+        }
+        else
+         {
+             this.setState({
+                 stateId:e.target.value
+             })
+             this.props.getData(action.GET_CITY_STATEID,GET_CITY_STATEID+e.target.value)
+         }
+         if(e.target.value !== "0")
+        {
+            this.setState({
+                      selectstate:""
+            })
+        } 
+        
     }
 
     updatePlacetovisit = (e, paramName) => {
-        this.props.updatePropAccData(paramName, e.target.value, "getplacetovisitbyid");
+        let value=e.target.value
+        if(paramName === "cityId")
+        {
+            if(this.state.stateId === "0")
+            {
+                this.setState({
+                 
+                        selectstate:"please select state"
+                    
+                })
+                value="0"
+            }
+        }
+        this.props.updatePropAccData(paramName, value, "getplacetovisitbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
     async placetovisitbycityOperation(e) {
@@ -266,13 +328,14 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Country</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0"}
+                                                                <select class="form-control travellerMode" value={this.state.countryId ? this.state.countryId : "0"}
                                                                     onChange={(e) => this.getstates(e)}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.countries.map(obj =>
                                                                         <option value={obj.countryId}>{obj.countryName}</option>
                                                                     )}
                                                                 </select>
+                                                                <div style={{color:"red"}}>{this.state.selectcountry}</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -280,13 +343,14 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">State</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0"}
+                                                                <select class="form-control travellerMode" value={this.state.stateId?this.state.stateId: "0"}
                                                                     onChange={(e) => this.getcities(e)}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.states.map(obj =>
                                                                         <option value={obj.stateId}>{obj.stateName}</option>
                                                                     )}
                                                                 </select>
+                                                                <div style={{color:"red"}}>{this.state.selectstate}</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -302,6 +366,7 @@ class PlacestoVisit extends Component {
                                                                         <option value={obj.cityId}>{obj.cityName}</option>
                                                                     )}
                                                                 </select>
+                                                                <div style={{color:"red"}}>{selectcitymsg}</div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -440,6 +505,7 @@ class PlacestoVisit extends Component {
 const mapStateToProps = (state) => {
     return {
         cities: state.goAdvStore.cities,
+        states:state.goAdvStore.states,
         countries:state.goAdvStore.countries,
         states:state.goAdvStore.states,
         placetype: state.goAdvStore.placetype,
