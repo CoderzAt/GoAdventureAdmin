@@ -289,3 +289,10 @@ export const PUT_COUPON="updateCoupon?id=";
 export const DELETE_COUPON="deleteCoupon?id=";
 //calendar
 export const GET_CALENDAR="GetCalenderList?month=12&year=2020";
+
+export const  GET_TRIP_COSTCENTER="GetAllTripCostcenters";
+export const  GET_TRIP_COSTCENTERBYID="GetTripCostcenterById?id=";
+export const  GET_TRIP_COSTCENTER_BYTRIPID="GetTripCostCenterByTrip?tripid=";
+export const  POST_TRIP_COSTCENTER="CreateTripCostcenter";
+export const  PUT_TRIP_COSTCENTER="UpdateTripCostcenter?id=";
+export const  DELETE_TRIP_COSTCENTER="DeleteTripCostcenter?id=";
