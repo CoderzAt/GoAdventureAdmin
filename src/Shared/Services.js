@@ -312,9 +312,9 @@ export const  PUT_TRIP_COSTCENTER="UpdateTripCostcenter?id=";
 export const  DELETE_TRIP_COSTCENTER="DeleteTripCostcenter?id=";
 
 export const GET_ACCESSORIES_BOOKING= 'GetAllAccessoryBookings';
-export const PUT_ACCESSORIES_BOOKING='UpdateAccessoryBooking';
+export const PUT_ACCESSORIES_BOOKING='UpdateAccessoryBooking?id=';
 export const POST_ACCESSORIES_BOOKING='CreateAccessoryBooking';
 export const GET_ACCESSORIES_BOOKING_BYID='GetAccessoryBookingById?id=';
 export const GET_ACCESSORIES_BOOKING_BYBOOKINGID='GetAccessoryBookingBybookingId?id=';
-export const DELETE_ACCESSORIES_BOOKING="DeleteAccessoryBooking";
+export const DELETE_ACCESSORIES_BOOKING="DeleteAccessoryBookingDeleteAccessoryBooking?id=";
 export const GET_ACCESSORIES_BOOKING_BYACCESSORYID="GetAccessoryBookingByaccessoryId?id=";

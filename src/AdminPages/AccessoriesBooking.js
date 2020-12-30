@@ -4,6 +4,7 @@ import { GET_ACCESSORIES_BOOKING, GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
+import dateFormat from 'dateformat';
 import { connect } from 'react-redux';
 import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
@@ -19,7 +20,8 @@ class AccessoriesBooking extends Component {
         super(props);
         this.state = {
             validated: false,
-            refreshflag: false
+            refreshflag: false,
+            accessaryid:""
         }
 
     }
@@ -54,13 +56,13 @@ class AccessoriesBooking extends Component {
         const obj = {
             accessoryBookingId: this.props.accessorybookingbyid.accessoryBookingId? this.props.accessorybookingbyid.accessoryBookingId: 0,
             accessoryId: parseInt(this.props.accessorybookingbyid.accessoryId),
-            isRent: this.props.accessorybookingbyid.isRent,
-            userId: parseInt(this.props.accessorybookingbyid.userId),
+            isRent: JSON.parse(this.props.accessorybookingbyid.isRent),
+            userId:19/* parseInt(this.props.accessorybookingbyid.userId) */,
             userName: this.props.accessorybookingbyid.userName,
             phoneNumber: this.props.accessorybookingbyid.phoneNumber,
             emailId:this.props.accessorybookingbyid.emailId,
-            givenDate:this.props.accessorybookingbyid.givenDate,
-            returnedDate:this.props.accessorybookingbyid.returnedDate,
+            givenDate: dateFormat(this.props.accessorybookingbyid.givenDate,"yyyy-mm-dd"),
+            returnedDate:dateFormat(this.props.accessorybookingbyid.returnedDate,"yyyy-mm-dd"),
             price: parseInt(this.props.accessorybookingbyid.price),
             isDeleted:this.props.accessorybookingbyid.accessoryBookingId? false : true
 
@@ -157,13 +159,31 @@ class AccessoriesBooking extends Component {
                                             <h4 class="card-title">Accessoy Booking</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
+                                                <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessary</label>
+                                                            <div class="col-sm-9">
+                                                                <select required type="text" value={this.props.accessorybookingbyid.accessoryId?this.props.accessorybookingbyid.accessoryId:"0"}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "accessoryId")} >
+                                                                      <option value={0}>Select</option>
+                                                                       {this.props.accessories.map(obj=>(
+                                                                            <option value={obj.accessoriesId}>{obj.accessoryCode}</option>
+                                                                        ))}
+                                                                        </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Rent</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">IsRent</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.accessorybookingbyid.isRent ? this.props.accessorybookingbyid.isRent : ""}
-                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "isRent")} />
+                                                                <select required type="text" value={this.props.accessorybookingbyid.isRent ? this.props.accessorybookingbyid.isRent : "0"}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "isRent")} >
+                                                                        <option value={0}>Select</option>
+                                                                        <option value={true}>YES</option>
+                                                                        <option value={false}>NO</option>
+                                                                        </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -185,12 +205,21 @@ class AccessoriesBooking extends Component {
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "phoneNumber")} />
                                                             </div>
                                                         </div>
+                                                    </div> 
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">EmailId</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="text" value={this.props.accessorybookingbyid.emailId?this.props.accessorybookingbyid.emailId: ""}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e,"emailId")} />
+                                                            </div>
+                                                        </div>
                                                     </div>   
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Given Date</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.accessorybookingbyid.givenDate ? this.props.accessorybookingbyid.givenDate : ""}
+                                                                <input required type="date" value={this.props.accessorybookingbyid.givenDate ? this.props.accessorybookingbyid.givenDate : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "givenDate")} />
                                                             </div>
                                                         </div>
@@ -199,11 +228,12 @@ class AccessoriesBooking extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Returned Date</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.accessorybookingbyid.returnedDate ? this.props.accessorybookingbyid.returnedDate : ""}
+                                                                <input required type="date" value={this.props.accessorybookingbyid.returnedDate ? this.props.accessorybookingbyid.returnedDate : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "returnedDate")} />
                                                             </div>
                                                         </div>
-                                                    </div>      
+                                                    </div> 
+                                                  
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Price</label>
@@ -235,16 +265,15 @@ class AccessoriesBooking extends Component {
                                             <h4 class="card-title">Accessory Bokings<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Accessory Code</label>
+                                                    <label class="col-sm-3 col-form-label">AccessoryId</label>
+                                                    
                                                     <div class="col-sm-9">
-                                                        <select class="form-control travellerMode" value={valuefromurl?valuefromurl:"0"} onChange={(e) => this.accessorybookingbyaccessoryOperation(e.target.value)}>
-                                                            <option value={0}>Select</option>
-                                                            {this.props.accessories.map(obj =>
-                                                                <option value={obj.accessoriesId}>{obj.accessoryCode}</option>
-                                                            )}
-                                                        </select>
+                                                    
+                                                                <input required type="text" value={this.state.accessaryid}
+                                                                    class="form-control" onChange={(e) => this.setState({accessaryid:e.target.value})} />
                                                     </div>
                                                 </div>
+                                                
                                             </div>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
