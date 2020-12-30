@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { deletecountry,PUT_ITENARY, POST_ITENARY, GET_ITENARY_BYID, GET_ITENARY, GET_ALL_PACKAGES,DELETE_ITENARY } from '../Shared/Services'
+import { deletecountry,PUT_ITENARY, POST_ITENARY, GET_ITENARY_BYID, GET_ITENARY, GET_ALL_PACKAGES,DELETE_ITENARY, GET_ITENARY_BYPACKAGEID } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -32,8 +32,16 @@ class Itenary extends Component {
     }
    
     componentDidMount() {
-
-        this.props.getData(action.GET_ITENARY, GET_ITENARY)
+        debugger
+        var url
+        if (this.props.match.params.pid != undefined) {
+            let valuefromurl = parseInt(this.props.match.params.pid);
+            url =GET_ITENARY_BYPACKAGEID+ valuefromurl;
+            this.props.getData(action.GET_ITENARY_BYPACKAGEID, url)
+        }
+        else {
+            this.props.getData(action.GET_ITENARY, GET_ITENARY)
+        }
         this.props.getData(action.GET_ALL_PACKAGES, GET_ALL_PACKAGES);
     }
     componentDidUpdate(prevProps, prevState, snapshotValue) {

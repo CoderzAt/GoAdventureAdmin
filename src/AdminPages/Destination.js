@@ -65,7 +65,7 @@ class Destination extends Component {
        bodyFormData.set('Title', this.props.getdestinationbyid.title);
        //bodyFormData.set('PromoImage', this.state.formFile.name);
        bodyFormData.set('isDeleted', false);
-       bodyFormData.append('formFile', this.state.formFile);
+       bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
     let url = PUT_DESTINATION+this.props.getdestinationbyid.destinationId;
     if (this.props.getdestinationbyid.destinationId) {
         //this.props.putData1(action.PUT_DESTINATION,url,obj);
@@ -105,7 +105,7 @@ debugger
   console.log("contentdisposition",e.target.files[0]);
   this.setState({
     formFile:e.target.files[0],
-    formFilename:e.target.files[0].name
+    //formFilename:e.target.files[0].name
   })
   
 }

@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
-import {postData,packagepostapi,getdestinations,loadData,getpackages,packageupdateapi,GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION,DELETE_PACKAGE} from '../Shared/Services'
+import {GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION,DELETE_PACKAGE,GET_EVENTTYPE} from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
@@ -16,20 +16,7 @@ class Package extends Component {
         super(props);
        this.state = {
            validated:false,
-           destinationnames:[],
-           packagename:null,
-           packagetype:null,
-           packageduration:null,
-           couponcode:null,
-           couponexpirydate:null,
-           couponuserusagecount:null,
-           inclusions:null,
-           exclusions:null,
-           packagedescription:null,
-           promoimage:null,
-           destination:1,
-           packagesT:[],
-           editData:[]
+          refreshflag:false
        }
     }
 
@@ -41,6 +28,8 @@ class Package extends Component {
     {
         this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
         this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
+        this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
+
     }
 
     refresh(e)
@@ -86,7 +75,7 @@ class Package extends Component {
         bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
         bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
         bodyFormData.set('IsDeleted',  false );
-        bodyFormData.append('formFile', this.state.formFile);
+        bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
         let url = PUT_PACKAGE+ this.props.packagebyid.packageId;
         if (this.props.packagebyid.packageId) {
             this.props.putDataWithFile(action.PUT_PACKAGE,url,bodyFormData);
@@ -190,8 +179,13 @@ class Package extends Component {
                                                     <label for="type"
                                                         class="col-sm-3 col-form-label">Type</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" value={this.props.packagebyid.packageType?this.props.packagebyid.packageType:""} class="form-control" id="type" required
-                                                            placeholder="Type" onChange={(e)=>this.updatePackage(e,"packageType")}/>
+                                                        <select type="text" value={this.props.packagebyid.packageType?this.props.packagebyid.packageType:""} class="form-control" id="type" required
+                                                        placeholder="Type" onChange={(e)=>this.updatePackage(e,"packageType")}>
+                                                            <option value={0}>Select</option>
+                                                        {this.props.geteventtype.map(obj=>(
+                                                            <option value={obj.eventTypeCode}>{obj.eventTypeCode}</option>
+                                                        ))}
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -385,6 +379,9 @@ class Package extends Component {
                                           <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
                                           <Link  to={`/admin/trip/${row.value}`}> <i class="mdi mdi-eye-outline"></i></Link>
                                           </button>
+                                          <button type="button"  value={row.value} class="btn btn-icon">
+                                          <Link  to={`/admin/itenary/${row.value}`}>Itenary</Link>
+                                          </button>
                                       </div>)
 
                                   }
@@ -413,6 +410,7 @@ class Package extends Component {
         return {
           getdestination:state.goAdvStore.getdestination,
           packages:state.goAdvStore.packages,
+          geteventtype:state.goAdvStore.geteventtype,
           packagebyid:state.goAdvStore.packagebyid,
           message: state.goAdvStore.message,
           messageData: state.goAdvStore.messageData

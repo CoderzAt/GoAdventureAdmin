@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { loadData, gettripbyid, GET_TRIP, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID, POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
+import { loadData, gettripbyid, GET_TRIP,GET_TRECKLEADERS, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID, POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -43,6 +43,7 @@ class Trip extends Component {
         this.props.getData(action.GET_ALL_PACKAGES, GET_ALL_PACKAGES)
         this.props.getData(action.GET_TRAVELTYPE, GET_TRAVELTYPE)
         this.props.getData(action.GET_STAYTYPE, GET_STAYTYPE)
+        this.props.getData(action.GET_TRECKLEADERS,GET_TRECKLEADERS)
     }
     componentWillMount() {
         this.props.removeErrormsg()
@@ -103,6 +104,10 @@ class Trip extends Component {
     handleReset() {
         this.props.resetData(action.RESET_DATA, "gettripbyid");
         this.setState({ validated: false });
+    }
+    refresh()
+    {
+        this.props.getData(action.GET_TRIP,GET_TRIP)
     }
     editReacord(id) {
         this.props.getData(action.GET_TRAVELTYPE, GET_TRAVELTYPE)
@@ -214,8 +219,13 @@ class Trip extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">TreckLeader Id</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={/* this.props.gettripbyid.treckLeaderId ? this.props.gettripbyid.treckLeaderId : "" */3}
-                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "treckLeaderId")} />
+                                                                <select  value={this.props.gettripbyid.treckLeaderId ? this.props.gettripbyid.treckLeaderId : "0" }
+                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "treckLeaderId")} >
+                                                                        <option value={0}>Select</option>
+                                                                        {this.props.gettreckleaders.map(obj=>(
+                                                                            <option value={obj.userId}>{`${obj.firstName} ${obj.middleName} ${obj.lastName}`}</option>
+                                                                        ))}
+                                                                        </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -393,6 +403,7 @@ const mapStateToProps = (state) => {
         getstaytype: state.goAdvStore.getstaytype,
         staytypeids: state.goAdvStore.staytypeids,
         traveltypeids: state.goAdvStore.traveltypeids,
+        gettreckleaders:state.goAdvStore.gettreckleaders,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData
     }

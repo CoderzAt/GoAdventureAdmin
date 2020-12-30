@@ -38,7 +38,7 @@ import EventType from './AdminPages/EventType';
 import Accessories from './AdminPages/Accesories';
 import Costcentre from './AdminPages/Costcentre';
 import AdminHeader from'./AdminPages/AdminHeader';
-
+import PlaceActivities from './AdminPages/PlaceActivities';
 //import './App.scss'
 //import AppRoutes from './AppRoutes'
 
@@ -73,11 +73,13 @@ class App extends Component {
             <Route exact path="/admin/trip/:tid" component={Trip}/>
             <Route exact path="/admin/booking" component={Booking}/>
             <Route exact path="/admin/itenary" component={Itenary}/>
+            <Route exact path="/admin/itenary/:pid" component={Itenary}/>
             <Route exact path="/admin/activity" component={Activity}/>
             <Route exact path="/admin/eventlevel" component={Eventlevel}/>
             <Route exact path="/admin/eventtype" component={EventType }/>
             <Route exact path="/admin/accessories" component={Accessories}/>
             <Route exact path="/admin/costcentre" component={Costcentre}/>
+            <Route exact path="/admin/placeactivities" component={PlaceActivities}/>
             </Switch>
  
         </Router>   

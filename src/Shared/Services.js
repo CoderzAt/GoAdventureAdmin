@@ -289,3 +289,15 @@ export const PUT_COUPON="updateCoupon?id=";
 export const DELETE_COUPON="deleteCoupon?id=";
 //calendar
 export const GET_CALENDAR="GetCalenderList?month=12&year=2020";
+
+
+//placeactivities
+export const GET_PLACEACTIVITIES="GetAllPlaceActivities";
+export const GET_PLACEACTIVITIES_BYID="GetPlaceActivitiesById?id=";
+export const POST_PLACEACTIVITIES="CreatePlaceActivities";
+export const PUT_PLACEACTIVITIES="UpdatePlaceActivities?id=";
+export const DELETE_PLACEACTITIES="DeletePlaceActivities?id=";
+
+//userbyusertype
+
+export const GET_TRECKLEADERS="GetUsersByUserTypeId?userTypeId=4";

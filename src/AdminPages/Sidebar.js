@@ -23,7 +23,8 @@ const sidebarItems=[/* {name:"Dashboard",icon:"mdi mdi-home menu-icon"} */,
 {name:"Travel Types",icon:"mdi mdi-package-variant menu-icon",route:"/admin/traveltype"},
 {name:"Eventype",icon:"mdi mdi-package-variant menu-icon",route:"/admin/eventtype"},
 {name:"Event Levels",icon:"mdi mdi-package-variant menu-icon",route:"/admin/eventlevel"},
-{name:"Cost Center",icon:"mdi mdi-package-variant menu-icon",route:"/admin/costcentre"}
+{name:"Cost Center",icon:"mdi mdi-package-variant menu-icon",route:"/admin/costcentre"},
+{name:"Coupons",icon:"mdi mdi-package-variant menu-icon",route:"/admin/coupon"}
 ]
 class Sidebar extends Component {
     constructor(props) {

@@ -44,6 +44,7 @@ export const getPackages = () => {
 
 export const getData =(actiontype,url)=>
 {
+   debugger
    const svcconfig = {
       headers: { Pragma: 'no-cache' }
    }

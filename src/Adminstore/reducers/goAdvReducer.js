@@ -120,7 +120,13 @@ const initalState ={
     deletestaytype:[],
     deletetravelinfo:[],
     deletetraveltype:[],
-    deletedestination:[]
+    deletedestination:[],
+    getplaceactivities:[],
+    getplaceactivitiesbyid:[],
+    postplaceactivities:[],
+    putplaceactivities:[],
+    deleteplaceactivities:[],
+    gettreckleaders:[]
 
 }
 const goAdvReducer = (state =initalState, action) => {
@@ -244,12 +250,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_ITENARY_BYPACKAGEID}_PENDING` : {
+            debugger
             return{
                 ...state,
                 isItebypidLoading: true
             }
         }
         case `${actions.GET_ITENARY_BYPACKAGEID}_FULFILLED` : {
+            debugger
+            console.log("itenarybypackageid",action.payload.data)
             return{
                 ...state,
                 isItebypidLoading: false,
@@ -263,6 +272,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_PACKAGE_BYID}_PENDING` : {
+
             return{
                 ...state,
                 isPkgbidLoading: true
@@ -3016,7 +3026,155 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 isdeleteDestinationLoading: false,
             }
         }
-		
+        case `${actions.GET_PLACEACTIVITIES}_PENDING` : {
+            return{
+                ...state,
+                isgetplaceivitiesLoading: true
+            }
+        }
+        case `${actions.GET_PLACEACTIVITIES}_FULFILLED` : {
+            return{
+                ...state,
+                isgetplaceivitiesLoading: false,
+                getplaceactivities: action.payload.data
+            }
+        }
+        case `${actions.GET_PLACEACTIVITIES}_REJECTED` : {
+            return{
+                ...state,
+                isgetplaceivitiesLoading: false,
+            }
+        }
+        case `${actions.GET_PLACEACTIVITIES_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetplaceivitiesbyidLoading: true
+            }
+        }
+        case `${actions.GET_PLACEACTIVITIES_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetplaceivitiesbyidLoading: false,
+                getplaceactivitiesbyid: action.payload.data
+            }
+        }
+        case `${actions.GET_PLACEACTIVITIES_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetplaceivitiesbyidLoading: false,
+            }
+        }
+        case `${actions.PUT_PLACEACTIVITIES}_PENDING` : {
+            return{
+                ...state,
+                isputPlaceactivitiesLoading: true
+            }
+        }
+        case `${actions.PUT_PLACEACTIVITIES}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the placeactivities";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "placeactivities updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputPlaceactivitiesLoading: false,
+                putplaceactivities:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getplaceactivitiesbyid:{}
+
+            }
+        }
+        case `${actions.PUT_PLACEACTIVITIES}_REJECTED` : {
+            return{
+                ...state,
+                isputPlaceactivitiesLoading: false,
+            }
+        }
+        case `${actions.POST_PLACEACTIVITIES}_PENDING` : {
+            return{
+                ...state,
+                ispostPlaceactivitiesLoading: true
+            }
+        }
+        case `${actions.POST_PLACEACTIVITIES}_FULFILLED` : {
+            let updateCityData = {countryId: 0}, msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the placeactivities";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "placeactivities added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostPlaceactivitiesLoading: false,
+                postplaceactivities:action.payload.data,
+                message: true,
+                messageData: msgData,
+                getplaceactivitiesbyid:{}
+
+            }
+        }
+        case `${actions.POST_PLACEACTIVITIES}_REJECTED` : {
+            return{
+                ...state,
+                ispostPlaceactivitiesLoading: false,
+            }
+        }
+        case `${actions.DELETE_PLACEACTITIES}_PENDING` : {
+            return{
+                ...state,
+                isdeletePlaceactivitiesLoading: true
+            }
+        }
+        case `${actions.DELETE_PLACEACTITIES}_FULFILLED` : {
+            debugger
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while deleting the Placeactivities";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Placeactivity deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeletePlaceactivitiesLoading: false,
+                deleteplaceactivities:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_PLACEACTITIES}_REJECTED` : {
+            return{
+                ...state,
+                isdeletePlaceactivitiesLoading: false,
+            }
+        }
+        case `${actions.GET_TRECKLEADERS}_PENDING` : {
+            return{
+                ...state,
+                isgetTreckleaderLoading: true
+            }
+        }
+        case `${actions.GET_TRECKLEADERS}_FULFILLED` : {
+            return{
+                ...state,
+                isgetTreckleaderLoading: false,
+                gettreckleaders: action.payload.data
+            }
+        }
+        case `${actions.GET_TRECKLEADERS}_REJECTED` : {
+            return{
+                ...state,
+                isgetTreckleaderLoading: false,
+            }
+        }
         default: return state;
     }
 

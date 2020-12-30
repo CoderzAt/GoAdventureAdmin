@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,traveltypegetapi,gettrips,getaccessories,getactivities,getallusers,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING} from '../Shared/Services'
+import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,GET_STAYTYPE,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -62,6 +62,7 @@ class Booking extends Component {
        this.props.getData(action.GET_ALL_ACCESSORIES,GET_ALL_ACCESSORIES) 
        this.props.getData(action.GET_AVCTIVITIES,GET_ACTIVITIES)
        this.props.getData(action.GET_USER,GET_USER)
+       this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
         }   //there is an issue with api
         refresh(e)
      {
@@ -462,14 +463,22 @@ class Booking extends Component {
                                                    </div>
                                                 </div>
                                             </div>
-                                           {/*  <div class="col-md-6">
+                                            <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Stay</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayType</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="number"   class="form-control"  onChange={(e)=>this.stayOperation(e)}/>
-                                                    </div>
+                                                    <select class="form-control travellerMode" value={this.props.getbookingbyid.stayTypeId?this.props.getbookingbyid.stayTypeId:"0"} 
+                                                    onChange={(e)=>this.updateBooking(e,"travelTypeId")}>
+                                                         <option value={0}>Select</option>
+                                                        {this.props.getstaytype.map(obj=>
+                                                         <option value={obj.stayTypeId}>{obj.stayTypeName}</option>
+                                                          )}
+                                                   </select>
+                                                   <div style={{color:"red"}}>{this.state.errors.traveltype}</div>
+                                                   </div>
                                                 </div>
-                                            </div> */}
+                                            </div>
+                                          
                                               <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessories</label>
@@ -716,7 +725,8 @@ class Booking extends Component {
           messageData: state.goAdvStore.messageData,
           getbookingbyid:state.goAdvStore.getbookingbyid,
           accessoryids:state.goAdvStore.accessoryids,
-          activityids:state.goAdvStore.activityids
+          activityids:state.goAdvStore.activityids,
+          getstaytype:state.goAdvStore.getstaytype
         }
       }
       export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Booking);
