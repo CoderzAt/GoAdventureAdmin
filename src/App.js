@@ -40,6 +40,7 @@ import Costcentre from './AdminPages/Costcentre';
 import AdminHeader from'./AdminPages/AdminHeader';
 import PlaceActivities from './AdminPages/PlaceActivities';
 import TripCostCenter from './AdminPages/TripCostCenter';
+import AccessoriesBooking from './AdminPages/AccessoriesBooking';
 //import './App.scss'
 //import AppRoutes from './AppRoutes'
 
@@ -83,6 +84,8 @@ class App extends Component {
             <Route exact path="/admin/placeactivities" component={PlaceActivities}/>
             <Route exact path="/admin/tripcostcenter" component={TripCostCenter}/>
             <Route exact path="/admin/tripcostcenter/:tid" component={TripCostCenter}/>
+            <Route exact path="/admin/accessorybooking" component={AccessoriesBooking}/>
+            <Route exact path="/admin/accessorybooking/:id" component={AccessoriesBooking}/>
             </Switch>
  
         </Router>   

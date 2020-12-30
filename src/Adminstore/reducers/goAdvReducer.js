@@ -132,7 +132,13 @@ const initalState ={
     postplaceactivities:[],
     putplaceactivities:[],
     deleteplaceactivities:[],
-    gettreckleaders:[]
+    gettreckleaders:[],
+    accessorybookings:[],
+    putaccessorybooking:[],
+    accessorybookingbyid:[],
+    postaccessorybooking:[],    
+    deleteaccessorybooking:[],
+    getaccessorybookingbyaccessoryid:[]
 
 }
 const goAdvReducer = (state =initalState, action) => {
@@ -3330,6 +3336,177 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             return{
                 ...state,
                 isTripCostcenterbTidLoading: false,
+
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                isAccessoryBookingLoading: true
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING}_FULFILLED` : {
+            return{
+                ...state,
+                isAccessoryBookingLoading: false,
+                accessorybookings: action.payload.data
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isAccessoryBookingLoading: false,
+            }
+        }
+        case `${actions.PUT_ACCESSORIES_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                isputAccessoryBookingLoading: true
+            }
+        }
+        case `${actions.PUT_ACCESSORIES_BOOKING}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Accessory Booking";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Accessory Booking updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputAccessoryBookingLoading: true,
+                putaccessorybooking:action.payload.data,
+                accessorybookingbyid:{},
+                message: true,
+                messageData: msgData,
+            }
+        }
+        case `${actions.PUT_ACCESSORIES_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isputAccessoryBookingLoading: false,
+            }
+        }
+        case `${actions.POST_ACCESSORIES_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                ispostAccessoryBookingLoading: true
+            }
+        }
+        case `${actions.POST_ACCESSORIES_BOOKING}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Accessory Booking";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Accessory Booking added successfully.";
+
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostAccessoryBookingLoading: false,
+                postaccessorybooking:action.payload.data,
+                message: true,
+                messageData: msgData,
+                accessorybookingbyid:{}
+
+            }
+        }
+        case `${actions.POST_ACCESSORIES_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                ispostAccessoryBookingLoading: false,
+            }
+        }
+        case `${actions.DELETE_ACCESSORIES_BOOKING}_PENDING` : {
+            return{
+                ...state,
+                isdeleteAccessorybookingLoading: true
+            }
+        }
+        case `${actions.DELETE_ACCESSORIES_BOOKING}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the tripcostcetre";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "tripcostcentre deleted successfully.";
+                msgData.isSuccess = true;
+              }
+            return{
+                ...state,
+                isdeleteAccessorybookingLoading: false,
+                deleteaccessorybooking:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_ACCESSORIES_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteAccessorybookingLoading: false,
+            }
+        }
+        
+        case `${actions.GET_ACCESSORIES_BOOKING_BYID}_PENDING` : {
+            return{
+                ...state,
+                isAccessoryBookingbidLoading: true
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isAccessoryBookingbidLoading: false,
+                accessorybookingbyid: action.payload.data
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isAccessoryBookingbidLoading: false,
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYBOOKINGID}_PENDING` : {
+            return{
+                ...state,
+                isAccessoryBookingbBidLoading: true
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYBOOKINGID}_FULFILLED` : {
+            return{
+                ...state,
+                isAccessoryBookingbBidLoading: false,
+                accessorybookings: action.payload.data
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYBOOKINGID}_REJECTED` : {
+            return{
+                ...state,
+                isAccessoryBookingbBidLoading: false,
+
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYACCESSORYID}_PENDING` : {
+            return{
+                ...state,
+                isAccessoryBookingbAidLoading: true
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYACCESSORYID}_FULFILLED` : {
+            return{
+                ...state,
+                isAccessoryBookingbAidLoading: false,
+                getaccessorybookingbyaccessoryid: action.payload.data
+            }
+        }
+        case `${actions.GET_ACCESSORIES_BOOKING_BYACCESSORYID}_REJECTED` : {
+            return{
+                ...state,
+                isAccessoryBookingbAidLoading: false,
 
             }
         }

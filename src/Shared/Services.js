@@ -309,3 +309,11 @@ export const  GET_TRIP_COSTCENTER_BYTRIPID="GetTripCostCenterByTrip?tripid=";
 export const  POST_TRIP_COSTCENTER="CreateTripCostcenter";
 export const  PUT_TRIP_COSTCENTER="UpdateTripCostcenter?id=";
 export const  DELETE_TRIP_COSTCENTER="DeleteTripCostcenter?id=";
+
+export const GET_ACCESSORIES_BOOKING= 'GetAllAccessoryBookings';
+export const PUT_ACCESSORIES_BOOKING='UpdateAccessoryBooking';
+export const POST_ACCESSORIES_BOOKING='CreateAccessoryBooking';
+export const GET_ACCESSORIES_BOOKING_BYID='GetAccessoryBookingById?id=';
+export const GET_ACCESSORIES_BOOKING_BYBOOKINGID='GetAccessoryBookingBybookingId?id=';
+export const DELETE_ACCESSORIES_BOOKING="DeleteAccessoryBooking";
+export const GET_ACCESSORIES_BOOKING_BYACCESSORYID="GetAccessoryBookingByaccessoryId?id=";

@@ -28,8 +28,8 @@ class PlacestoVisit extends Component {
             editData: [],
             hidecity: "",
             hidedestination: "",
-            stateId="0",
-            countryId="0",
+            stateId:"0",
+            countryId:"0",
             selectstateerror:"",
             selectcountryerror:""
         }
