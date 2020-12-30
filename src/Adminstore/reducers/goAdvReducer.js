@@ -94,6 +94,12 @@ const initalState ={
     gettrip:[],
     posttrip:[],
     puttrip:[],
+    gettripcostcenterbytripid:[],
+    gettripcostcenterbyid:[],
+    gettripcostcenter:[],
+    posttripcostcenter:[],
+    puttripcostcenter:[],
+    deletetripcostcenter:[],
     getbooking:[],
     getbookingbyid:[],
     putbooking:[],
@@ -3077,10 +3083,9 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
               msgData.isSuccess = false;
             } else {
               msgData.message = "placeactivities updated successfully.";
-              msgData.isSuccess = true;
-            }
-            return{
+              return{
                 ...state,
+
                 isputPlaceactivitiesLoading: false,
                 putplaceactivities:action.payload.data,
                 message: true,
@@ -3089,6 +3094,51 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
 
             }
         }
+    }
+       case `${actions.GET_TRIP_COSTCENTER}_PENDING` : {
+            return{
+                ...state,
+                isTripcostcenterLoading: true
+            }
+        }
+        case `${actions.GET_TRIP_COSTCENTER}_FULFILLED` : {
+            return{
+                ...state,
+                isTripcostcenterLoading: false,
+                gettripcostcenter: action.payload.data
+            }
+        }
+        case `${actions.GET_TRIP_COSTCENTER}_REJECTED` : {
+            return{
+                ...state,
+                isTripcostcenterLoading: false,
+            }
+        }
+        case `${actions.PUT_TRIP_COSTCENTER}_PENDING` : {
+            return{
+                ...state,
+                isputTripcostcenterLoading: true
+            }
+        }
+        case `${actions.PUT_TRIP_COSTCENTER}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Tripcostcentre";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Tripcostcentr updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputTripcostcenterLoading: true,
+                puttripcostcenter:action.payload.data,
+                gettripcostcenterbyid:{},
+                message: true,
+                messageData: msgData,
+            }
+        }
+           
         case `${actions.PUT_PLACEACTIVITIES}_REJECTED` : {
             return{
                 ...state,
@@ -3108,15 +3158,45 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
               msgData.isSuccess = false;
             } else {
               msgData.message = "placeactivities added successfully.";
+            }
+            return{
+                ...state,
+                ispostPlaceactivitiesLoading: true,
+                postplaceactivities: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getplaceactivitiesbyid:{}
+            }
+        }
+        case `${actions.PUT_TRIP_COSTCENTER}_REJECTED` : {
+            return{
+                ...state,
+                isputTripcostcenterLoading: false,
+            }
+        }
+        case `${actions.POST_TRIP_COSTCENTER}_PENDING` : {
+            return{
+                ...state,
+                ispostTripcostcenterLoading: true
+            }
+        }
+        case `${actions.POST_TRIP_COSTCENTER}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Package";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Package added successfully.";
+
               msgData.isSuccess = true;
             }
             return{
                 ...state,
-                ispostPlaceactivitiesLoading: false,
-                postplaceactivities:action.payload.data,
+                isposttripcostcentreLoading: false,
+                posttripcostcenter:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getplaceactivitiesbyid:{}
+                gettripcostcenterbyid:{}
 
             }
         }
@@ -3140,16 +3220,47 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 msgData.isSuccess = false;
               } else {
                 msgData.message = "Placeactivity deleted successfully.";
+              }
+              return{
+                ...state,
+                isdeletePlaceactivitiesLoading: false,
+                deleteplaceactivities: action.payload.data,
+                message: true,
+                messageData: msgData,
+                
+            }
+        }
+        case `${actions.POST_TRIP_COSTCENTER}_REJECTED` : {
+            return{
+                ...state,
+                ispostTripcostcenterLoading: false,
+            }
+        }
+        case `${actions.DELETE_TRIP_COSTCENTER}_PENDING` : {
+            return{
+                ...state,
+                isdeleteTripcostcenterLoading: true
+            }
+        }
+        case `${actions.DELETE_TRIP_COSTCENTER}_FULFILLED` : {
+            
+           let msgData = {};
+            if(action.payload.statusText === "error") {
+                msgData.message = "Error while delting the Destination";
+                msgData.isSuccess = false;
+              } else {
+                msgData.message = "Destination deleted successfully.";
                 msgData.isSuccess = true;
               }
             return{
                 ...state,
-                isdeletePlaceactivitiesLoading: false,
-                deleteplaceactivities:action.payload.data,
+                isdeleteTripcostcenterLoading: false,
+                deletetripcostcenter:action.payload.data,
                 message: true,
                 messageData: msgData
             }
         }
+
         case `${actions.DELETE_PLACEACTITIES}_REJECTED` : {
             return{
                 ...state,
@@ -3173,6 +3284,53 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             return{
                 ...state,
                 isgetTreckleaderLoading: false,
+            }
+        }
+
+        case `${actions.DELETE_TRIP_COSTCENTER}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteTripcostcenterLoading: false,
+            }
+        }
+        
+        case `${actions.GET_TRIP_COSTCENTERBYID}_PENDING` : {
+            return{
+                ...state,
+                isTripCostcenterbidLoading: true
+            }
+        }
+        case `${actions.GET_TRIP_COSTCENTERBYID}_FULFILLED` : {
+            return{
+                ...state,
+                isTripCostcenterbidLoading: false,
+                gettripcostcenterbyid: action.payload.data
+            }
+        }
+        case `${actions.GET_TRIP_COSTCENTERBYID}_REJECTED` : {
+            return{
+                ...state,
+                isTripCostcenterbidLoading: false,
+            }
+        }
+        case `${actions.GET_TRIP_COSTCENTER_BYTRIPID}_PENDING` : {
+            return{
+                ...state,
+                isTripCostcenterbTidLoading: true
+            }
+        }
+        case `${actions.GET_TRIP_COSTCENTER_BYTRIPID}_FULFILLED` : {
+            return{
+                ...state,
+                isTripCostcenterbTidLoading: false,
+                gettripcostcenter: action.payload.data
+            }
+        }
+        case `${actions.GET_TRIP_COSTCENTER_BYTRIPID}_REJECTED` : {
+            return{
+                ...state,
+                isTripCostcenterbTidLoading: false,
+
             }
         }
         default: return state;

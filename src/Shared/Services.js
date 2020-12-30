@@ -301,3 +301,9 @@ export const DELETE_PLACEACTITIES="DeletePlaceActivities?id=";
 //userbyusertype
 
 export const GET_TRECKLEADERS="GetUsersByUserTypeId?userTypeId=4";
+export const  GET_TRIP_COSTCENTER="GetAllTripCostcenters";
+export const  GET_TRIP_COSTCENTERBYID="GetTripCostcenterById?id=";
+export const  GET_TRIP_COSTCENTER_BYTRIPID="GetTripCostCenterByTrip?tripid=";
+export const  POST_TRIP_COSTCENTER="CreateTripCostcenter";
+export const  PUT_TRIP_COSTCENTER="UpdateTripCostcenter?id=";
+export const  DELETE_TRIP_COSTCENTER="DeleteTripCostcenter?id=";

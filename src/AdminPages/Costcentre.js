@@ -121,7 +121,7 @@ class Costcentre extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">Costcentre</h4>
+                                            <h4 class="card-title">Cost Center</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
@@ -148,7 +148,7 @@ class Costcentre extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">SubType</label>
+                                                            <label class="col-sm-3 col-form-label">Sub Type</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getcostcentrebyid.costCenterSubType ? this.props.getcostcentrebyid.costCenterSubType : ""}
                                                                     class="form-control" onChange={(e) => this.updateCostcentre(e, "costCenterSubType")} />
@@ -157,7 +157,7 @@ class Costcentre extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">MaxPersonsAllowed</label>
+                                                            <label class="col-sm-3 col-form-label">Max Persons Allowed</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="number" value={this.props.getcostcentrebyid.maxPersonsAllowed ? this.props.getcostcentrebyid.maxPersonsAllowed : ""}
                                                                     class="form-control" onChange={(e) => this.updateCostcentre(e, "maxPersonsAllowed")} />
@@ -202,6 +202,14 @@ class Costcentre extends Component {
                                                 {
                                                     Header: "Type",
                                                     accessor: "costCenterType",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    },
+                                                },
+                                                {
+                                                    Header: "Sub Type",
+                                                    accessor: "costCenterSubType",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'
