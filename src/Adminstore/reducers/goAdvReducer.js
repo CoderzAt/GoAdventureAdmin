@@ -138,8 +138,9 @@ const initalState ={
     accessorybookingbyid:[],
     postaccessorybooking:[],    
     deleteaccessorybooking:[],
-    getaccessorybookingbyaccessoryid:[]
+    getaccessorybookingbyaccessoryid:[],
 
+    placetovisitbydestination:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -274,7 +275,7 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isItebypidLoading: false,
-                itenary: action.payload.data
+                getitenary: action.payload.data
             }
         }
         case `${actions.GET_ITENARY_BYPACKAGEID}_REJECTED` : {
@@ -688,12 +689,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_CITY}_FULFILLED` : {
+            debugger
+        
           let updateCityData = {cityId: 0}, msgData = {};
           if(action.payload.statusText === "error") {
-            msgData.message = "Error while adding the City";
+            msgData.message=action.payload.error.response.data;
             msgData.isSuccess = false;
           } else {
-            msgData.message = "City added successfully.";
+            msgData.message = [{message:"City added successfully."}];
             msgData.isSuccess = true;
           }
             return{
@@ -702,7 +705,7 @@ const goAdvReducer = (state =initalState, action) => {
                 postcity: action.payload.data,
                 message: true,
                 messageData: msgData,
-                cityData: {cityId: 0}
+                cityData:action.payload.statusText === "error"?state.cityData:{} /* if we get error then only we need to remove the data otherwise should not */
             }
         }
         case `${actions.POST_CITY}_REJECTED` : {
@@ -720,17 +723,17 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.PUT_CITY}_FULFILLED` : {
           let updateCityData = {cityId: 0}, msgData = {};
           if(action.payload.statusText === "error") {
-            msgData.message = "Error while updating the City";
+            msgData.message=action.payload.error.response.data;
             msgData.isSuccess = false;
           } else {
-            msgData.message = "City updated successfully.";
+            msgData.message = [{message:"City updated successfully."}];
             msgData.isSuccess = true;
           }
             return{
                 ...state,
                 isputCityLoading: false,
                 putcity: action.payload.data,
-                cityData: updateCityData,
+                cityData: action.payload.statusText === "error"?state.cityData:updateCityData, /* if we get error then only we need to remove the data otherwise should not */
                 message: true,
                 messageData: msgData
             }
@@ -3507,7 +3510,25 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             return{
                 ...state,
                 isAccessoryBookingbAidLoading: false,
-
+            }
+        }
+        case `${actions.PLACETOVISIT_BYDESTINATION}_PENDING` : {
+            return{
+                ...state,
+                isPvbydLoading: true
+            }
+        }
+        case `${actions.PLACETOVISIT_BYDESTINATION}_FULFILLED` : {
+            return{
+                ...state,
+                isPvbydLoading: false,
+                placetovisitbydestination: action.payload.data
+            }
+        }
+        case `${actions.PLACETOVISIT_BYDESTINATION}_REJECTED` : {
+            return{
+                ...state,
+                isPvbydLoading: false,
             }
         }
         default: return state;

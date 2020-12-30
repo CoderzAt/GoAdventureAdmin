@@ -132,6 +132,7 @@ export const POST_PLACETOVISIT="CreatePlaceToVisit";
 export const PUT_PLACETOVISIT="UpdatePlaceToVisit?id=";
 export const GET_PLACETOVISIT_BYID="GetPlaceToVisitById?id=";
 export const DELETE_PLACETOVISIT="DeletePlaceToVisit?id=";
+export const PLACETOVISIT_BYDESTINATION="GetPlacetoVisitByDestination?destinationId=";
 
 //package
 export const packagepostapi="https://ga-api.azurewebsites.net/api/v1/CreatePackage";

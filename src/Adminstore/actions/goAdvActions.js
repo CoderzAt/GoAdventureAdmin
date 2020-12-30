@@ -80,7 +80,7 @@ export const postData1 =(actiontype,url,obj)=>
           })
           .catch(error=>
             {
-               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
+               return   { error:error, statusText: "error"};
             })
       });
    }
@@ -101,7 +101,7 @@ export const putData1 =(actiontype,url,obj)=>
           })
           .catch(error=>
             {
-               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
+               return { error:error, statusText: "error"};
             })
       });
    }
