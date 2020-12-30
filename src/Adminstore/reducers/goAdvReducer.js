@@ -3126,7 +3126,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
               msgData.message = "Error while updating the Tripcostcentre";
               msgData.isSuccess = false;
             } else {
-              msgData.message = "Tripcostcentr updated successfully.";
+              msgData.message = "Tripcostcentre updated successfully.";
               msgData.isSuccess = true;
             }
             return{
@@ -3183,10 +3183,10 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         case `${actions.POST_TRIP_COSTCENTER}_FULFILLED` : {
             let  msgData = {};
             if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Package";
+              msgData.message = "Error while adding the Tripcostcentre";
               msgData.isSuccess = false;
             } else {
-              msgData.message = "Package added successfully.";
+              msgData.message = "Tripcostcentre added successfully.";
 
               msgData.isSuccess = true;
             }
@@ -3246,10 +3246,10 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             
            let msgData = {};
             if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Destination";
+                msgData.message = "Error while delting the tripcostcetre";
                 msgData.isSuccess = false;
               } else {
-                msgData.message = "Destination deleted successfully.";
+                msgData.message = "tripcostcentre deleted successfully.";
                 msgData.isSuccess = true;
               }
             return{

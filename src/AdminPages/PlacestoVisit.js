@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import { postData, placetovisitpostapi, loadData, getcities, getdestinations, getplacetypes, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT } from '../Shared/Services'
+import { GET_COUNTRIES,GET_STATES,loadData,getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT } from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
@@ -27,7 +27,11 @@ class PlacestoVisit extends Component {
             placetovisitTable: [],
             editData: [],
             hidecity: "",
-            hidedestination: ""
+            hidedestination: "",
+            stateId="0",
+            countryId="0",
+            selectstateerror:"",
+            selectcountryerror:""
         }
     }
     componentWillMount() {
@@ -78,6 +82,8 @@ class PlacestoVisit extends Component {
         this.props.getData(action.GET_CITIES, GET_CITIES)
         this.props.getData(action.GET_DESTINATION, GET_DESTINATION);
         this.props.getData(action.GET_PLACETYPE, GET_PLACETYPE)
+        this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
+        this.props.getData(action.GET_STATES,GET_STATES)
 
     }
 
@@ -136,6 +142,15 @@ class PlacestoVisit extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_PLACETOVISIT_BYID, GET_PLACETOVISIT_BYID + id)
+    }
+    getstates()
+    {
+        
+
+    }
+    getcities()
+    {
+
     }
 
     updatePlacetovisit = (e, paramName) => {
@@ -247,8 +262,35 @@ class PlacestoVisit extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Country</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0"}
+                                                                    onChange={(e) => this.getstates(e)}>
+                                                                    <option value={0}>Select</option>
+                                                                    {this.props.countries.map(obj =>
+                                                                        <option value={obj.countryId}>{obj.countryName}</option>
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">State</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0"}
+                                                                    onChange={(e) => this.getcities(e)}>
+                                                                    <option value={0}>Select</option>
+                                                                    {this.props.states.map(obj =>
+                                                                        <option value={obj.stateId}>{obj.stateName}</option>
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                               
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">City</label>
@@ -273,8 +315,8 @@ class PlacestoVisit extends Component {
                                                     </div>
                                                 </div>
                                             </div> */}
-                                                </div>
-                                                <div class="row">
+
+                                                
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription"
@@ -285,13 +327,7 @@ class PlacestoVisit extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-
                                                     </div>
-                                                </div>
-
                                                 <div class="row" style={{ margin: "auto", textAlign: "center"/* marg:auto;text-align: center} */ }}>
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
@@ -404,6 +440,8 @@ class PlacestoVisit extends Component {
 const mapStateToProps = (state) => {
     return {
         cities: state.goAdvStore.cities,
+        countries:state.goAdvStore.countries,
+        states:state.goAdvStore.states,
         placetype: state.goAdvStore.placetype,
         getdestination: state.goAdvStore.getdestination,
         getplcetovisit: state.goAdvStore.getplcetovisit,
