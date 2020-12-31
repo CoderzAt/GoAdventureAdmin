@@ -318,10 +318,8 @@ const mapStateToProps = (state) => {
         getuserbyid: state.goAdvStore.getuserbyid,
         getstatus: state.goAdvStore.getstatus,
         usertypes:state.goAdvStore.usertypes,
-        posteventlevel: state.goAdvStore.posteventlevel,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData
-
     }
 }
 

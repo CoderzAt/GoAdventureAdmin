@@ -145,7 +145,12 @@ const initalState ={
     getaccessarytype:[],
     placetovisitbydestination:[],
     deleteuser:[],
-    usertypes:[]
+    usertypes:[],
+    getpayement:[],
+    getpayementbyid:[],
+    postpayement:[],
+    putpayement:[],
+    deletepayment:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -3689,6 +3694,123 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             return{
                 ...state,
                 isPvbydLoading: false,
+            }
+        }
+        case `${actions.GET_PAYMENTS}_PENDING` : {
+            return{
+                ...state,
+                isgetpayementsLoading: true
+            }
+        }
+        case `${actions.GET_PAYMENTS}_FULFILLED` : {
+            return{
+                ...state,
+                isgetpayementsLoading: false,
+                getpayement: action.payload.data
+            }
+        }
+        case `${actions.GET_PAYMENTS}_REJECTED` : {
+            return{
+                ...state,
+                isgetpayementsLoading: false,
+            }
+        }
+        case `${actions.GET_PAYMENT_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetpayementbyidLoading: true
+            }
+        }
+        case `${actions.GET_PAYMENT_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetpayementbyidLoading: false,
+                getpayementbyid: action.payload.data
+            }
+        }
+        case `${actions.GET_PAYMENT_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetpayementbyidLoading: false,
+            }
+        }
+        case `${actions.DELETE_PAYMENT}_PENDING` : {
+            return{
+                ...state,
+                isdeletepaymentLoading: true
+            }
+        }
+        case `${actions.DELETE_PAYMENT}_FULFILLED` : {
+            return{
+                ...state,
+                isdeletepaymentLoading: false,
+                deletepayment: action.payload.data
+            }
+        }
+        case `${actions.DELETE_PAYMENT}_REJECTED` : {
+            return{
+                ...state,
+                isdeletepaymentLoading: false,
+            }
+        }
+        case `${actions.PUT_PAYMENT}_PENDING` : {
+            return{
+                ...state,
+                isputpayementLoading: true
+            }
+        }
+        case `${actions.PUT_PAYMENT}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the Payement Booking";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Payement Booking updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputpayementLoading: true,
+                putpayement:action.payload.data,
+                getpayementbyid:{},
+                message: true,
+                messageData: msgData,
+            }
+        }
+        case `${actions.PUT_PAYMENT}_REJECTED` : {
+            return{
+                ...state,
+                isputpayementLoading: false,
+            }
+        }
+        case `${actions.POST_PAYMENT}_PENDING` : {
+            return{
+                ...state,
+                ispostpayementLoading: true
+            }
+        }
+        case `${actions.POST_PAYMENT}_FULFILLED` : {
+            let  msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the Payement Booking";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "Payement Booking added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostpayementLoading: true,
+                postpayement:action.payload.data,
+                getpayementbyid:{},
+                message: true,
+                messageData: msgData,
+            }
+        }
+        case `${actions.POST_PAYMENT}_REJECTED` : {
+            return{
+                ...state,
+                ispostpayementLoading: false,
             }
         }
         default: return state;

@@ -314,6 +314,13 @@ export const DELETE_PLACEACTITIES="DeletePlaceActivities?id=";
 export const GET_TRECKLEADERS="GetUsersByUserTypeId?userTypeId=4";
 export const GET_USERTYPES="GetAllMdUserTypes";
 
+//payements
+export const POST_PAYMENT="CreatePayments";
+export const GET_PAYMENTS="GetAllPayments";
+export const GET_PAYMENT_BYID="GetPaymentsById?id=";
+export const PUT_PAYMENT="UpdatePayments?id=";
+export const DELETE_PAYMENT="DeletePayments?id=";
+
 
 export const  GET_TRIP_COSTCENTER="GetAllTripCostcenters";
 export const  GET_TRIP_COSTCENTERBYID="GetTripCostcenterById?id=";

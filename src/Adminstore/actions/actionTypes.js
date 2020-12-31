@@ -104,6 +104,13 @@ export const DELETE_USER="DELETE_USER";
 
 export const GET_USERTYPES="GET_USERTYPES";
 
+//payments
+export const POST_PAYMENT="POST_PAYMENT";
+export const PUT_PAYMENT="PUT_PAYMENT";
+export const GET_PAYMENTS="GET_PAYMENTS";
+export const GET_PAYMENT_BYID="GET_PAYMENT_BYID";
+export const DELETE_PAYMENT="DELETE_PAYMENT";
+
 //placetype
 export const GET_PLACETYPE="GET_PLACETYPE";
 export const POST_PLACETYPE="POST_PLACETYPE";
