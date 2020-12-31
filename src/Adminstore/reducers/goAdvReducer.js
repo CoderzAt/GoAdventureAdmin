@@ -105,6 +105,9 @@ const initalState ={
     putbooking:[],
     postboking:[],
     getuser:[],
+    getuserbyid:[],
+    postuser:[],
+    putuser:[],
     activityids:[],
     accessoryids:[],
     deletepackage:[],
@@ -139,8 +142,10 @@ const initalState ={
     postaccessorybooking:[],    
     deleteaccessorybooking:[],
     getaccessorybookingbyaccessoryid:[],
-
-    placetovisitbydestination:[]
+    getaccessarytype:[],
+    placetovisitbydestination:[],
+    deleteuser:[],
+    usertypes:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -159,6 +164,25 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_ALL_PACKAGES}_REJECTED` : {
+            return{
+                ...state,
+                isPkgLoading: false,
+            }
+        }
+        case `${actions.ACCESSARY_TYPE}_PENDING` : {
+            return{
+                ...state,
+                isPkgLoading: true
+            }
+        }
+        case `${actions.ACCESSARY_TYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isPkgLoading: false,
+                getaccessarytype: action.payload.data
+            }
+        }
+        case `${actions.ACCESSARY_TYPE}_REJECTED` : {
             return{
                 ...state,
                 isPkgLoading: false,
@@ -826,6 +850,25 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetAccbyidLoading: false,
             }
         }
+         case `${actions.GET_ACCESSORIEBOOKING_BYID_ACCESSARYTABLE}_PENDING` : {
+            return{
+                ...state,
+                isgetAccbyidLoading: true
+            }
+        }
+        case `${actions.GET_ACCESSORIEBOOKING_BYID_ACCESSARYTABLE}_FULFILLED` : {
+            return{
+                ...state,
+                isgetAccbyidLoading: false,
+                accessorybookings:[action.payload.data]
+            }
+        }
+        case `${actions.GET_ACCESSORIEBOOKING_BYID_ACCESSARYTABLE}_REJECTED` : {
+            return{
+                ...state,
+                isgetAccbyidLoading: false,
+            }
+        } 
         case `${actions.POST_ACTIVITY}_PENDING` : {
              return{
                 ...state,
@@ -2385,7 +2428,124 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetUserLoading: false,
             }
         }
+        case `${actions.GET_USERTYPES}_PENDING` : {
+            return{
+                ...state,
+                isgetUserLoading: true
+            }
+        }
+        case `${actions.GET_USERTYPES}_FULFILLED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
+                usertypes: action.payload.data
+            }
+        }
+        case `${actions.GET_USERTYPES}_REJECTED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
+            }
+        }
+        case `${actions.GET_USER_BYID}_PENDING` : {
+            return{
+                ...state,
+                isgetUserLoading: true
+            }
+        }
+        case `${actions.GET_USER_BYID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
+                getuserbyid: action.payload.data
+            }
+        }
+        case `${actions.GET_USER_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
+            }
+        }
 
+        case `${actions.PUT_USER}_PENDING` : {
+            return{
+                ...state,
+                isputUserLoading: true
+            }
+        }
+        case `${actions.PUT_USER}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while updating the user";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "user updated successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                isputUserLoading: false,
+                putuser: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getuserbyid:{}
+             }
+        }
+        case `${actions.PUT_USER}_REJECTED` : {
+            return{
+                ...state,
+                isputUserLoading: false,
+            }
+        }
+        case `${actions.POST_USER}_PENDING` : {
+            return{
+                ...state,
+                ispostUserLoading: true
+            }
+        }
+        case `${actions.POST_USER}_FULFILLED` : {
+            let msgData = {};
+            if(action.payload.statusText === "error") {
+              msgData.message = "Error while adding the user";
+              msgData.isSuccess = false;
+            } else {
+              msgData.message = "user added successfully.";
+              msgData.isSuccess = true;
+            }
+            return{
+                ...state,
+                ispostUserLoading: false,
+                postuser: action.payload.data,
+                message: true,
+                messageData: msgData,
+                getuserbyid:{}
+             }
+        }
+        case `${actions.POST_USER}_REJECTED` : {
+            return{
+                ...state,
+                ispostUserLoading: false,
+            }
+        }
+        case `${actions.DELETE_USER}_PENDING` : {
+            return{
+                ...state,
+                isdeleteUserLoading: true
+            }
+        }
+        case `${actions.DELETE_USER}_FULFILLED` : {
+            return{
+                ...state,
+                isdeleteUserLoading: false,
+                deleteuser: action.payload.data
+            }
+        }
+        case `${actions.DELETE_USER}_REJECTED` : {
+            return{
+                ...state,
+                isdeleteUserLoading: false,
+            }
+        }
         case `${actions.UPDATE_PROP}` : {
             debugger
 			      console.log(action.payload);

@@ -39,6 +39,12 @@ export const getaccessories="https://ga-api.azurewebsites.net/api/v1/GetAllAcces
 export const accessorybyid="https://ga-api.azurewebsites.net/api/v1/GetAccessoryById?id=";
 export const accessoryupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateAccessories?id=";
 
+//accessarytypes
+export const ACCESSARY_TYPE="GetAllAccessoryTypes";
+
+
+
+
 export const GET_ALL_ACCESSORIES="GetAllAccessories";
 export const POST_ACCESSORIES="CreateAccessory";
 export const PUT_ACCESSORIES="UpdateAccessories?id=";
@@ -276,6 +282,10 @@ export const getpackageplaces="https://ga-api.azurewebsites.net/api/v1/GetAllPac
 export const getallusers="https://ga-api.azurewebsites.net/api/v1/GetAllUsers";
 
 export const GET_USER="GetAllUsers";
+export const POST_USER="CreateUser";
+export const PUT_USER="UpdateUser?id=";
+export const GET_USER_BYID="GetUserById?id=";
+export const DELETE_USER="DeleteUser?id=";
 
 //coupon
 export const getallcoupons="https://ga-api.azurewebsites.net/api/v1/getAllCoupon";
@@ -302,6 +312,7 @@ export const DELETE_PLACEACTITIES="DeletePlaceActivities?id=";
 //userbyusertype
 
 export const GET_TRECKLEADERS="GetUsersByUserTypeId?userTypeId=4";
+export const GET_USERTYPES="GetAllMdUserTypes";
 
 
 export const  GET_TRIP_COSTCENTER="GetAllTripCostcenters";

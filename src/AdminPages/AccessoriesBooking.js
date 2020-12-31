@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { GET_ACCESSORIES_BOOKING, GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_BOOKING_BYBOOKINGID, POST_ACCESSORIES_BOOKING, PUT_ACCESSORIES_BOOKING,  DELETE_ACCESSORIES_BOOKING,GET_ACCESSORIES_BOOKING_BYACCESSORYID,GET_ALL_ACCESSORIES } from '../Shared/Services'
+import { GET_ACCESSORIES_BOOKING, GET_USER,GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_BOOKING_BYBOOKINGID, POST_ACCESSORIES_BOOKING, PUT_ACCESSORIES_BOOKING,  DELETE_ACCESSORIES_BOOKING,GET_ACCESSORIES_BOOKING_BYACCESSORYID,GET_ALL_ACCESSORIES,g, GET_ACCESSORIES_BYID} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -21,7 +21,7 @@ class AccessoriesBooking extends Component {
         this.state = {
             validated: false,
             refreshflag: false,
-            accessaryid:""
+            accessaryid:"0"
         }
 
     }
@@ -39,6 +39,7 @@ class AccessoriesBooking extends Component {
         }
 
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
+        this.props.getData(action.GET_USER,GET_USER)
         
         
     }
@@ -57,7 +58,7 @@ class AccessoriesBooking extends Component {
             accessoryBookingId: this.props.accessorybookingbyid.accessoryBookingId? this.props.accessorybookingbyid.accessoryBookingId: 0,
             accessoryId: parseInt(this.props.accessorybookingbyid.accessoryId),
             isRent: JSON.parse(this.props.accessorybookingbyid.isRent),
-            userId:19/* parseInt(this.props.accessorybookingbyid.userId) */,
+            userId:parseInt(this.props.accessorybookingbyid.userId),
             userName: this.props.accessorybookingbyid.userName,
             phoneNumber: this.props.accessorybookingbyid.phoneNumber,
             emailId:this.props.accessorybookingbyid.emailId,
@@ -121,6 +122,14 @@ class AccessoriesBooking extends Component {
        /* }*/
         this.props.updatePropAccData(paramName, value, "accessorybookingbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
+    }
+    getAcessarybyid(e)
+    {
+        debugger
+     if(this.state.accessaryid !== "0" || this.state.accessaryid !== "")
+     {
+         this.props.getData(action.GET_ACCESSORIEBOOKING_BYID_ACCESSARYTABLE,GET_ACCESSORIES_BOOKING_BYID+this.state.accessaryid)
+     }
     }
     render() {
         return (
@@ -188,6 +197,20 @@ class AccessoriesBooking extends Component {
                                                         </div>
                                                     </div>
                                                
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">User</label>
+                                                            <div class="col-sm-9">
+                                                                <select required type="text" value={this.props.accessorybookingbyid.userId?this.props.accessorybookingbyid.userId:"0"}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "userId")} >
+                                                                      <option value={0}>Select</option>
+                                                                       {this.props.getuser.map(obj=>(
+                                                                            <option value={obj.userId}>{obj.emailId}</option>
+                                                                        ))}
+                                                                        </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Name</label>
@@ -262,17 +285,19 @@ class AccessoriesBooking extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">Accessory Bokings<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
+                                            <h4 class="card-title">Bokings<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">AccessoryId</label>
+                                                    <label class="col-sm-3 col-form-label">BookingId</label>
                                                     
                                                     <div class="col-sm-9">
-                                                    
-                                                                <input required type="text" value={this.state.accessaryid}
+                                                   <input required type="text" value={this.state.accessaryid!=="0"?this.state.accessaryid:""}
                                                                     class="form-control" onChange={(e) => this.setState({accessaryid:e.target.value})} />
+                                                    <button type="button" class="btn btn-info" onClick={(e)=>this.getAcessarybyid(e)}>
+                                                        <span class="icon-search"></span> Search
+                                                    </button> 
                                                     </div>
-                                                </div>
+                                                    </div>
                                                 
                                             </div>
                                             <div class="table-responsive"></div>
@@ -361,7 +386,7 @@ const mapStateToProps = (state) => {
         accessories: state.goAdvStore.accessories,
         getcostcenter: state.goAdvStore.getcostcenter,
         getallcostcentres:state.goAdvStore.getallcostcentres,
-        
+        getuser:state.goAdvStore.getuser,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData
     }

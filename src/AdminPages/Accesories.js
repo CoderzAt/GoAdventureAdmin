@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { postData, GET_ALL_ACCESSORIES, POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID,DELETE_ACCESSORIES } from '../Shared/Services'
+import { postData, GET_ALL_ACCESSORIES, POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID,DELETE_ACCESSORIES,ACCESSARY_TYPE } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -23,6 +23,7 @@ class Accessories extends Component {
     }
     componentDidMount() {
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
+        this.props.getData(action.ACCESSARY_TYPE,ACCESSARY_TYPE)
     }
     refresh(e)
     {
@@ -75,6 +76,8 @@ class Accessories extends Component {
         var bodyFormData = new FormData();
         bodyFormData.set('accessoriesId', this.props.getaccessorybyid.accessoriesId ? this.props.getaccessorybyid.accessoriesId:0);
         bodyFormData.set('accessoryName', this.props.getaccessorybyid.accessoryName);
+        bodyFormData.set('accessoryCode', this.props.getaccessorybyid.accessoryCode);
+        bodyFormData.set('type', this.props.getaccessorybyid.type);
         bodyFormData.set('saleOrRent', this.props.getaccessorybyid.saleOrRent);
         bodyFormData.set('salePrice', this.props.getaccessorybyid.salePrice?this.props.getaccessorybyid.salePrice*1:0);
         bodyFormData.set('rentPrice', this.props.getaccessorybyid.rentPrice?this.props.getaccessorybyid.rentPrice*1:0);
@@ -178,6 +181,29 @@ class Accessories extends Component {
                                                                 <input type="text" value={this.props.getaccessorybyid.accessoryName ? this.props.getaccessorybyid.accessoryName : ""}
                                                                     className="form-control" onChange={(e) => this.updateAccessory(e, "accessoryName")} />
                                                                 <div style={{ color: "red" }}>{this.state.errors.accessoryName}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Code</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" value={this.props.getaccessorybyid.accessoryCode ? this.props.getaccessorybyid.accessoryCode: ""}
+                                                                    className="form-control" onChange={(e) => this.updateAccessory(e, "accessoryCode")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Type</label>
+                                                            <div class="col-sm-9">
+                                                                <select type="text" value={this.props.getaccessorybyid.type ? this.props.getaccessorybyid.type: ""}
+                                                                    className="form-control" onChange={(e) => this.updateAccessory(e, "type")} >
+                                                                   <option>Select</option>
+                                                                   {this.props.getaccessarytype.map(obj=>(
+                                                                       <option value={obj.id}>{obj.name}</option>
+                                                                   ))}
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -345,6 +371,7 @@ const mapStateToProps = (state) => {
     return {
         accessories: state.goAdvStore.accessories,
         getaccessorybyid: state.goAdvStore.getaccessorybyid,
+        getaccessarytype:state.goAdvStore.getaccessarytype,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData
     }
