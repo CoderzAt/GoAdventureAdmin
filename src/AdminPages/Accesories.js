@@ -209,7 +209,7 @@ class Accessories extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">saleOrRent</label>
+                                                            <label class="col-sm-3 col-form-label">Sale(Or)Rent</label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control" value={this.props.getaccessorybyid.saleOrRent ? this.props.getaccessorybyid.saleOrRent : "0"} onChange={(e) => this.updateAccessory(e, "saleOrRent")}>
                                                                     <option value={0}>Select</option>
@@ -223,7 +223,7 @@ class Accessories extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row" >
-                                                            <label class="col-sm-3 col-form-label">SalePrice</label>
+                                                            <label class="col-sm-3 col-form-label">Sale Price</label>
                                                             <div class="col-sm-9" >
                                                                 <input type="number" value={this.props.getaccessorybyid.salePrice ? this.props.getaccessorybyid.salePrice : ""}
                                                                     class="form-control" onChange={(e) => this.updateAccessory(e, "salePrice")} />
@@ -232,7 +232,7 @@ class Accessories extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">RentPrice</label>
+                                                            <label class="col-sm-3 col-form-label">Rent Price</label>
                                                             <div class="col-sm-9">
                                                                 <input type="number" value={this.props.getaccessorybyid.rentPrice ? this.props.getaccessorybyid.rentPrice : ""}
                                                                     class="form-control" onChange={(e) => this.updateAccessory(e, "rentPrice")} />
@@ -269,7 +269,7 @@ class Accessories extends Component {
                                                 </div>
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">IsAvailable</label>
+                                                            <label class="col-sm-3 col-form-label">Available</label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control" value={this.props.getaccessorybyid.isAvailable?`${this.props.getaccessorybyid.isAvailable}`:"0"} onChange={(e) => this.updateAccessory(e, "isAvailable")}>
                                                                     <option value={0}>Select</option>
@@ -306,7 +306,7 @@ class Accessories extends Component {
                                                     }
                                                 },
                                                 {
-                                                    Header: "Borrow Type",
+                                                    Header: "Sale(Or)Rent",
                                                     accessor: "saleOrRent",
                                                     headerStyle: {
                                                         textAlign: 'left',

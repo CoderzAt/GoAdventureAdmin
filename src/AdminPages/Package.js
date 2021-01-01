@@ -16,7 +16,8 @@ class Package extends Component {
         super(props);
        this.state = {
            validated:false,
-          refreshflag:false
+          refreshflag:false,
+          errors:{}
        }
     }
 
@@ -193,11 +194,30 @@ class Package extends Component {
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="duration"
-                                                        class="col-sm-3 col-form-label">Duration</label>
+                                                    <label class="col-sm-3 col-form-label">Duration</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" value={this.props.packagebyid.duration?this.props.packagebyid.duration:""} class="form-control" id="duration" required
-                                                          onChange={(e)=>this.updatePackage(e,"duration")}  placeholder="Duration"/>
+                                                        <select class="form-control" value={this.props.packagebyid.duration ? this.props.packagebyid.duration : "0"} onChange={(e) => this.updatePackage(e, "duration")}>
+                                                            <option value={0}>Select</option>
+                                                            <option value="1D">1D</option>
+                                                            <option value="2D 1N">2D 1N</option>
+                                                            <option value="3D 2N">3D 2N</option>
+                                                            <option value="4D 3N">4D 3N</option>
+                                                            <option value="5D 4N">5D 4N</option>
+                                                            <option value="6D 5N">6D 5N</option>
+                                                            <option value="7D 6N">7D 6N</option>
+                                                            <option value="8D 7N">8D 7N</option>
+                                                            <option value="9D 8N">9D 8N</option>
+                                                            <option value="10D 9N">10D 9N</option>
+                                                            <option value="11D 10N">11D 10N</option>
+                                                            <option value="12D 11N">12D 11N</option>
+                                                            <option value="13D 12N">13D 12N</option>
+                                                            <option value="14D 13N">14D 13N</option>
+                                                            <option value="15D 14N">15D 14N</option>
+                                                            <option value="16D 15N">16D 15N</option>
+                                                            <option value="17D 16N">17D 16N</option>
+                                                            <option value="18D 17N">18D 17N</option>
+                                                        </select>
+                                                        <div style={{ color: "red" }}>{this.state.errors.duration}</div>
                                                     </div>
                                                 </div>
                                             </div>

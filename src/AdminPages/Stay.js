@@ -282,7 +282,7 @@ class Stay extends Component {
                         <h3 class="page-title">
                             <span class="page-title-icon bg-gradient-primary text-white mr-2">
                                 <i class="mdi mdi-wan"></i>
-                            </span> StayInfo
+                            </span> Stay Info
                         </h3>
                         {this.props.message ?
                                     <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
@@ -293,7 +293,7 @@ class Stay extends Component {
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">
-                                    StayInfo
+                                    Stay Info
                                 </li>
                             </ul>
                         </nav>
@@ -302,12 +302,12 @@ class Stay extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">StayInfo</h4>
+                                    <h4 class="card-title">Stay Info</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">StayName</label>
+                                                    <label class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaybyid.stayName?this.props.getstaybyid.stayName:""}  
                                                         class="form-control"  onChange={(e)=>this.updateStay(e,"stayName")}/>
@@ -316,7 +316,7 @@ class Stay extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">RateType</label>
+                                                    <label class="col-sm-3 col-form-label">Rate</label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaybyid.rateType?this.props.getstaybyid.rateType:""} 
                                                         class="form-control" onChange={(e)=>this.updateStay(e,"rateType")}/>
@@ -328,7 +328,7 @@ class Stay extends Component {
                                            
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayTypeIds</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Stay Type</label>
                                                     <div class="col-sm-9">
                                                     <Multiselect selectedValues={this.props.staytypeids}  options={this.props.getstaytype} displayValue={"stayTypeName"} 
                                                     class="form-control" onSelect={(e)=>this.updateStay(e,"stayTypeIds")} onRemove={(e)=>this.updateStay(e,"stayTypeIds")} /> 
@@ -337,7 +337,7 @@ class Stay extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">ContactInfo</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact Number</label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaybyid.contactInfo?this.props.getstaybyid.contactInfo:""} 
                                                         class="form-control"  onChange={(e)=>this.updateStay(e,"contactInfo")}/>
@@ -397,7 +397,7 @@ class Stay extends Component {
                                     
                                   },
                                   {
-                                    Header: "RateType",
+                                    Header: "Rate",
                                     accessor: "rateType",
                                     headerStyle: {
                                         textAlign: 'left',
@@ -406,7 +406,7 @@ class Stay extends Component {
                                     
                                   },
                                   {
-                                    Header: "StayType",
+                                    Header: "Stay Type",
                                     accessor: "stayType",
                                     headerStyle: {
                                         textAlign: 'left',

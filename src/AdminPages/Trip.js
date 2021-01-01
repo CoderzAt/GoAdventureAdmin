@@ -364,6 +364,33 @@ class Trip extends Component {
 
                                                 },
                                                 {
+                                                    Header: "Start Date",
+                                                    accessor: "startDate",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
+                                                    Header: "End Date",
+                                                    accessor: "endDate",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
+                                                    Header: "Package Name",
+                                                    accessor: "packageId",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
                                                     id: 'id', // Required because our accessor is not a string
                                                     Header: '',
                                                     accessor: d => d.tripId,

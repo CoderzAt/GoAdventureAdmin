@@ -127,13 +127,13 @@ class User extends Component {
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Usertype</label>
+                                                            <label class="col-sm-3 col-form-label">Type</label>
                                                             <div class="col-sm-9">
                                                                 <select required type="text" value={this.props.getuserbyid.userTypeId ? this.props.getuserbyid.userTypeId : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "userTypeId")} >
                                                                         <option value={0}>Select</option>
                                                                         {this.props.usertypes.map(obj=>(
-                                                                            <option value={obj.userTypeId}>{obj.userTypeDesc}</option>
+                                                                            <option value={obj.userTypeId}>{obj.userTypeCode}</option>
                                                                         ))}
                                                                  </select>
                                                             </div>
@@ -141,7 +141,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">FirstName</label>
+                                                            <label class="col-sm-3 col-form-label">First Name</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.firstName ? this.props.getuserbyid.firstName : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "firstName")} />
@@ -150,7 +150,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">MiddleName</label>
+                                                            <label class="col-sm-3 col-form-label">Middle Name</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.middleName ? this.props.getuserbyid.middleName : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "middleName")} />
@@ -160,7 +160,7 @@ class User extends Component {
                                                 
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label">LastName</label>
+                                                        <label class="col-sm-3 col-form-label">Last Name</label>
                                                         <div class="col-sm-9">
                                                             <input required type="text" value={this.props.getuserbyid.lastName ? this.props.getuserbyid.lastName : ""}
                                                                 class="form-control" onChange={(e) => this.updateUser(e, "lastName")} />
@@ -183,7 +183,7 @@ class User extends Component {
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label">DateOfBirth</label>
+                                                        <label class="col-sm-3 col-form-label">Date Of Birth</label>
                                                         <div class="col-sm-9">
                                                             <input required type="date" value={this.props.getuserbyid.dateOfBirth ? this.props.getuserbyid.dateOfBirth : ""}
                                                                 class="form-control" onChange={(e) => this.updateUser(e, "dateOfBirth")} />
@@ -201,7 +201,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">EmailId</label>
+                                                            <label class="col-sm-3 col-form-label">Email ID</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.emailId ? this.props.getuserbyid.emailId : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "emailId")} />
@@ -210,7 +210,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">AddressInfo</label>
+                                                            <label class="col-sm-3 col-form-label">Address</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.addressInfo ? this.props.getuserbyid.addressInfo : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "addressInfo")} />
@@ -237,7 +237,7 @@ class User extends Component {
                                     <ReactTable columns={[
 
                                         {
-                                            Header: "Firsname",
+                                            Header: "Firs Name",
                                             accessor: "firstName",
                                             headerStyle: {
                                                 textAlign: 'left',
@@ -246,7 +246,7 @@ class User extends Component {
 
                                         },
                                         {
-                                            Header: "MiddleName",
+                                            Header: "Middle Name",
                                             accessor: "middleName",
                                             headerStyle: {
                                                 textAlign: 'left',
@@ -255,7 +255,7 @@ class User extends Component {
 
                                         },
                                         {
-                                            Header: "PhoneNumber",
+                                            Header: "Phone Number",
                                             accessor: "phoneNumber",
                                             headerStyle: {
                                                 textAlign: 'left',
@@ -264,7 +264,7 @@ class User extends Component {
 
                                         },
                                         {
-                                            Header: "EmailId",
+                                            Header: "Email ID",
                                             accessor: "emailId",
                                             headerStyle: {
                                                 textAlign: 'left',

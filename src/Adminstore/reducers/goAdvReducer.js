@@ -1771,7 +1771,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.PUT_STATE}_FULFILLED` : {
             let  msgData = {};
             if(action.payload.statusText === "error") {
-              msgData.message = "State while updating the Eventlevel";
+              msgData.message = "Error while updating State";
               msgData.isSuccess = false;
             } else {
               msgData.message = "State updated successfully.";

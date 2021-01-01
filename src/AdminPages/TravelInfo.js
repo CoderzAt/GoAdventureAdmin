@@ -105,7 +105,7 @@ class TravelInfo extends Component {
                         <h3 class="page-title">
                             <span class="page-title-icon bg-gradient-primary text-white mr-2">
                                 <i class="mdi mdi-wan"></i>
-                            </span> TravelInfo
+                            </span> Travel Info
                         </h3>
                         {this.props.message ?
                                     <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
@@ -116,7 +116,7 @@ class TravelInfo extends Component {
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">
-                                    TravelInfo
+                                    Travel Info
                                 </li>
                             </ul>
                         </nav>
@@ -125,12 +125,12 @@ class TravelInfo extends Component {
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">TravelInfo</h4>
+                                    <h4 class="card-title">Travel Info</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Vehchile Name</label>
+                                                    <label class="col-sm-3 col-form-label">Vehicle Name</label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettravelinfobyid.vehicleName?this.props.gettravelinfobyid.vehicleName:""}
                                                          class="form-control" onChange={(e)=>this.updateTravelinfo(e,"vehicleName")}/>
@@ -139,7 +139,7 @@ class TravelInfo extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Vehchile Number</label>
+                                                    <label class="col-sm-3 col-form-label">Vehicle Number</label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettravelinfobyid.vehicleNumber?this.props.gettravelinfobyid.vehicleNumber:""} 
                                                         class="form-control" onChange={(e)=>this.updateTravelinfo(e,"vehicleNumber")}/>
@@ -150,7 +150,7 @@ class TravelInfo extends Component {
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehchile Owner</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehicle Owner</label>
                                                     <div class="col-sm-9">
                                                         <input required type="text"  value={this.props.gettravelinfobyid.vehicleOwner?this.props.gettravelinfobyid.vehicleOwner:""} 
                                                         class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"vehicleOwner")}/>
@@ -159,7 +159,7 @@ class TravelInfo extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehchile Contact number</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact number</label>
                                                     <div class="col-sm-9">
                                                         <input required type="number" value={this.props.gettravelinfobyid.vehicleContactNumber?this.props.gettravelinfobyid.vehicleContactNumber:""} 
                                                          class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"vehicleContactNumber")}/>
@@ -239,6 +239,24 @@ class TravelInfo extends Component {
                                   {
                                     Header: "Contact Number",
                                     accessor: "vehicleContactNumber",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
+                                    
+                                  },
+                                  {
+                                    Header: "Agency Name",
+                                    accessor: "agencyName",
+                                    headerStyle: {
+                                        textAlign: 'left',
+                                        fontWeight: 'bold'
+                                    }
+                                    
+                                  },
+                                  {
+                                    Header: "City",
+                                    accessor: "cityId",
                                     headerStyle: {
                                         textAlign: 'left',
                                         fontWeight: 'bold'

@@ -5,18 +5,20 @@ import './assets/vendors/css/vendor.bundle.base.css'
 import './assets/css/style.css' */
 
 const sidebarItems=[/* {name:"Dashboard",icon:"mdi mdi-home menu-icon"} */,
+{name:"User",icon:"mdi mdi-wan menu-icon",route:"/admin/user"},
 {name:"Country",icon:"mdi mdi-wan menu-icon",route:"/"},
 /* {name:"State",icon:"mdi mdi-map menu-icon"},*/
-{name:"City",icon:"mdi mdi-home-map-marker menu-icon",route:"/admin/city"},
+/*{name:"City",icon:"mdi mdi-home-map-marker menu-icon",route:"/admin/city"},*/
 {name:"Place Type",icon:"mdi mdi-sitemap menu-icon",route:"/admin/placetype"},
+{name:"Activity Type",icon:"mdi mdi-package-variant menu-icon",route:"/admin/activity"},
 {name:"Destination",icon:"mdi mdi-airplane-landing menu-icon",route:"/admin/destination"},
 /* {name:"Place To Visit",icon:"mdi mdi-map-marker menu-icon"}, */
 {name:"Package",icon:"mdi mdi-package-variant menu-icon",route:"/admin/package"},
 {name:"Booking",icon:"mdi mdi-package-variant menu-icon",route:"/admin/booking"},
-{name:"Trip",icon:"mdi mdi-package-variant menu-icon",route:"/admin/trip"},
+/*{name:"Trip",icon:"mdi mdi-package-variant menu-icon",route:"/admin/trip"},*/
 {name:"Accessories",icon:"mdi mdi-package-variant menu-icon",route:"/admin/accessories"},
-{name:"Activity",icon:"mdi mdi-package-variant menu-icon",route:"/admin/activity"},
-{name:"Itenary",icon:"mdi mdi-package-variant menu-icon",route:"/admin/itenary"},
+
+/*{name:"Itenary",icon:"mdi mdi-package-variant menu-icon",route:"/admin/itenary"},*/
 {name:"Stay",icon:"mdi mdi-package-variant menu-icon",route:"/admin/stay"},
 {name:"Stay Types",icon:"mdi mdi-package-variant menu-icon",route:"/admin/staytype"},
 {name:"Travel Info",icon:"mdi mdi-package-variant menu-icon",route:"/admin/travelinfo"},

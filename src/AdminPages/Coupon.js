@@ -167,9 +167,10 @@ class Coupon extends Component {
                                             <h4 class="card-title">Coupons<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
+                                                
                                                 {
-                                                    Header: "Value",
-                                                    accessor: "couponValue",
+                                                    Header: "Code",
+                                                    accessor: "couponCode",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'
@@ -177,8 +178,8 @@ class Coupon extends Component {
 
                                                 },
                                                 {
-                                                    Header: "Code",
-                                                    accessor: "couponCode",
+                                                    Header: "Value",
+                                                    accessor: "couponValue",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'
