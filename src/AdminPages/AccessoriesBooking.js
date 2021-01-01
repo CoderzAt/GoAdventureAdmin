@@ -266,6 +266,15 @@ class AccessoriesBooking extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Discount Price</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="number" value={this.props.accessorybookingbyid.discountPrice ? this.props.accessorybookingbyid.discountPrice : ""}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "discountPrice")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>     
                                                 
                                                    

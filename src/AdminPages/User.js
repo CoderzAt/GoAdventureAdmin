@@ -183,6 +183,20 @@ class User extends Component {
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
+                                                        <label class="col-sm-3 col-form-label">Login Type</label>
+                                                        <div class="col-sm-9">
+                                                            <select required type="text" value={this.props.getuserbyid.loginType ? this.props.getuserbyid.loginType : ""}
+                                                                class="form-control" onChange={(e) => this.updateUser(e, "loginType")} >
+                                                                    <option value={0}>Select</option>
+                                                                    <option value="male">GoAdventure</option>
+                                                                    <option value="female">Google</option>
+                                                                    <option value="others">FaceBook</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
                                                         <label class="col-sm-3 col-form-label">Date Of Birth</label>
                                                         <div class="col-sm-9">
                                                             <input required type="date" value={this.props.getuserbyid.dateOfBirth ? this.props.getuserbyid.dateOfBirth : ""}
