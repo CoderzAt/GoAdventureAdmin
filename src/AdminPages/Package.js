@@ -3,9 +3,9 @@ import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
-import {GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION,DELETE_PACKAGE,GET_EVENTTYPE} from '../Shared/Services'
+import {GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION,DELETE_PACKAGE,PLACETOVISIT_BYDESTINATION,GET_EVENTTYPE,PACKAGEPLACES,GET_EVENTLEVEL} from '../Shared/Services'
 import Sidebar from './Sidebar'
-
+import { Multiselect } from 'multiselect-react-dropdown';
 import { connect } from 'react-redux';
 import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
@@ -29,6 +29,7 @@ class Package extends Component {
         this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
         this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
         this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
+        this.props.getData(action.GET_EVENTLEVEL,GET_EVENTLEVEL)
 
     }
 
@@ -72,7 +73,9 @@ class Package extends Component {
         //bodyFormData.set('CouponExpiryDate', this.props.packagebyid.couponexpirydate);
         //bodyFormData.set('CouponUserUsageCount', parseInt(this.props.packagebyid.couponuserusagecount));
         bodyFormData.set('Inclusions', this.props.packagebyid.inclusions);
+        //bodyFormData.set('placetovisitIds', this.props.packagebyid.placetovisitIds);
         bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
+        bodyFormData.set('thingsTobring', this.props.packagebyid.thingsTobring);
         bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
         bodyFormData.set('IsDeleted',  false );
         bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
@@ -119,7 +122,18 @@ class Package extends Component {
         this.props.getData(action.GET_PACKAGE_BYID, GET_PACKAGE_BYID+id)
     }
     updatePackage = (e, paramName) => {
-        this.props.updatePropAccData(paramName,e.target.value,"packagebyid");
+       var value
+        if(paramName === "destinationId")
+        {
+            this.props.getData(action.PLACETOVISIT_BYDESTINATION,PLACETOVISIT_BYDESTINATION+e.target.value)
+            value=e.target.value;
+        }
+        else if(paramName === "placetovisitIds")
+        {
+            let data= Array.prototype.map.call(e, function(item) { return item.placeId; }).join(",");
+            value=data;
+        }
+        this.props.updatePropAccData(paramName,value,"packagebyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
     deleteRecord(id)
@@ -170,7 +184,22 @@ class Package extends Component {
                                                         class="col-sm-3 col-form-label">Name</label>
                                                     <div class="col-sm-9">
                                                         <input type="text" value={this.props.packagebyid.packageName?this.props.packagebyid.packageName:""} class="form-control" id="placeTypeName" required
-                                                            placeholder="Name" onChange={(e)=>this.updatePackage(e,"packageName")}/>
+                                                             onChange={(e)=>this.updatePackage(e,"packageName")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="type"
+                                                        class="col-sm-3 col-form-label">EventLevel</label>
+                                                    <div class="col-sm-9">
+                                                        <select type="text" value={this.props.packagebyid.eventLevel?this.props.packagebyid.eventLevel:""} class="form-control" id="type" required
+                                                         onChange={(e)=>this.updatePackage(e,"eventLevel")}>
+                                                            <option value={0}>Select</option>
+                                                        {this.props.geteventlevel.map(obj=>(
+                                                            <option value={obj.eventLevelId}>{obj.eventLevelCode}</option>
+                                                        ))}
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -180,7 +209,7 @@ class Package extends Component {
                                                         class="col-sm-3 col-form-label">Type</label>
                                                     <div class="col-sm-9">
                                                         <select type="text" value={this.props.packagebyid.packageType?this.props.packagebyid.packageType:""} class="form-control" id="type" required
-                                                        placeholder="Type" onChange={(e)=>this.updatePackage(e,"packageType")}>
+                                                         onChange={(e)=>this.updatePackage(e,"packageType")}>
                                                             <option value={0}>Select</option>
                                                         {this.props.geteventtype.map(obj=>(
                                                             <option value={obj.eventTypeCode}>{obj.eventTypeCode}</option>
@@ -189,18 +218,19 @@ class Package extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
+                                        
+                                           
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="duration"
                                                         class="col-sm-3 col-form-label">Duration</label>
                                                     <div class="col-sm-9">
                                                         <input type="text" value={this.props.packagebyid.duration?this.props.packagebyid.duration:""} class="form-control" id="duration" required
-                                                          onChange={(e)=>this.updatePackage(e,"duration")}  placeholder="Duration"/>
+                                                          onChange={(e)=>this.updatePackage(e,"duration")} />
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Destination</label>
@@ -215,8 +245,16 @@ class Package extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                      <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="duration"
+                                                        class="col-sm-3 col-form-label">Places</label>
+                                                    <div class="col-sm-9">
+                                                    <Multiselect   options={this.props. placetovisitbydestination} displayValue={"placeName"} 
+                                                    class="form-control" onSelect={(e)=>this.updatePackage(e,"placetovisitIds")} onRemove={(e)=>this.updatePackage(e,"placetovisitIds")} />
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription"
@@ -231,22 +269,21 @@ class Package extends Component {
 
                                                         </span>
                                                         </div>
-                                                    {/*<div class="col-sm-9">
-                                                        <input type="file" name="img[]" class="file-upload-default"/>
-                                                        <div class="input-group col-xs-12">
-                                                            <input type="text" value={this.state.editData.promoImage} class="form-control file-upload-info"
-                                                               required disabled="" placeholder="Upload Image" onChange={(e)=>this.promoimageOperation(e)}/>
-                                                            <span class="input-group-append">
-                                                                <button
-                                                                    class="file-upload-browse btn btn-gradient-primary"
-                                                                    type="button">Upload</button>
-                                                            </span>
-                                                        </div>
-                                                    </div>*/}
+                                                   
                                                 </div>
                                             </div>
-                                        </div>
-                                     <div class="row">
+                                        
+                                        <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">Thingsto Bring</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" value={this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:""} class="form-control" id="placeTypeName" required
+                                                             onChange={(e)=>this.updatePackage(e,"thingsTobring")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                     
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
@@ -266,8 +303,8 @@ class Package extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
+                                        
+                                        
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription"
@@ -277,7 +314,7 @@ class Package extends Component {
                                                           required  rows="4" onChange={(e)=>this.updatePackage(e,"packageDescription")}></textarea>
                                                     </div>
                                                 </div>
-                                            </div>
+                                           
                                             {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="couponCode" class="col-sm-3 col-form-label">Coupon
@@ -314,6 +351,7 @@ class Package extends Component {
                                         </div>
                                         <div class="row">
  */}                                            
+                                        </div>
                                         </div>
                                         <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
@@ -409,6 +447,8 @@ class Package extends Component {
     const mapStateToProps = (state) => {
         return {
           getdestination:state.goAdvStore.getdestination,
+          geteventlevel:state.goAdvStore.geteventlevel,
+          placetovisitbydestination:state.goAdvStore.placetovisitbydestination,
           packages:state.goAdvStore.packages,
           geteventtype:state.goAdvStore.geteventtype,
           packagebyid:state.goAdvStore.packagebyid,

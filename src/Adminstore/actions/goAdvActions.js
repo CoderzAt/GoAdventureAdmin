@@ -106,6 +106,29 @@ export const putData1 =(actiontype,url,obj)=>
       });
    }
 }
+
+export const googleLogin = (actiontype,url,obj) => { 
+   debugger
+  const svcconfig = {
+      headers: { Pragma: 'no-cache' }
+   }
+   return dispatch => {
+      dispatch({
+         type:actiontype,
+           payload: axios.post(`${services.BASE_URL}${url}`,obj,svcconfig)
+            .then(response => {
+              console.log("googlelogin",response)
+               return response;
+            })
+            .catch(error => {
+               return { data: { errors: [error.toString()], isSuccess: false,statusText:"error" } };
+            })
+      });
+   }
+}
+
+
+
 export const postDataWithFile =(actiontype,url,obj)=> {
    debugger
    const svcconfig = {

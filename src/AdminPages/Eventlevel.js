@@ -42,7 +42,7 @@ class Eventlevel extends Component {
             eventLevelId: this.props.geteventlevelbyid.eventLevelId ? this.props.geteventlevelbyid.eventLevelId : 0,
             eventLevelCode: this.props.geteventlevelbyid.eventLevelCode,
             eventLevelDesc: this.props.geteventlevelbyid.eventLevelDesc,
-            statusId: this.props.geteventlevelbyid.statusId * 1,
+           // statusId: this.props.geteventlevelbyid.statusId * 1,
             isDeleted: this.props.geteventlevelbyid.eventLevelId ? false : true
         };
         let url = PUT_EVENTLEVEL + this.props.geteventlevelbyid.eventLevelId;
@@ -137,7 +137,7 @@ class Eventlevel extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                   {/*  <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Status</label>
                                                             <div class="col-sm-9">
@@ -150,7 +150,7 @@ class Eventlevel extends Component {
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
 
                                                 <div class="row" style={{ margin: "auto", textAlign: "center"/* marg:auto;text-align: center} */ }}>

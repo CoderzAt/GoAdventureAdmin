@@ -178,7 +178,7 @@ class Country extends Component {
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="card-title">Country</h4>
-                                    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)}/*  onReset={(e)=>this.handleReset(e)} */>
+                                    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)}  onReset={(e)=>this.handleReset(e)} >
                                     <div class="row">
                                         {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
                                         <TextInput value={this.state.country} defaultValue={this.state.viewData.countryCode} type="text" name="countryCode" onChange={(value)=>this.countrycodeOpearation(value)}/>

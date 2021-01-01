@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,GET_STAYTYPE,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING} from '../Shared/Services'
+import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,GET_STAYTYPE,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -56,13 +56,13 @@ class Booking extends Component {
       componentDidMount()
      {
          debugger
-       this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
+       //this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
        this.props.getData(action.GET_BOOKING,GET_BOOKING);
        this.props.getData(action.GET_TRIP,GET_TRIP)
        this.props.getData(action.GET_ALL_ACCESSORIES,GET_ALL_ACCESSORIES) 
        this.props.getData(action.GET_AVCTIVITIES,GET_ACTIVITIES)
        this.props.getData(action.GET_USER,GET_USER)
-       this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
+       //this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
         }   //there is an issue with api
         refresh(e)
      {
@@ -373,6 +373,14 @@ class Booking extends Component {
         {
             value= Array.prototype.map.call(e, function(item) { return item.activityId;}).join(",");   
         }
+        else if(paramName === "tripId")
+        {
+            if(e.target.value !== "0"){
+            this.props.getData(action.GET_STAYTYPE_BYTRIPID,GET_STAYTYPE_BYTRIPID+e.target.value)
+            this.props.getData(action.GET_TRAVELTYPE_BYTRIPID,GET_TRAVELTYPE_BYTRIPID+e.target.value)
+            }
+            value=e.target.value
+        }
         else
         {
              value=e.target.value
@@ -479,7 +487,7 @@ class Booking extends Component {
                                                 </div>
                                             </div>
                                           
-                                              <div class="col-md-6">
+                                             {/*  <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessories</label>
                                                     <div class="col-sm-9">
@@ -488,7 +496,8 @@ class Booking extends Component {
                                                       
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>    */} 
+                                            
                                             {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessory</label>
@@ -504,22 +513,16 @@ class Booking extends Component {
                                                    </div>
                                                 </div>
                                                 </div> */}
-                                                <div class="col-md-6">
+                                              {/*   <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Activity</label>
                                                     <div class="col-sm-9">
                                                     <Multiselect selectedValues={this.props.activityids}  options={this.props.activities} displayValue={"activityName"} 
                                                     class="form-control" onSelect={(e)=>this.updateBooking(e,"activityIds")} onRemove={(e)=>this.updateBooking(e,"activityIds")} />
-                                                   {/*  <select class="form-control travellerMode" value={this.props.getbookingbyid.activityIds?this.props.getbookingbyid.activityIds:"0"} 
-                                                    onChange={(e)=>this.updateBooking(e,"activityIds")}>
-                                                    <option value={0}>Select</option>
-                                                        {this.props.activities.map(obj=>
-                                                         <option value={obj.activityId}>{obj.activityName}</option>
-                                                          )}
-                                                   </select> */}
+                                                  
                                                    </div>
                                                 </div>
-                                                </div>
+                                                </div> */} {/* its important dont remove, keep it as coment we need it in future */}
                                                 
                                                 <div class="col-md-6">
                                                 <div class="form-group row">

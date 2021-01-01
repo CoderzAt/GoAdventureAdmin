@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap';
 import { loadData, gettripbyid, GET_TRIP,GET_TRECKLEADERS, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID, POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
+import { Link} from "react-router-dom";
 import Sidebar from './Sidebar'
 import dateFormat from 'dateformat';
 import { Multiselect } from 'multiselect-react-dropdown';
@@ -375,6 +376,9 @@ class Trip extends Component {
                                                             </button>
                                                             <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                 <i class="mdi mdi-delete-outline"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
+                                                                <Link to={`/admin/tripcostcenter/${row.value}`}> <i class="mdi mdi-eye-outline"></i></Link>
                                                             </button>
                                                         </div>)
                                                 }

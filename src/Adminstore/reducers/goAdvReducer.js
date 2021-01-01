@@ -2,6 +2,27 @@ import * as actions from '../actions/actionTypes';
 
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 
+const HandlingError=(payload,paramName,actiontype)=>
+{ 
+    let msgData = {};
+    if (payload.statusText === "error") {
+        if (payload.error.response.status === 400) {
+            msgData.message = payload.error.response.data;
+            msgData.isSuccess = false;
+        }
+        else if (payload.error.response.status === 500) {
+            msgData.message = [{ message: "internal server" }];
+            msgData.isSuccess = false;
+        }
+    } else {
+        msgData.message = [{ message: `${paramName} ${actiontype}successfully `}];
+        msgData.isSuccess = true;
+    }
+     
+    return msgData;
+
+}
+
 const initalState ={
     isPkgLoading: false,
     packages:[],
@@ -150,7 +171,8 @@ const initalState ={
     getpayementbyid:[],
     postpayement:[],
     putpayement:[],
-    deletepayment:[]
+    deletepayment:[],
+    placetovisitfunctionaldata:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -267,6 +289,25 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_ALL_ACCESSORIES}_REJECTED` : {
+            return{
+                ...state,
+                isAccLoading: false,
+            }
+        }
+        case `${actions.GET_ACCESSORY_BYTYPE}_PENDING` : {
+            return{
+                ...state,
+                isAccLoading: true
+            }
+        }
+        case `${actions.GET_ACCESSORY_BYTYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isAccLoading: false,
+                accessories: action.payload.data
+            }
+        }
+        case `${actions.GET_ACCESSORY_BYTYPE}_REJECTED` : {
             return{
                 ...state,
                 isAccLoading: false,
@@ -1418,21 +1459,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PLACETOVISIT}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while Adding the placetovisit";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "placetovisit added successfully.";
-              msgData.isSuccess = true;
-            }
+           
+            let msgData=HandlingError(action.payload,"placetovisit","added")
             return{
                 ...state,
                 ispostPlacetovisitLoading: false,
                 postplacetovisit:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getplacetovisitbyid:{}
+                getplacetovisitbyid:action.payload.statusText === "error"?state.getplacetovisitbyid:{}
             }
         }
         case `${actions.POST_PLACETOVISIT}_REJECTED` : {
@@ -1448,21 +1483,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_PLACETOVISIT}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the placetovisit";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "placetovisit updated successfully.";
-              msgData.isSuccess = true;
-            }
+            debugger
+            let msgData=HandlingError(action.payload,"placetovisit","updated")
             return{
                 ...state,
                 isputPlacetovisitLoading: false,
                 putplacetovisit:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getplacetovisitbyid:{}
+                getplacetovisitbyid:action.payload.statusText === "error"?state.getplacetovisitbyid:{}
 
             }
         }
@@ -1929,6 +1958,25 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetStaytypeLoading: false,
             }
         }
+        case `${actions.GET_STAYTYPE_BYTRIPID}_PENDING` : {
+            return{
+                ...state,
+                isgetStaytypeLoading: true
+            }
+        }
+        case `${actions.GET_STAYTYPE_BYTRIPID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetStaytypeLoading: false,
+                getstaytype: action.payload.data
+            }
+        }
+        case `${actions.GET_STAYTYPE_BYTRIPID}_REJECTED` : {
+            return{
+                ...state,
+                isgetStaytypeLoading: false,
+            }
+        }
         case `${actions.GET_STAYTYPE_BYID}_PENDING` : {
             return{
                 ...state,
@@ -2123,6 +2171,25 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_TRAVELTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isgetTraveltypeLoading: false,
+            }
+        }
+        case `${actions.GET_TRAVELTYPE_BYTRIPID}_PENDING` : {
+            return{
+                ...state,
+                isgetTraveltypeLoading: true
+            }
+        }
+        case `${actions.GET_TRAVELTYPE_BYTRIPID}_FULFILLED` : {
+            return{
+                ...state,
+                isgetTraveltypeLoading: false,
+                gettraveltype: action.payload.data
+            }
+        }
+        case `${actions.GET_TRAVELTYPE_BYTRIPID}_REJECTED` : {
             return{
                 ...state,
                 isgetTraveltypeLoading: false,
@@ -3626,10 +3693,23 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.GET_ACCESSORIES_BOOKING_BYID}_FULFILLED` : {
+            debugger
+
+            let data1=action.payload.data.accessoryId;
+            let accessarytype
+            state.accessories.map(obj=>{
+                if(obj.accessoriesId === data1)
+                {
+                    accessarytype=obj.type;
+                }
+            })
+
+            let accessarybookings=action.payload.data;
+            accessarybookings["accessorytype"]=accessarytype;
             return{
                 ...state,
                 isAccessoryBookingbidLoading: false,
-                accessorybookingbyid: action.payload.data
+                accessorybookingbyid:accessarybookings
             }
         }
         case `${actions.GET_ACCESSORIES_BOOKING_BYID}_REJECTED` : {

@@ -43,6 +43,7 @@ import TripCostCenter from './AdminPages/TripCostCenter';
 import AccessoriesBooking from './AdminPages/AccessoriesBooking';
 import User from './AdminPages/User';
 import Payements from './AdminPages/Payements';
+import { Login } from './AdminPages/Login';
 //import './App.scss'
 //import AppRoutes from './AppRoutes'
 
@@ -90,6 +91,7 @@ class App extends Component {
             {/* <Route exact path="/admin/accessorybooking/:id" component={AccessoriesBooking}/>*/}            
             <Route exact path="/admin/user" component={User}/>
             <Route exact path="/admin/payments" component={Payements}/>
+            <Route exact path="/admin/login-1" component={Login}/>
             </Switch>
  
         </Router>   

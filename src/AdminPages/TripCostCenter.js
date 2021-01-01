@@ -87,6 +87,7 @@ class TripCostCenter extends Component {
         }
     }
     tripcostcenterbytripOperation(id) {
+        valuefromurl=parseInt(id)
         this.props.getData(action.GET_TRIP_COSTCENTER_BYTRIPID, GET_TRIP_COSTCENTER_BYTRIPID + id)
     }
 
@@ -96,7 +97,8 @@ class TripCostCenter extends Component {
     }
     refresh()
     {
-        this.props.getData(action.GET_TRIP_COSTCENTER,GET_TRIP_COSTCENTER)
+       
+        this.props.getData(action.GET_TRIP_COSTCENTER_BYTRIPID, GET_TRIP_COSTCENTER_BYTRIPID +valuefromurl)
     }
     editReacord(id) {
         debugger

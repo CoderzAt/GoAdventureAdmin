@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { GET_ACCESSORIES_BOOKING, GET_USER,GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_BOOKING_BYBOOKINGID, POST_ACCESSORIES_BOOKING, PUT_ACCESSORIES_BOOKING,  DELETE_ACCESSORIES_BOOKING,GET_ACCESSORIES_BOOKING_BYACCESSORYID,GET_ALL_ACCESSORIES,g, GET_ACCESSORIES_BYID} from '../Shared/Services'
+import { GET_ACCESSORIES_BOOKING, GET_USER,GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_BOOKING_BYBOOKINGID, POST_ACCESSORIES_BOOKING, PUT_ACCESSORIES_BOOKING,  DELETE_ACCESSORIES_BOOKING,GET_ACCESSORIES_BOOKING_BYACCESSORYID,GET_ALL_ACCESSORIES,ACCESSARY_TYPE, GET_ACCESSORIES_BYID, GET_ACCESSORY_BYTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -25,7 +25,8 @@ class AccessoriesBooking extends Component {
         }
 
     }
-    componentDidMount() {
+    componentDidMount() 
+    {
         debugger
         var url
 
@@ -38,10 +39,9 @@ class AccessoriesBooking extends Component {
             this.props.getData(action.GET_ACCESSORIES_BOOKING, GET_ACCESSORIES_BOOKING)
         }
 
-        this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
+        //this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
         this.props.getData(action.GET_USER,GET_USER)
-        
-        
+        this.props.getData(action.ACCESSARY_TYPE,ACCESSARY_TYPE)
     }
     componentWillMount() {
         this.props.removeErrormsg()
@@ -105,7 +105,8 @@ class AccessoriesBooking extends Component {
     {
         this.props.getData(action.GET_ACCESSORIES_BOOKING,GET_ACCESSORIES_BOOKING)
     }
-    editReacord(id) {
+   async editReacord(id) {
+        await this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
         debugger
         this.props.getData(action.GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_BOOKING_BYID + id)
     }
@@ -118,8 +119,18 @@ class AccessoriesBooking extends Component {
             value = Array.prototype.map.call(e, function (item) { return item.stayTypeId; }).join(",")
         }
         else {*/
-            value = e.target.value
+           
        /* }*/
+       if(paramName === "accessorytype")
+       {
+        value = e.target.value
+        this.props.getData(action.GET_ACCESSORY_BYTYPE,GET_ACCESSORY_BYTYPE+value)
+      
+       }
+       else
+       {
+        value = e.target.value
+       }
         this.props.updatePropAccData(paramName, value, "accessorybookingbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
@@ -168,6 +179,20 @@ class AccessoriesBooking extends Component {
                                             <h4 class="card-title">Accessoy Booking</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
+                                                <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessary Type</label>
+                                                            <div class="col-sm-9">
+                                                                <select required type="text" value={this.props.accessorybookingbyid.accessorytype?this.props.accessorybookingbyid.accessorytype:"0"}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "accessorytype")} >
+                                                                      <option value={0}>Select</option>
+                                                                       {this.props. getaccessarytype.map(obj=>(
+                                                                            <option value={obj.id}>{obj.name}</option>
+                                                                        ))}
+                                                                        </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessary</label>
@@ -384,6 +409,7 @@ const mapStateToProps = (state) => {
         accessorybookings: state.goAdvStore.accessorybookings,
         accessorybookingbyid: state.goAdvStore.accessorybookingbyid,
         accessories: state.goAdvStore.accessories,
+        getaccessarytype:state.goAdvStore.getaccessarytype,
         getcostcenter: state.goAdvStore.getcostcenter,
         getallcostcentres:state.goAdvStore.getallcostcentres,
         getuser:state.goAdvStore.getuser,

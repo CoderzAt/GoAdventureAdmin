@@ -100,7 +100,7 @@ class Payements extends Component {
                                 <h3 class="page-title">
                                     <span class="page-title-icon bg-gradient-primary text-white mr-2">
                                         <i class="mdi mdi-wan"></i>
-                                    </span>User
+                                    </span>Payment
                                 </h3>
                                 {this.props.message ?
                                     <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
@@ -111,7 +111,7 @@ class Payements extends Component {
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
                                         </li>
                                         <li class="breadcrumb-item active" aria-current="page">
-                                            User
+                                            Payment
                                          </li>
                                     </ul>
                                 </nav>
@@ -120,7 +120,7 @@ class Payements extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">User</h4>
+                                            <h4 class="card-title">Payment</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -144,7 +144,7 @@ class Payements extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">TransactionNumber</label>
+                                                            <label class="col-sm-3 col-form-label">Transaction Number</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getpayementbyid.transactionNumber ? this.props.getpayementbyid.transactionNumber : ""}
                                                                     class="form-control" onChange={(e) => this.updatePayement(e, "transactionNumber")} />
@@ -163,7 +163,7 @@ class Payements extends Component {
 
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">ReferenceNumber</label>
+                                                            <label class="col-sm-3 col-form-label">Reference Number</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getpayementbyid.referenceNumber ? this.props.getpayementbyid.referenceNumber : ""}
                                                                     class="form-control" onChange={(e) => this.updatePayement(e, "referenceNumber")} />
@@ -182,7 +182,7 @@ class Payements extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">PaymentConfirmedDate</label>
+                                                            <label class="col-sm-3 col-form-label">Payment Confirmed Date</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="date" value={this.props.getpayementbyid.paymentConfirmedDate ? this.props.getpayementbyid.paymentConfirmedDate : ""}
                                                                     class="form-control" onChange={(e) => this.updatePayement(e, "paymentConfirmedDate")} />
@@ -204,7 +204,7 @@ class Payements extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">Event Levels<button onClick={(e) => this.refresh(e)} style={{ backgroundColor: "transparent", border: "none" }}><i class={"mdi mdi-refresh"}></i></button></h4>
+                                            <h4 class="card-title">Payments<button onClick={(e) => this.refresh(e)} style={{ backgroundColor: "transparent", border: "none" }}><i class={"mdi mdi-refresh"}></i></button></h4>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
 

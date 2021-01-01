@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_TRAVELINFO_BYID,GET_TRAVELINFO,PUT_TRAVELONFO,POST_TRAVELINFO,GET_CITIES,DELETE_TRAVELINFO} from '../Shared/Services'
+import {GET_TRAVELINFO_BYID,GET_TRAVELINFO,PUT_TRAVELONFO,POST_TRAVELINFO,GET_CITIES,DELETE_TRAVELINFO,GET_TRAVELTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar';
@@ -29,7 +29,7 @@ class TravelInfo extends Component {
     
         this.props.getData(action.GET_TRAVELINFO,GET_TRAVELINFO)
         this.props.getData(action.GET_CITIES,GET_CITIES)
-        
+        this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
      }  
      refresh(e)
     {
@@ -47,6 +47,7 @@ class TravelInfo extends Component {
             vehicleContactNumber:this.props.gettravelinfobyid.vehicleContactNumber,
             agencyName:this.props.gettravelinfobyid.agencyName,
             locationDetails:this.props.gettravelinfobyid.locationDetails,
+            //traveltype:this.props.gettravelinfobyid.traveltype,
             cityId:this.props.gettravelinfobyid.cityId*1,
             isDeleted: this.props.gettravelinfobyid.travelInfoId?false:true
        };
@@ -139,6 +140,20 @@ class TravelInfo extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
+                                                    <label class="col-sm-3 col-form-label">TravelType</label>
+                                                    <div class="col-sm-9">
+                                                        <select required type="text" value={this.props.gettravelinfobyid.vehicleName?this.props.gettravelinfobyid.vehicleName:""}
+                                                         class="form-control" onChange={(e)=>this.updateTravelinfo(e,"traveltype")}>
+                                                             <option value={0}>Select</option>
+                                                             {this.props.gettraveltype.map(obj=>(
+                                                                 <option value={obj.travelTypeName}>{obj.travelTypeId}</option>
+                                                             ))}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Vehchile Number</label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettravelinfobyid.vehicleNumber?this.props.gettravelinfobyid.vehicleNumber:""} 
@@ -146,8 +161,7 @@ class TravelInfo extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
+                                       
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehchile Owner</label>
@@ -286,6 +300,7 @@ class TravelInfo extends Component {
     const mapStateToProps = (state) => {
         return {
           gettravelinfobyid:state.goAdvStore.gettravelinfobyid,
+          gettraveltype:state.goAdvStore.gettraveltype,
           gettravelinfo:state.goAdvStore.gettravelinfo,
           message: state.goAdvStore.message,
           messageData: state.goAdvStore.messageData,

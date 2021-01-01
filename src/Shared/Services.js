@@ -1,4 +1,16 @@
 //post data function
+export const displayerrormsg=(props)=>
+{
+    return(
+      <h2>hi</h2>
+           /*  <div>
+            {props.message ?
+            <div className={`message-wrapper ${props.messageData.isSuccess ? "success" : "error"}`}>{props.messageData.message.map(obj => (<li>{obj.message}</li>))}</div> :
+            null}
+            </div> */
+    )
+
+}
 export async function postData(obj,url,meth)
 {
    debugger
@@ -50,6 +62,7 @@ export const POST_ACCESSORIES="CreateAccessory";
 export const PUT_ACCESSORIES="UpdateAccessories?id=";
 export const GET_ACCESSORIES_BYID="GetAccessoryById?id=";
 export const DELETE_ACCESSORIES="DeleteAccessory?id=";
+export const GET_ACCESSORY_BYTYPE="GetAccessoryByType?accessoryType=";
 //costCentre
 export const costcentrepostapi="https://ga-api.azurewebsites.net/api/v1/createMdCostCenter";
 export const getallcostcentreapi="https://ga-api.azurewebsites.net/api/v1/getAllMdCostCenter";
@@ -202,6 +215,8 @@ export const tripupdateapi="https://ga-api.azurewebsites.net/api/v1/UpdateTrip?i
 export const gettrips="https://ga-api.azurewebsites.net/api/v1/GetAllTrips";
 export const gettripbyid="https://ga-api.azurewebsites.net/api/v1/GetTripById?id="
 export const gettripbypackage="https://ga-api.azurewebsites.net/api/v1/GetTripByPackage?packageID="
+export const GET_STAYTYPE_BYTRIPID="GetStayTypeByTrip?tripId=";
+export const GET_TRAVELTYPE_BYTRIPID="GetTravelTypeByTrip?tripId=";
 
 export const GET_TRIP_BYID="GetTripById?id=";
 export const GET_TRIP_BYPACKAGEID="GetTripByPackage?packageID=";
@@ -336,3 +351,6 @@ export const GET_ACCESSORIES_BOOKING_BYID='GetAccessoryBookingById?id=';
 export const GET_ACCESSORIES_BOOKING_BYBOOKINGID='GetAccessoryBookingBybookingId?id=';
 export const DELETE_ACCESSORIES_BOOKING="DeleteAccessoryBookingDeleteAccessoryBooking?id=";
 export const GET_ACCESSORIES_BOOKING_BYACCESSORYID="GetAccessoryBookingByaccessoryId?id=";
+
+//token
+export const GET_TOKEN="SocialLogins";
