@@ -17,7 +17,7 @@ import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,de
 import * as action from '../Adminstore/actions/actionTypes'
 
 var condition=false;
-var editorstate='<div>hi<div>'
+var editorstate='<div>hi<div>';
 class Country extends Component {
     constructor(props) {
         super(props);
@@ -42,8 +42,10 @@ class Country extends Component {
     componentDidUpdate(prevProps, prevState, snapshotValue) {
       if(this.props.getcountrybyid.countryDesc !== prevProps.getcountrybyid.countryDesc) {
         if( this.props.getcountrybyid.countryDesc) {
-          const contentBlocks = convertFromHTML(this.props.getcountrybyid.countryDesc);
-          const contentState = ContentState.createFromBlockArray(contentBlocks);
+          const blocksFromHtml = htmlToDraft(this.props.getcountrybyid.countryDesc);
+          const { contentBlocks, entityMap } = blocksFromHtml;
+          const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+
           this.setState({
             editorState: EditorState.createWithContent(contentState)
           });
@@ -99,7 +101,7 @@ class Country extends Component {
         } else {
             event.preventDefault();
             this.postCountrydata();
-           
+
         }
         this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
 
@@ -272,7 +274,7 @@ class Country extends Component {
                                     headerStyle:{
                                         textAlign:'left',
                                         fontWeight: 'bold',
-                                        
+
                                     }
 
                                   },
@@ -331,7 +333,7 @@ class Country extends Component {
         }
     }
     export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Country);
-    
+
 
 
     //export default Country
