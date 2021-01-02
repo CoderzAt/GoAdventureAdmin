@@ -476,7 +476,7 @@ class Booking extends Component {
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayType</label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" value={this.props.getbookingbyid.stayTypeId?this.props.getbookingbyid.stayTypeId:"0"} 
-                                                    onChange={(e)=>this.updateBooking(e,"travelTypeId")}>
+                                                    onChange={(e)=>this.updateBooking(e,"stayTypeId")}>
                                                          <option value={0}>Select</option>
                                                         {this.props.getstaytype.map(obj=>
                                                          <option value={obj.stayTypeId}>{obj.stayTypeName}</option>
