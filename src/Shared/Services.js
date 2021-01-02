@@ -1,16 +1,5 @@
 //post data function
-export const displayerrormsg=(props)=>
-{
-    return(
-      <h2>hi</h2>
-           /*  <div>
-            {props.message ?
-            <div className={`message-wrapper ${props.messageData.isSuccess ? "success" : "error"}`}>{props.messageData.message.map(obj => (<li>{obj.message}</li>))}</div> :
-            null}
-            </div> */
-    )
 
-}
 export async function postData(obj,url,meth)
 {
    debugger
