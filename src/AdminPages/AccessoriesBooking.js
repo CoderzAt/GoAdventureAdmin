@@ -156,7 +156,7 @@ class AccessoriesBooking extends Component {
                                 <h3 class="page-title">
                                     <span class="page-title-icon bg-gradient-primary text-white mr-2">
                                         <i class="mdi mdi-wan"></i>
-                                    </span> Accessoy Bookings
+                                    </span> Accessory Bookings
                         </h3>
                                 {this.props.message ?
                                     <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
@@ -167,7 +167,7 @@ class AccessoriesBooking extends Component {
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
                                         </li>
                                         <li class="breadcrumb-item active" aria-current="page">
-                                            Accessoy Bookings
+                                        Accessory Bookings
                                 </li>
                                     </ul>
                                 </nav>
@@ -176,11 +176,12 @@ class AccessoriesBooking extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">Accessoy Booking</h4>
+                                            <h4 class="card-title">Accessory Booking</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
+
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessary Type</label>
                                                             <div class="col-sm-9">
                                                                 <select required type="text" value={this.props.accessorybookingbyid.accessorytype?this.props.accessorybookingbyid.accessorytype:"0"}
@@ -196,6 +197,7 @@ class AccessoriesBooking extends Component {
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Accessary</label>
+
                                                             <div class="col-sm-9">
                                                                 <select required type="text" value={this.props.accessorybookingbyid.accessoryId?this.props.accessorybookingbyid.accessoryId:"0"}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "accessoryId")} >
@@ -210,7 +212,7 @@ class AccessoriesBooking extends Component {
                                                     
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">IsRent</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Rent</label>
                                                             <div class="col-sm-9">
                                                                 <select required type="text" value={this.props.accessorybookingbyid.isRent ? this.props.accessorybookingbyid.isRent : "0"}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "isRent")} >
@@ -291,6 +293,15 @@ class AccessoriesBooking extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Discount Price</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="number" value={this.props.accessorybookingbyid.discountPrice ? this.props.accessorybookingbyid.discountPrice : ""}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "discountPrice")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>     
                                                 
                                                    
@@ -328,6 +339,15 @@ class AccessoriesBooking extends Component {
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
 
+                                                {
+                                                    Header: "Booking ID",
+                                                    accessor: "accessoryBookingId",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },                                                
                                                 {
                                                     Header: "Accessory Code",
                                                     accessor: "accessoryId",

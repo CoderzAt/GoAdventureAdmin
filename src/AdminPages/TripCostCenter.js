@@ -240,7 +240,25 @@ class TripCostCenter extends Component {
                                             <ReactTable columns={[
 
                                                 {
+                                                    Header: "Trip Name",
+                                                    accessor: "tripId",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
                                                     Header: "Cost Center Name",
+                                                    accessor: "costCenterId",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
+                                                    Header: "Cost Center Type",
                                                     accessor: "costCenterId",
                                                     headerStyle: {
                                                         textAlign: 'left',

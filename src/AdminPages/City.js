@@ -292,7 +292,7 @@ class City extends Component {
                                 <button type="button" className="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}}  value={row.value} >
                                   <i className="mdi mdi-delete-outline"></i>
                                 </button>
-                                <button type="button" className="btn btn-gradient-primary btn-rounded btn-icon" value={row.value}
+                                {/*<button type="button" className="btn btn-gradient-primary btn-rounded btn-icon" value={row.value}
                                 >
                                   <Link
                                     style={{ color: "#A9A9A9" }}
@@ -303,7 +303,7 @@ class City extends Component {
                                     {" "}
                                     <i className="mdi mdi-eye-outline"></i>
                                   </Link>
-                                </button>
+                                  </button>*/}
                               </div>
                             ),
                           },
