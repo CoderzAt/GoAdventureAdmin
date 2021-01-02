@@ -96,6 +96,7 @@ export const putData1 =(actiontype,url,obj)=>
          type:actiontype,
            payload:axios.put(`${services.BASE_URL}${url}`,obj)
           .then(response=>{
+            response.obj = obj;
              console.log("putdata",response)
              return response;
           })
@@ -139,7 +140,8 @@ export const postDataWithFile =(actiontype,url,obj)=> {
          type:actiontype,
            payload:axios.post(`${services.BASE_URL}${url}`,obj, svcconfig)
           .then(response=>{
-             console.log("postdata",response)
+            response.obj = obj;
+             console.log("postdata",response);
              return response;
           })
           .catch(error=>
@@ -447,7 +449,7 @@ export const updatePropData = (param, value, propName) => {
     }
  }
 
- 
+
  export const resetData = (actiontype,propName) => {
    return dispatch => {
       dispatch({

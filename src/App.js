@@ -58,7 +58,7 @@ class App extends Component {
       <Router>
 <AdminHeader/>
          <Switch>
-            
+
             <Route exact path="/admin/package" component={Package}/>
             <Route exact path="/admin/destination" component={Destination}/>
             <Route exact path="/admin/placetype" component={PlaceType}/>
@@ -88,13 +88,13 @@ class App extends Component {
             <Route exact path="/admin/tripcostcenter" component={TripCostCenter}/>
             <Route exact path="/admin/tripcostcenter/:tid" component={TripCostCenter}/>
             <Route exact path="/admin/accessorybooking" component={AccessoriesBooking}/>
-            {/* <Route exact path="/admin/accessorybooking/:id" component={AccessoriesBooking}/>*/}            
+            {/* <Route exact path="/admin/accessorybooking/:id" component={AccessoriesBooking}/>*/}
             <Route exact path="/admin/user" component={User}/>
             <Route exact path="/admin/payments" component={Payements}/>
             <Route exact path="/admin/login-1" component={Login}/>
             </Switch>
- 
-        </Router>   
+
+        </Router>
       </div>
     )
   }

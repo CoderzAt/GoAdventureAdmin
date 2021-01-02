@@ -42,7 +42,7 @@ const initalState ={
     cityData: {},
     citybystate:[],
     getcountrybyid:[],
-    coupons:[], 
+    coupons:[],
     couponbyid:[],
     postcoupon:[],
     putcoupon:[],
@@ -86,7 +86,7 @@ const initalState ={
     putplacetype:[],
     getstatebycountry:[],
     deletecountry:[],
-    
+
     poststate:[],
     putstate:[],
     getstatebyid:[],
@@ -160,7 +160,7 @@ const initalState ={
     accessorybookings:[],
     putaccessorybooking:[],
     accessorybookingbyid:[],
-    postaccessorybooking:[],    
+    postaccessorybooking:[],
     deleteaccessorybooking:[],
     getaccessorybookingbyaccessoryid:[],
     getaccessarytype:[],
@@ -403,7 +403,7 @@ const goAdvReducer = (state =initalState, action) => {
             debugger
             let staytypeids=(action.payload.data.stayTypeIds).split(",");
             var staytypenames1=[]
-        
+
             staytypeids.map(obj=>
                 state.getstaytype.map((item)=>{
                     if(parseInt(obj) == item.stayTypeId)
@@ -421,7 +421,7 @@ const goAdvReducer = (state =initalState, action) => {
                           traveltypenames.push({travelTypeName:item.travelTypeName,travelTypeId:item.travelTypeId}); //reusability
                         }
                     }))
-                
+
             return{
                 ...state,
                 isTrbidLoading: false,
@@ -760,7 +760,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.POST_CITY}_FULFILLED` : {
             debugger
-        
+
           let updateCityData = {cityId: 0}, msgData = {};
           if(action.payload.statusText === "error") {
             msgData.message=action.payload.error.response.data;
@@ -815,7 +815,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ACCESSORIES}_PENDING` : {
-           
+
             return{
                 ...state,
                 ispostAccessoryLoading: true
@@ -868,7 +868,7 @@ const goAdvReducer = (state =initalState, action) => {
                 getaccessorybyid:{accessoriesId:0},  //here everything is setting with null thats why data removing
                 message: true,
                 messageData: msgData
-                
+
             }
         }
         case `${actions.PUT_ACCESSORIES}_REJECTED` : {
@@ -914,7 +914,7 @@ const goAdvReducer = (state =initalState, action) => {
                 ...state,
                 isgetAccbyidLoading: false,
             }
-        } 
+        }
         case `${actions.POST_ACTIVITY}_PENDING` : {
              return{
                 ...state,
@@ -939,7 +939,7 @@ const goAdvReducer = (state =initalState, action) => {
                 messageData: msgData,
 
             }
-        
+
         }
         case `${actions.POST_ACTIVITY}_REJECTED` : {
             return{
@@ -1790,11 +1790,11 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STATE}_PENDING` : {
-           
+
             return{
                 ...state,
                 isputStateLoading: true
-               
+
             }
         }
         case `${actions.PUT_STATE}_FULFILLED` : {
@@ -1917,7 +1917,7 @@ const goAdvReducer = (state =initalState, action) => {
 
             let staytypeids=(action.payload.data.stayTypeIds).split(",");
             var staytypenames1=[]
-        
+
             staytypeids.map(obj=>
                 state.getstaytype.map((item)=>{
                     if(parseInt(obj) == item.stayTypeId)
@@ -1925,7 +1925,7 @@ const goAdvReducer = (state =initalState, action) => {
                       staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
                     }
                 }))
-       
+
             return{
                 ...state,
                 isgetStaybyidLoading: false,
@@ -2026,7 +2026,7 @@ const goAdvReducer = (state =initalState, action) => {
                 ispostStaytypeLoading: false,
             }
         }
-        
+
          case `${actions.PUT_TRAVELINFO}_PENDING` : {
             return{
                 ...state,
@@ -2034,13 +2034,26 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_TRAVELINFO}_FULFILLED` : {
-            let msgData = {};
+            let msgData = {}, updatedTraveData= state.gettravelinfo, updatedObj = action.payload.obj;
+            console.log("travel update: ", action.payload.obj);
             if(action.payload.statusText === "error") {
               msgData.message = "Error while updating the travelinfo";
               msgData.isSuccess = false;
             } else {
               msgData.message = "travelinfo updated successfully.";
               msgData.isSuccess = true;
+              if(updatedObj.travelInfoId) {
+                updatedTraveData = state.gettravelinfo.map(obj =>
+                    obj.travelInfoId === updatedObj.travelInfoId ?
+                      { ...obj, agencyName: updatedObj.agencyName,
+                        cityId: updatedObj.cityId,
+                        locationDetails: updatedObj.locationDetails,
+                        vehicleContactNumber: updatedObj.vehicleContactNumber,
+                        vehicleName: updatedObj.vehicleName,
+                        vehicleNumber: updatedObj.vehicleNumber,
+                        vehicleOwner: updatedObj.vehicleOwner } : obj
+                        );
+              }
             }
             return{
                 ...state,
@@ -2048,7 +2061,8 @@ const goAdvReducer = (state =initalState, action) => {
                 puttravelinfo: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettravelinfobyid:{}
+                gettravelinfobyid:{},
+                gettravelinfo: updatedTraveData
              }
         }
         case `${actions.PUT_TRAVELINFO}_REJECTED` : {
@@ -2064,13 +2078,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_TRAVELINFO}_FULFILLED` : {
-            let msgData = {};
+            let msgData = {}, updatedTraveData= state.gettravelinfo, addedObj = action.payload.data;
+            console.log("travel update: ", action.payload.obj);
             if(action.payload.statusText === "error") {
               msgData.message = "Error while adding the travelinfo";
               msgData.isSuccess = false;
             } else {
               msgData.message = "travelinfo added successfully.";
               msgData.isSuccess = true;
+              updatedTraveData.push(addedObj);
             }
             return{
                 ...state,
@@ -2078,7 +2094,8 @@ const goAdvReducer = (state =initalState, action) => {
                 posttravelinfo: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettravelinfobyid:{}
+                gettravelinfobyid:{},
+                gettravelinfo: updatedTraveData
              }
         }
         case `${actions.POST_TRAVELINFO}_REJECTED` : {
@@ -2382,7 +2399,7 @@ const goAdvReducer = (state =initalState, action) => {
             debugger
             let accessoryids=(action.payload.data.accessories).split(",");
             var accessorynames1=[]
-        
+
             accessoryids.map(obj=>
                 state.accessories.map((item)=>{
                     if(parseInt(obj) == item.accessoryName)
@@ -2393,7 +2410,7 @@ const goAdvReducer = (state =initalState, action) => {
 
                 let activityids=(action.payload.data.activityIds).split(",");
                 var activitynames1=[]
-            
+
                 activityids.map(obj=>
                     state.activities.map((item)=>{
                         if(parseInt(obj) == item.activityName)
@@ -2413,7 +2430,7 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isgetBookingbyidLoading: false,
-               
+
             }
         }
         case `${actions.PUT_BOOKING}_PENDING` : {
@@ -2630,7 +2647,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.UPDATE_PROP_ACC}` : {
             debugger
-           
+
 			      console.log(action.payload);
             let propName = action.payload.propName, updatedAccessoryData = state[propName];
             updatedAccessoryData[action.payload.param] = action.payload.value;
@@ -2639,7 +2656,7 @@ const goAdvReducer = (state =initalState, action) => {
             {
                 let staytypeids=(action.payload.value).split(",");
                 var staytypenames1=[]
-            
+
                 staytypeids.map(obj=>
                     state.getstaytype.map((item)=>{
                         if(parseInt(obj) == item.stayTypeId)
@@ -2648,11 +2665,11 @@ const goAdvReducer = (state =initalState, action) => {
                         }
                     }))
 
-            } 
+            }
  */            return{
                 ...state,
                         [propName]: updatedAccessoryData,
-                        
+
             }
         }
         case `${actions.REMOVE_ERROR_MSG}` : {
@@ -2663,7 +2680,7 @@ const goAdvReducer = (state =initalState, action) => {
                 message:false
 
             }
-        } 
+        }
         case `${actions.EDITOR_STATE}` : {
             debugger
             return{
@@ -2671,7 +2688,7 @@ const goAdvReducer = (state =initalState, action) => {
                 geteditorState:action.payload.value
 
             }
-        } 
+        }
         case `${actions.DELETE_PACKAGE}_PENDING` : {
             return{
                 ...state,
@@ -2679,7 +2696,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.DELETE_PACKAGE}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Package";
@@ -2709,7 +2726,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_ACCESSORIES}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Accessory";
@@ -2739,7 +2756,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_TRIP}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Trip";
@@ -2769,7 +2786,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_ITENARY}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Itenary";
@@ -2799,7 +2816,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_ACTIVITY}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Activity";
@@ -2829,7 +2846,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_COSTCENTRE}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the CostCenter";
@@ -2852,7 +2869,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 isdeleteCostCenterLoading: false,
             }
         }
-		
+
 		case `${actions.DELETE_CITY}_PENDING` : {
             return{
                 ...state,
@@ -2860,7 +2877,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_CITY}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the City";
@@ -2890,7 +2907,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_COUPON}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Coupon";
@@ -2920,7 +2937,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_EVENTLEVEL}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the EventLevel";
@@ -2950,7 +2967,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_STATUS}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Status";
@@ -2980,7 +2997,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_EVENTTYPE}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the EventType";
@@ -3010,7 +3027,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_PLACETOVISIT}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the PlaceToVisit";
@@ -3040,7 +3057,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_BOOKING}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Booking";
@@ -3070,7 +3087,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_PLACETYPE}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the PlaceType";
@@ -3100,7 +3117,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_STATE}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the State";
@@ -3130,7 +3147,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_STAY}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Stay";
@@ -3160,7 +3177,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_STAYTYPE}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the StayType";
@@ -3190,7 +3207,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_TRAVELINFO}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Travel Info";
@@ -3220,7 +3237,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_TRAVELTYPE}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Travel Type";
@@ -3250,7 +3267,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_DESTINATION}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the Destination";
@@ -3379,7 +3396,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 messageData: msgData,
             }
         }
-           
+
         case `${actions.PUT_PLACEACTIVITIES}_REJECTED` : {
             return{
                 ...state,
@@ -3468,7 +3485,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 deleteplaceactivities: action.payload.data,
                 message: true,
                 messageData: msgData,
-                
+
             }
         }
         case `${actions.POST_TRIP_COSTCENTER}_REJECTED` : {
@@ -3484,7 +3501,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_TRIP_COSTCENTER}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the tripcostcetre";
@@ -3534,7 +3551,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 isdeleteTripcostcenterLoading: false,
             }
         }
-        
+
         case `${actions.GET_TRIP_COSTCENTERBYID}_PENDING` : {
             return{
                 ...state,
@@ -3662,7 +3679,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_ACCESSORIES_BOOKING}_FULFILLED` : {
-            
+
            let msgData = {};
             if(action.payload.statusText === "error") {
                 msgData.message = "Error while delting the tripcostcetre";
@@ -3685,7 +3702,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 isdeleteAccessorybookingLoading: false,
             }
         }
-        
+
         case `${actions.GET_ACCESSORIES_BOOKING_BYID}_PENDING` : {
             return{
                 ...state,
