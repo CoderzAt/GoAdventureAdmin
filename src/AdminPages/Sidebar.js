@@ -44,6 +44,13 @@ class Sidebar extends Component {
         </Link>
         )
     }
+    getClass(routeVal) {
+      if(routeVal === window.location.href.replace(window.location.origin, "")) {
+        return "nav-item active";
+      } else {
+        return "nav-item";
+      }
+    }
     render() {
 	    return (
          <div>
@@ -63,7 +70,7 @@ class Sidebar extends Component {
                         </a>
                     </li>
                      {sidebarItems.map(obj=>
-                     <li class="nav-item">
+                     <li key={obj.name} className={this.getClass(obj.route)}>
                         <this.sidebarItems item={obj.name} icon={obj.icon} route={obj.route}/>
                      </li>
                         )}
