@@ -2131,10 +2131,32 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_TRAVELINFO_BYID}_FULFILLED` : {
+            let cityid=action.payload.data.cityId;
+            let stateId
+            let travelinfodata=action.payload.data;
+            state.cities.map(obj=>
+                {
+                    if(obj.cityId === cityid)
+                    {
+                      stateId=obj.stateId;
+                    }
+                })
+
+                let countryId
+                state.states.map(obj=>{
+                    if(obj.stateId === stateId)
+                    {
+                        countryId=obj.countryId
+                    }
+                })
+
+            travelinfodata["stateId"]=stateId
+            travelinfodata["countryId"]=countryId
+
             return{
                 ...state,
                 isgetTravelinfobyidLoading: false,
-                gettravelinfobyid: action.payload.data
+                gettravelinfobyid: travelinfodata
             }
         }
         case `${actions.GET_TRAVELINFO_BYID}_REJECTED` : {
