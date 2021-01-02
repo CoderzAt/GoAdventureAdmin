@@ -275,7 +275,8 @@ class Country extends Component {
                                         textAlign:'left',
                                         fontWeight: 'bold',
 
-                                    }
+                                    },
+                                    Cell: row=> (<div dangerouslySetInnerHTML={{__html: row.value}} />)
 
                                   },
                                   {
