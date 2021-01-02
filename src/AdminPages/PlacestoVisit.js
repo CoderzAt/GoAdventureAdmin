@@ -4,6 +4,7 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import {displayerrormsg,GET_COUNTRIES, GET_STATES, GET_ACTIVITIES,GET_STATE_BYCOUNTRYID, GET_CITY_STATEID, loadData, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT, GET_PLACEACTIVITIES } from '../Shared/Services'
 import Sidebar from './Sidebar'
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Multiselect } from 'multiselect-react-dropdown';
 import { connect } from 'react-redux';
 import { getDestination, getActivity,getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
@@ -255,17 +256,7 @@ class PlacestoVisit extends Component {
         debugger
         this.props.deleteRecord(action.DELETE_PLACETOVISIT, DELETE_PLACETOVISIT + id)
     }
-    displayerrormsg(props)
-    {
-        return(
-                <div>
-                {props.message ?
-                <div className={`message-wrapper ${props.messageData.isSuccess ? "success" : "error"}`}>{props.messageData.message.map(obj => (<li>{obj.message}</li>))}</div> :
-                null}
-                </div>
-        )
-
-    }
+  
     render() {
         /*  this.props.getcities.map(obj=>{
              if(obj.cityId===this.props.getplacetovisitbyid.cityId)
@@ -291,11 +282,8 @@ class PlacestoVisit extends Component {
                                         <i class="mdi mdi-home-map-marker"></i>
                                     </span>Place To Visit
                         </h3>
-                               {/*  {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message.map(obj => (<li>{obj.message}</li>))}</div> :
-                                    null
-                                } */}
-                                <this.displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                              
+                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
