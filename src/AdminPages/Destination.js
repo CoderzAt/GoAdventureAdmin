@@ -26,7 +26,8 @@ class Destination extends Component {
            destinations:[],
            formFile:{},
            formFilename:"",
-           editData:[]
+           editData:[],
+           fileInputKey: Date.now()
        }
     }
     componentWillMount()
@@ -45,7 +46,7 @@ class Destination extends Component {
     }
     postDestinationdata()
     {
-     
+
         debugger
     const obj = {
       DestinationId:this.props.getdestinationbyid.destinationId?this.props.getdestinationbyid.destinationId:0,
@@ -70,12 +71,13 @@ class Destination extends Component {
     if (this.props.getdestinationbyid.destinationId) {
         //this.props.putData1(action.PUT_DESTINATION,url,obj);
         this.props.putDataWithFile(action.PUT_DESTINATION,url,bodyFormData);
-    }
-    else {
+        this.setState({ formFile:null, fileInputKey: Date.now() });
+    } else {
         this.props.postDataWithFile(action.POST_DESTINATION,POST_DESTINATION,bodyFormData);
+        this.setState({ formFile:null, fileInputKey: Date.now() });
     }
     this.setState({ validated: false });
-    
+
     }
    handleSubmit(event)
     {
@@ -107,7 +109,7 @@ debugger
     formFile:e.target.files[0],
     //formFilename:e.target.files[0].name
   })
-  
+
 }
 editReacord(id) {
   this.props.getData(action.GET_DESTINATION_BYID, GET_DESTINATION_BYID+id)
@@ -185,12 +187,10 @@ deleteRecord(id)
                                                          <div class="col-sm-9">
                                                          <span class="input-group-append">
                                                          <input
-
-                                                                  class="file-upload-browse btn btn-gradient-primary"
-                                                                    type="file"
-                                                                     
-                                                                    onChange={this.saveFile}/>
-
+                                                              class="file-upload-browse btn btn-gradient-primary"
+                                                              type="file"
+                                                              key={this.state.fileInputKey}
+                                                              onChange={this.saveFile}/>
                                                         </span>
                                                         </div>
                                                     {/* <div class="col-sm-9">
@@ -319,7 +319,7 @@ deleteRecord(id)
           /* gettraveltypebyid:state.goAdvStore.gettraveltypebyid,
           gettraveltype:state.goAdvStore.gettraveltype,*/
        message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData 
+        messageData: state.goAdvStore.messageData
       }
     }
     export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord })(Destination);
