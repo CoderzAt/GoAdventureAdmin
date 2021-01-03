@@ -333,8 +333,7 @@ const mapStateToProps = (state) => {
     getstatebyid:state.goAdvStore.getstatebyid,
     message: state.goAdvStore.message,
     messageData: state.goAdvStore.messageData
-    
-  }
+    }
 }
 export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(State);
    // export default State

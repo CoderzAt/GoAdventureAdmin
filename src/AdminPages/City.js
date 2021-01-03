@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
-import {  POST_CITY,  PUT_CITY,DELETE_CITY, GET_CITY_STATEID} from "../Shared/Services";
+import {  POST_CITY, GET_COUNTRIES,GET_STATE_BYCOUNTRYID,PUT_CITY,DELETE_CITY, GET_CITY_STATEID} from "../Shared/Services";
 import Sidebar from "./Sidebar";
 import { connect } from "react-redux";
 import { getCities,  getStates,  getCitybyid,  getCitybystate,
@@ -37,7 +37,9 @@ class City extends Component {
     } else {
       this.props.getCities();
     }
-    this.props.getStates();
+
+    //this.props.getStates();
+    this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
   }
   getCitybystate(e)
   {
@@ -56,6 +58,7 @@ class City extends Component {
     this.props.deleteRecord(action.DELETE_CITY,DELETE_CITY+id)
     }
   editRecord(id) {
+    this.props.getStates();
     this.props.getCitybyid(id);
     this.setState({ validated: false });
   }
@@ -125,6 +128,10 @@ class City extends Component {
   
   updateCity = (e, paramName) => {
     debugger
+    if(paramName === "countryId")
+    {
+        this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+e.target.value)
+    }
     this.props.updatePropData(paramName, e.target.value, "cityData");
     this.setState({refreshflag: !this.state.refreshflag});
   }
@@ -166,6 +173,20 @@ class City extends Component {
                       <Form className="forms-sample" noValidate validated={this.state.validated}
                         onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                         <div className="row">
+                          <div class="col-md-6">
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label">Country</label>
+                              <div class="col-sm-9">
+                                <select class="form-control travellerMode" value={this.props.cityData.countryId ? this.props.cityData.countryId : "0"}
+                                  onChange={(e) => this.updateCity(e, "countryId")}>
+                                  <option value={0}>Select</option>
+                                  {this.props.countries.map(obj =>
+                                    <option value={obj.countryId}>{obj.countryName}</option>
+                                  )}
+                                </select>
+                              </div>
+                            </div>
+                          </div>
                           <div className="col-md-6">
                             <div className="form-group row">
                               <label className="col-sm-3 col-form-label">State</label>
@@ -327,6 +348,7 @@ const mapStateToProps = (state) => {
   console.log(state.goAdvStore);
   return {
     states: state.goAdvStore.states,
+    countries:state.goAdvStore.countries,
     cities: state.goAdvStore.cities,
     citybyid: state.goAdvStore.citybyid,
     postcity: state.goAdvStore.postcity,
@@ -345,7 +367,8 @@ export default connect(mapStateToProps, {
   updatePropData,
   resetData,
   removeErrormsg,
-  deleteRecord,getData
+  deleteRecord,
+  getData
 })(City);
 
 //export default City

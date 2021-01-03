@@ -45,6 +45,7 @@ class Booking extends Component {
         accessories:[],
         activities:[],
         users:[],
+        hide:"true",
         errors:{}
          }
     }
@@ -351,15 +352,18 @@ class Booking extends Component {
         event.stopPropagation();
     }
     else {
+        this.setState({hide:"true"})
         event.preventDefault();
         this.postBookingData();
     }   
     } 
     handleReset() {
+        this.setState({hide:"true"})
         this.props.resetData(action.RESET_DATA,"getbookingbyid");
             this.setState({ validated: false });
       }
     editReacord(id) {
+        this.setState({hide:""})
         this.props.getData(action.GET_ALL_ACCESSORIES,GET_ALL_ACCESSORIES)
         this.props.getData(action.GET_BOOKING_BYID,GET_BOOKING_BYID+id)
     }
@@ -652,6 +656,26 @@ class Booking extends Component {
                                                     </div>
                                                 </div>
                                             </div>
+                                            
+                                            <div class="col-md-6" hidden={this.state.hide}>
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayConfirmation</label>
+                                                    <div class="col-sm-9">
+                                                        <input  type="number" value={this.props.getbookingbyid.stayconfirmation?this.props.getbookingbyid.stayconfirmation:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"stayconfirmation")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" hidden={this.state.hide}>
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">TravelConfirmation</label>
+                                                    <div class="col-sm-9">
+                                                        <input  type="number" value={this.props.getbookingbyid.travelconfirmation?this.props.getbookingbyid.travelconfirmation:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"travelconfirmation")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
                                         </div>
                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>

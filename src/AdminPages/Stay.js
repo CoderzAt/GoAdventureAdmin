@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY,GET_CITIES,GET_STAYTYPE,DELETE_STAY} from '../Shared/Services'
+import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,GET_STATES,GET_CITY_STATEID,GET_COUNTRIES,GET_STATE_BYCOUNTRYID,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY,GET_CITIES,GET_STAYTYPE,DELETE_STAY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Multiselect } from 'multiselect-react-dropdown';
@@ -55,8 +55,9 @@ class Stay extends Component {
    componentDidMount()
      {
       this.props.getData(action.GET_STAY,GET_STAY)
-      this.props.getData(action.GET_CITIES,GET_CITIES)
+      //this.props.getData(action.GET_CITIES,GET_CITIES)
       this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
+      this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
         /* let staydata= await loadData(getstays)
         this.setState({
            stay:staydata
@@ -118,25 +119,7 @@ class Stay extends Component {
     }
    
     
-    async editReacord(id)
-    { 
-        debugger
-        
-        let url=getstaybyid+id;
-        let editdata=await loadData(url)
-        this.setState({
-            editData:editdata
-        })
-
-       
-        this.setState({
-            stayName:editdata.stayName,
-            rateType:editdata.rateType,
-            stayTypeIds:editdata.stayTypeIds,
-            contactInfo:editdata.contactInfo,
-            locationDetails:editdata.locationDetails
-           })
-    } 
+   
     deleteRecord(id)
     {
         debugger
@@ -230,7 +213,10 @@ class Stay extends Component {
         this.props.resetData(action.RESET_DATA,"getstaybyid");
             this.setState({ validated: false });
       }
-    editReacord(id) {
+   async editReacord(id) {
+       
+        await this.props.getData(action.GET_CITIES,GET_CITIES)
+        await  this.props.getData(action.GET_STATES,GET_STATES)
         this.props.getData(action.GET_STAY,GET_STAY);
         this.props.getData(action.GET_STAY_BYID, GET_STAY_BYID+id)
 
@@ -253,12 +239,23 @@ class Stay extends Component {
     }
 
     updateStay = (e, paramName) => {
+
         debugger
         var value
         if(paramName === "stayTypeIds")
         {
             let data= Array.prototype.map.call(e, function(item) { return item.stayTypeId; }).join(",");
             value=data;
+        }
+        else if(paramName === "countryId")
+        {
+            this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+e.target.value)
+            value=e.target.value;
+        }
+        else if(paramName === "stateId")
+        {
+            this.props.getData(action.GET_CITY_STATEID,GET_CITY_STATEID+e.target.value)
+            value=e.target.value;
         }
         else
         {
@@ -350,6 +347,34 @@ class Stay extends Component {
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaybyid.locationDetails?this.props.getstaybyid.locationDetails:""}  
                                                          class="form-control"  onChange={(e)=>this.updateStay(e,"locationDetails")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 col-form-label">Country</label>
+                                                    <div class="col-sm-9">
+                                                    <select class="form-control travellerMode" value={this.props.getstaybyid.countryId?this.props.getstaybyid.countryId:"0"} 
+                                                    onChange={(e)=>this.updateStay(e,"countryId")}>
+                                                        <option value={0}>Select</option>
+                                                       {this.props.countries.map(obj=>
+                                                      <option value={obj.countryId}>{obj.countryName}</option>
+                                                        )}
+                                                    </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 col-form-label">State</label>
+                                                    <div class="col-sm-9">
+                                                    <select class="form-control travellerMode" value={this.props.getstaybyid.stateId?this.props.getstaybyid.stateId:"0"} 
+                                                    onChange={(e)=>this.updateStay(e,"stateId")}>
+                                                        <option value={0}>Select</option>
+                                                       {this.props.states.map(obj=>
+                                                      <option value={obj.stateId}>{obj.stateName}</option>
+                                                        )}
+                                                    </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -457,6 +482,8 @@ class Stay extends Component {
         return {
         getstay:state.goAdvStore.getstay,
         getstaybyid:state.goAdvStore.getstaybyid,
+        countries:state.goAdvStore.countries,
+        states:state.goAdvStore.states,
         cities:state.goAdvStore.cities,
         getstaytype:state.goAdvStore.getstaytype,
         message: state.goAdvStore.message,

@@ -178,9 +178,10 @@ class PlacestoVisit extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_CITIES, GET_CITIES)
+        this.props.getData(action.GET_STATES,GET_STATES)
         this.props.getData(action.GET_PLACETOVISIT_BYID, GET_PLACETOVISIT_BYID + id)
     }
-    getstates(e) {
+   /*  getstates(e) {
         this.setState({
             countryId: e.target.value
         })
@@ -212,12 +213,12 @@ class PlacestoVisit extends Component {
         }
 
     }
-
+ */
     updatePlacetovisit = (e, paramName) => {
         var value
         if (paramName === "cityId") {
             value = e.target.value
-            if (this.state.stateId === "0") {
+            if (this.props.getplacetovisitbyid.stateId === "0" || this.props.getplacetovisitbyid.stateId=== undefined) {
                 this.setState({
 
                     selectstate: "please select state"
@@ -231,7 +232,19 @@ class PlacestoVisit extends Component {
             let data= Array.prototype.map.call(e, function(item) { return item.activityId; }).join(",");
             value=data;
         }
-        else
+        else if(paramName === "countryId")
+        {
+            this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+e.target.value)
+            value=e.target.value
+            this.props.updatePropAccData("cityId",undefined, "getplacetovisitbyid");
+            
+        }
+        else if(paramName === "stateId")
+        {
+            this.props.getData(action.GET_CITY_STATEID,GET_CITY_STATEID+e.target.value)
+            value=e.target.value
+        }
+       else
         {
             value=e.target.value
         }
@@ -365,14 +378,14 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Country</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.state.countryId ? this.state.countryId : "0"}
-                                                                    onChange={(e) => this.getstates(e)}>
+                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.countryId ? this.props.getplacetovisitbyid.countryId : "0"}
+                                                                    onChange={(e) => this.updatePlacetovisit(e,"countryId")}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.countries.map(obj =>
                                                                         <option value={obj.countryId}>{obj.countryName}</option>
                                                                     )}
                                                                 </select>
-                                                                <div style={{ color: "red" }}>{this.state.selectcountry}</div>
+                                                                {/* <div style={{ color: "red" }}>{this.state.selectcountry}</div> */}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -380,14 +393,14 @@ class PlacestoVisit extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">State</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.state.stateId ? this.state.stateId : "0"}
-                                                                    onChange={(e) => this.getcities(e)}>
+                                                                <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.stateId ? this.props.getplacetovisitbyid.stateId : "0"}
+                                                                    onChange={(e) => this.updatePlacetovisit(e,"stateId")}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.states.map(obj =>
                                                                         <option value={obj.stateId}>{obj.stateName}</option>
                                                                     )}
                                                                 </select>
-                                                                <div style={{ color: "red" }}>{this.state.selectstate}</div>
+                                                               {/*  <div style={{ color: "red" }}>{this.state.selectstate}</div> */}
                                                             </div>
                                                         </div>
                                                     </div>

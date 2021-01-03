@@ -2,7 +2,7 @@ import * as actions from '../actions/actionTypes';
 
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 
-const HandlingError=(payload,paramName,actiontype)=>
+const HandlingError=(payload,paramName,actiontype,updatedata)=>
 { 
     let msgData = {};
     if (payload.statusText === "error") {
@@ -17,6 +17,7 @@ const HandlingError=(payload,paramName,actiontype)=>
     } else {
         msgData.message = [{ message: `${paramName} ${actiontype}successfully `}];
         msgData.isSuccess = true;
+        //updatedata.push(payload)
     }
      
     return msgData;
@@ -602,11 +603,23 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_CITY_BYID}_FULFILLED` : {
+            let stateid=action.payload.data.stateId;
+            let citydata=action.payload.data;
+           
+                let countryId
+                state.states.map(obj=>{
+                    if(obj.stateId === stateid)
+                    {
+                        countryId=obj.countryId
+                    }
+                })
+             citydata["countryId"]=countryId
+
             return{
                 ...state,
                 isCitybyidLoading: false,
                 citybyid: action.payload.data,
-                cityData: action.payload.data,
+                cityData: citydata/* action.payload.data */,
                 message: false
             }
         }
@@ -1440,10 +1453,31 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_PLACETOVISIT_BYID}_FULFILLED` : {
+            let cityid=action.payload.data.cityId;
+            let stateId
+            let placetovisitdata=action.payload.data;
+            state.cities.map(obj=>
+                {
+                    if(obj.cityId === cityid)
+                    {
+                      stateId=obj.stateId;
+                    }
+                })
+
+                let countryId
+                state.states.map(obj=>{
+                    if(obj.stateId === stateId)
+                    {
+                        countryId=obj.countryId
+                    }
+                })
+
+                placetovisitdata["stateId"]=stateId
+                placetovisitdata["countryId"]=countryId
             return{
                 ...state,
                 isgetPlacetovisitbyidLoading: false,
-                getplacetovisitbyid:action.payload.data
+                getplacetovisitbyid:placetovisitdata/* action.payload.data */
             }
         }
         case `${actions.GET_PLACETOVISIT_BYID}_REJECTED` : {
@@ -1459,7 +1493,6 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PLACETOVISIT}_FULFILLED` : {
-           
             let msgData=HandlingError(action.payload,"placetovisit","added")
             return{
                 ...state,
@@ -1926,10 +1959,34 @@ const goAdvReducer = (state =initalState, action) => {
                     }
                 }))
 
+
+                let cityid=action.payload.data.cityId;
+            let stateId
+            let stayinfodata=action.payload.data;
+            state.cities.map(obj=>
+                {
+                    if(obj.cityId === cityid)
+                    {
+                      stateId=obj.stateId;
+                    }
+                })
+
+                let countryId
+                state.states.map(obj=>{
+                    if(obj.stateId === stateId)
+                    {
+                        countryId=obj.countryId
+                    }
+                })
+
+            stayinfodata["stateId"]=stateId
+            stayinfodata["countryId"]=countryId
+
+
             return{
                 ...state,
                 isgetStaybyidLoading: false,
-                getstaybyid: action.payload.data,
+                getstaybyid:stayinfodata /* action.payload.data */,
                 staytypeids:staytypenames1
             }
         }
@@ -2078,6 +2135,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_TRAVELINFO}_FULFILLED` : {
+            debugger
             let msgData = {}, updatedTraveData= state.gettravelinfo, addedObj = action.payload.data;
             console.log("travel update: ", action.payload.obj);
             if(action.payload.statusText === "error") {
