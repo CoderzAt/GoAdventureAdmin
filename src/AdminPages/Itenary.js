@@ -247,7 +247,7 @@ class Itenary extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Day Number</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.getitenarybyid.dayNumber ? this.props.getitenarybyid.dayNumber : ""}
+                                                                <input required type="number" min="0" step="1" oninput="validity.valid||(value='');" value={this.props.getitenarybyid.dayNumber ? this.props.getitenarybyid.dayNumber : ""}
                                                                     class="form-control"
                                                                     onChange={(e) => this.updateItenary(e, "dayNumber")} />
                                                             </div>

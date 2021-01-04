@@ -15,7 +15,8 @@ class Payements extends Component {
         super(props);
         this.state = {
             validated: false,
-            refreshflag: false
+            refreshflag: false,
+            errors:{}
         }
     }
     componentWillMount() {
@@ -177,6 +178,22 @@ class Payements extends Component {
                                                             <div class="col-sm-9">
                                                                 <input required type="number" value={this.props.getpayementbyid.bookingId ? this.props.getpayementbyid.bookingId : ""}
                                                                     class="form-control" onChange={(e) => this.updatePayement(e, "bookingId")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Payment Mode</label>
+
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control" value={this.props.getpayementbyid.paymentMode ? this.props.getpayementbyid.paymentMode : "0"} onChange={(e) => this.updatePayement(e, "paymentMode")}>
+                                                                    <option value={0}>Select</option>
+                                                                    <option value="UPI">UPI</option>
+                                                                    <option value="Credit Card">Credit Card</option>
+                                                                    <option value="Debit Card">Debit Card</option>
+                                                                    <option value="Cash">Cash</option>
+                                                                </select>
+                                                                <div style={{ color: "red" }}>{this.state.errors.paymentMode}</div>
                                                             </div>
                                                         </div>
                                                     </div>

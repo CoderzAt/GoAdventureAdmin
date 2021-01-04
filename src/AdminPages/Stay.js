@@ -44,7 +44,8 @@ class Stay extends Component {
            editData:[],
            cities:[],
            staytypes:[],
-           staytypenames:[]
+           staytypenames:[],
+           errors:{}
            
        }
     }
@@ -311,15 +312,23 @@ class Stay extends Component {
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                             <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Rate</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="text" value={this.props.getstaybyid.rateType?this.props.getstaybyid.rateType:""} 
-                                                        class="form-control" onChange={(e)=>this.updateStay(e,"rateType")}/>
-                                                    </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-3 col-form-label">Rate</label>
+
+                                                <div class="col-sm-9">
+                                                    <select class="form-control" value={this.props.getstaybyid.rateType ? this.props.getstaybyid.rateType : "0"} onChange={(e) => this.updateStay(e, "rateType")}>
+                                                        <option value={0}>Select</option>
+                                                        <option value="5 Star">5 Star</option>
+                                                        <option value="4 Star">4 Star</option>
+                                                        <option value="3 Star">3 Star</option>
+                                                        <option value="2 Star">2 Star</option>
+                                                    </select>
+                                                    <div style={{ color: "red" }}>{this.state.errors.rateType}</div>
                                                 </div>
                                             </div>
+                                        </div>
                                         </div>
                                         <div class="row">
                                            
