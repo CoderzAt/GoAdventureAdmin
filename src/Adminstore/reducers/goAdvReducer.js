@@ -2,8 +2,9 @@ import * as actions from '../actions/actionTypes';
 
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 
-const HandlingError=(payload,paramName,actiontype,updatedata)=>
+const HandlingError=(payload,paramName,actiontype)=>
 { 
+    debugger
     let msgData = {};
     if (payload.statusText === "error") {
         if (payload.error.response.status === 400) {
@@ -87,7 +88,6 @@ const initalState ={
     putplacetype:[],
     getstatebycountry:[],
     deletecountry:[],
-
     poststate:[],
     putstate:[],
     getstatebyid:[],
@@ -223,21 +223,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_PACKAGE}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Package";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Package updated successfully.";
-              msgData.isSuccess = true;
-            }
+            debugger
+            let msgData=HandlingError(action.payload,"package","updated")
             return{
                 ...state,
                 isputPackageLoading: false,
                 putpackage: action.payload.data,
                 message: true,
                 messageData: msgData,
-                packagebyid:{}
+                packagebyid:action.payload.statusText === "error"?state.packagebyid:{}
             }
         }
         case `${actions.PUT_PACKAGE}_REJECTED` : {
@@ -253,21 +247,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PACKAGE}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Package";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Package added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"package","added")
             return{
                 ...state,
                 ispostPackageLoading: false,
                 posttpackage: action.payload.data,
                 message: true,
                 messageData: msgData,
-                packagebyid:{}
+                packagebyid:action.payload.statusText === "error"?state.packagebyid:{}
+
             }
         }
         case `${actions.POST_PACKAGE}_REJECTED` : {
@@ -513,21 +501,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COUNTRY}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Country";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Country added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"country","added")
             return{
                 ...state,
                 ispostCoutryLoading: false,
                 postcountry: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getcountrybyid:{}
+                getcountrybyid: action.payload.statusText === "error"?state. getcountrybyid:{}
+
             }
         }
         case `${actions.POST_COUNTRY}_REJECTED` : {
@@ -543,21 +525,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COUNTRY}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Country";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Country updated successfully.";
-              msgData.isSuccess = true;
-            }
+
+           let msgData=HandlingError(action.payload,"country","updated")
             return{
                 ...state,
                 isputCountryLoading: false,
                 putcountry: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getcountrybyid:{}
+                getcountrybyid: action.payload.statusText === "error"?state.getcountrybyid:{}
             }
         }
         case `${actions.PUT_COUNTRY}_REJECTED` : {
@@ -712,21 +688,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COUPON}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Coupon";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Coupon added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"coupon","added")
             return{
                 ...state,
                 ispostCouponLoading: false,
                 postcoupon: action.payload.data,
                 message: true,
                 messageData: msgData,
-                couponbyid:{}
+                couponbyid:action.payload.statusText === "error"?state.couponbyid:{}
+
             }
         }
         case `${actions.POST_COUPON}_REJECTED` : {
@@ -742,21 +712,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COUPON}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Coupon";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Coupon updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"coupon","updated")
             return{
                 ...state,
                 isputCouponLoading: false,
                 putcoupon: action.payload.data,
                 message: true,
                 messageData: msgData,
-                couponbyid:{}
+                couponbyid:action.payload.statusText === "error"?state.couponbyid:{}
             }
         }
         case `${actions.PUT_COUPON}_REJECTED` : {
@@ -835,21 +798,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ACCESSORIES}_FULFILLED` : {
-            let updateAccessoryData = {accessoriesId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Acessory";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Accessory added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"accessories","added")
             return{
                 ...state,
                 ispostAccessoryLoading: false,
                 postaccesory: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getaccessorybyid: {}
+                getaccessorybyid:action.payload.statusText === "error"?state. getaccessorybyid:{}
 
             }
         }
@@ -866,19 +822,12 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_ACCESSORIES}_FULFILLED` : {
-            let updateAccessaryData = {accessoriesId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Aceessory";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Accessory updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"accessories","updated")
             return{
                 ...state,
                 isputAccessoryLoading: false,
                 putaccessory: action.payload.data,
-                getaccessorybyid:{accessoriesId:0},  //here everything is setting with null thats why data removing
+                getaccessorybyid: action.payload.statusText === "error"?state.getaccessorybyid:{},  //here everything is setting with null thats why data removing
                 message: true,
                 messageData: msgData
 
@@ -935,19 +884,12 @@ const goAdvReducer = (state =initalState, action) => {
                }
         }
         case `${actions.POST_ACTIVITY}_FULFILLED` : {
-            let updateCityData = {activityId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Activity";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Activity added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"activity","added")
             return{
                 ...state,
                 ispostAactivityLoading: false,
                 postactivity: action.payload.data,
-                getactivitybyid:{activityId: 0},
+                getactivitybyid:action.payload.statusText === "error"?state.getactivitybyid:{},
                 message: true,
                 messageData: msgData,
 
@@ -968,21 +910,14 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.PUT_ACTIVITY}_FULFILLED` : {
 
-            let updateCityData = {activityId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the activity";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "activity updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"activity","updated")
             return{
                 ...state,
                 isputAactivityLoading: false,
                 putactivity: action.payload.data,
                 message:true,
                 messageData:msgData,
-                getactivitybyid:{activityId: 0}
+                getactivitybyid:action.payload.statusText === "error"?state.getactivitybyid:{}
             }
         }
         case `${actions.PUT_ACTIVITY}_REJECTED` : {
@@ -1036,21 +971,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COSTCENTRE}_FULFILLED` : {
-            let updateCityData = {}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while posting the costcentre";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "costcentre posted successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"costcentre","added")
             return{
                 ...state,
                 ispostCoscentreLoading: false,
                 postcostcentre: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getcostcentrebyid: {}
+                getcostcentrebyid: action.payload.statusText === "error"?state.getcostcentrebyid:{}
             }
         }
         case `${actions.POST_COSTCENTRE}_REJECTED` : {
@@ -1066,21 +994,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COSTCENTRE}_FULFILLED` : {
-            let updateCityData = {}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the costcentre";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "costcentre upadated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"costcentre","updated")
             return{
                 ...state,
                 isputCoscentreLoading: false,
                 putcostcentre: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getcostcentrebyid: {}
+                getcostcentrebyid: action.payload.statusText === "error"?state.getcostcentrebyid:{}
             }
         }
         case `${actions.PUT_COSTCENTRE}_REJECTED` : {
@@ -1153,21 +1074,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_EVENTLEVEL}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Eventlevel";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Eventlevel added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"eventlevel","added")
             return{
                 ...state,
                 ispostEventlevelLoading: false,
                 posteventlevel: action.payload.data,
                 message: true,
                 messageData: msgData,
-                geteventlevelbyid:{}
+                geteventlevelbyid:action.payload.statusText === "error"?state.packagebyid:{}
             }
         }
         case `${actions.POST_EVENTLEVEL}_REJECTED` : {
@@ -1183,21 +1097,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_EVENTLEVEL}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Eventlevel";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Eventlevel updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"eventlevel","updated")
             return{
                 ...state,
                 isputEventlevelLoading: false,
                 puteventlevel: action.payload.data,
                 message: true,
                 messageData: msgData,
-                geteventlevelbyid:{}
+                geteventlevelbyid:action.payload.statusText === "error"?state.geteventlevelbyid:{}
             }
         }
         case `${actions.PUT_EVENTLEVEL}_REJECTED` : {
@@ -1270,21 +1177,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_EVENTTYPE}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while Adding the Eventtype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Eventtype added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"eventtype","added")
             return{
                 ...state,
                 ispostEventtypeLoading: false,
                 posteventtype: action.payload.data,
                 message: true,
                 messageData: msgData,
-                geteventtypebyid:{}
+                geteventtypebyid:action.payload.statusText === "error"?state.geteventtypebyid:{}
             }
         }
         case `${actions.POST_EVENTTYPE}_REJECTED` : {
@@ -1300,21 +1200,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_EVENTTYPE}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Eventtype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Eventtype updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"eventtype","updated")
             return{
                 ...state,
                 isputEventtypeLoading: false,
                 puteventtype: action.payload.data,
                 message: true,
                 messageData: msgData,
-                geteventtypebyid:{}
+                geteventtypebyid:action.payload.statusText === "error"?state.geteventtypebyid:{}
             }
         }
         case `${actions.PUT_EVENTTYPE}_REJECTED` : {
@@ -1373,22 +1266,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ITENARY}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the itenary";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "itenary added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"itenary","added")
             return{
                 ...state,
                 ispostItenaryLoading: false,
                 postitenary:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getitenarybyid:{}
-            }
+                getitenarybyid:action.payload.statusText === "error"?state.getitenarybyid:{}
+      }
         }
         case `${actions.POST_ITENARY}_REJECTED` : {
             return{
@@ -1403,21 +1289,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_ITENARY}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Itenary";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Itenary updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"itenary","updated")
             return{
                 ...state,
                 isputItenaryLoading: false,
                 putitenary:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getitenarybyid:{}
+                getitenarybyid:action.payload.statusText === "error"?state.getitenarybyid:{}
 
             }
         }
@@ -1598,22 +1477,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_DESTINATION}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Destination";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Destination added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"destination","added")
             return{
                 ...state,
                 ispostDestinationLoading: false,
                 postdestination:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getdestinationbyid:{}
-
+                getdestinationbyid:action.payload.statusText === "error"?state.getdestinationbyid:{}
             }
         }
         case `${actions.POST_DESTINATION}_REJECTED` : {
@@ -1629,21 +1500,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_DESTINATION}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while added the Destination";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Destination updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"destination","updated")
             return{
                 ...state,
                 isputDestinationLoading: false,
                 putdestination:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getdestinationbyid:{}
+                getdestinationbyid:action.payload.statusText === "error"?state.getdestinationbyid:{}
 
             }
         }
@@ -1660,23 +1524,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PLACETYPE}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Placetype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Placetype added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"placetype","added")
             return{
                 ...state,
                 ispostPlacetypeLoading: false,
                 postplacetype:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getplacetypebyid:{}
-
-            }
+                getplacetypebyid:action.payload.statusText === "error"?state.getplacetypebyid:{}
+           }
         }
         case `${actions.POST_PLACETYPE}_REJECTED` : {
             return{
@@ -1692,21 +1548,15 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.PUT_PLACETYPE}_FULFILLED` : {
             debugger
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Placetype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Placetype Updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"placetype","updated")
             return{
                 ...state,
                 isputPlacetypeLoading: false,
                 putplacetype:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getplacetypebyid:{}
+                getplacetypebyid:action.payload.statusText === "error"?state.getplacetypebyid:{}
+
             }
         }
         case `${actions.POST_PLACETYPE}_REJECTED` : {
@@ -1798,14 +1648,8 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STATE}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the State";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "State added successfully.";
-              msgData.isSuccess = true;
-            }
+            
+            let msgData=HandlingError(action.payload,"state","added")
 
             return{
                 ...state,
@@ -1813,7 +1657,8 @@ const goAdvReducer = (state =initalState, action) => {
                 poststate: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getstatebyid:{}
+                getstatebyid:action.payload.statusText === "error"?state. getstatebyid:{}
+                
             }
         }
         case `${actions.POST_STATE}_REJECTED` : {
@@ -1831,21 +1676,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STATE}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating State";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "State updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"placetovisit","added")
             return{
                 ...state,
                 isputStateLoading: false,
                 putstate: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getstatebyid:{}
+                getstatebyid:action.payload.statusText === "error"?state.getstatebyid:{}
+
             }
         }
         case `${actions.PUT_STATE}_REJECTED` : {
@@ -1880,21 +1719,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STAY}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Stay";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Stay updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"stay","updated")
             return{
                 ...state,
                 isputStayLoading: false,
                 putstay: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getstaybyid:{},
+                getstaybyid:action.payload.statusText === "error"?state.getstaybyid:{},
                 staytypeids:{}
 
             }
@@ -1912,22 +1744,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STAY}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Stay";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Stay added successfully.";
-              msgData.isSuccess = true;
-            }
-
-            return{
+            let msgData=HandlingError(action.payload,"stay","added")
+              return{
                 ...state,
                 ispostStayLoading: false,
                 poststay: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getstaybyid:{},
+                getstaybyid:action.payload.statusText === "error"?state.getstaybyid:{},
                 staytypeids:{}
             }
         }
@@ -2060,21 +1884,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STAYTYPE}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the staytype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "staytype added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"staytype","added")
             return{
                 ...state,
                 ispostStaytypeLoading: false,
                 poststaytype: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getstaytypebyid:{}
+                getstaytypebyid:action.payload.statusText === "error"?state.getstaytypebyid:{}
             }
         }
         case `${actions.POST_STAYTYPE}_REJECTED` : {
@@ -2230,21 +2047,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STAYTYPE}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the staytype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "staytype updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"staytype","updated")
             return{
                 ...state,
                 isputStaytypeLoading: false,
                 putstaytype: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getstaytypebyid:{}
+                getstaytypebyid:action.payload.statusText === "error"?state.getstaytypebyid:{}
              }
         }
         case `${actions.PUT_STAYTYPE}_REJECTED` : {
@@ -2318,21 +2128,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_TRAVELTYPE}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the traveltype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "traveltype updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"traveltype","updated")
             return{
                 ...state,
                 isputTraveltypeLoading: false,
                 puttraveltype: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettraveltypebyid:{}
+                gettraveltypebyid:action.payload.statusText === "error"?state.gettraveltypebyid:{}
              }
         }
         case `${actions.POST_TRAVELTYPE}_PENDING` : {
@@ -2342,21 +2145,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_TRAVELTYPE}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the traveltype";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "traveltype added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"traveltype","added")
             return{
                 ...state,
                 ispostTraveltypeLoading: false,
                 puttraveltype: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettraveltypebyid:{}
+                gettraveltypebyid:action.payload.statusText === "error"?state.gettraveltypebyid:{}
              }
         }
         case `${actions.POST_TRAVELTYPE}_REJECTED` : {
@@ -2391,21 +2187,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_TRIP}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the trip";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "trip added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"trip","added")
+
             return{
                 ...state,
                 ispostTripLoading: false,
                 postrip: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettripbyid:{},
+                gettripbyid:action.payload.statusText === "error"?state.gettripbyid:{},
                 traveltypeids:{},
                 staytypeids:{}
              }
@@ -2423,21 +2213,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_TRIP}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the trip";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "trip updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"trip","updated")
             return{
                 ...state,
                 ispostTripLoading: false,
                 putrip: action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettripbyid:{},
+                gettripbyid:action.payload.statusText === "error"?state.gettripbyid:{},
                 traveltypeids:{},
                 staytypeids:{}
              }
@@ -2468,6 +2251,7 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetBookingLoading: false,
             }
         }
+        
 
         case `${actions.GET_BOOKING_BYID}_PENDING` : {
             return{
@@ -2520,21 +2304,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_BOOKING}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Booking";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "booking updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"booking","updated")
             return{
                 ...state,
                 isputBookingLoading: false,
                 putbooking: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getbookingbyid:{},
+                getbookingbyid:action.payload.statusText === "error"?state.getbookingbyid:{},
                 accessoryids:{},
                 activityids:{}
              }
@@ -2552,21 +2329,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_BOOKING}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Booking";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "booking updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"booking","added")
             return{
                 ...state,
                 ispostBookingLoading: false,
                 postbooking: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getbookingbyid:{},
+                getbookingbyid:action.payload.statusText === "error"?state.getbookingbyid:{},
                 accessoryids:{},
                 activityids:{}
              }
@@ -2643,21 +2413,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_USER}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the user";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "user updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"user","updated")
             return{
                 ...state,
                 isputUserLoading: false,
                 putuser: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getuserbyid:{}
+                getuserbyid:action.payload.statusText === "error"?state.getuserbyid:{}
              }
         }
         case `${actions.PUT_USER}_REJECTED` : {
@@ -2673,21 +2436,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_USER}_FULFILLED` : {
-            let msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the user";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "user added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"user","added")
             return{
                 ...state,
                 ispostUserLoading: false,
                 postuser: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getuserbyid:{}
+                getuserbyid:action.payload.statusText === "error"?state.getuserbyid:{}
              }
         }
         case `${actions.POST_USER}_REJECTED` : {
@@ -3415,24 +3171,18 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_PLACEACTIVITIES}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the placeactivities";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "placeactivities updated successfully.";
-              return{
+            let msgData=HandlingError(action.payload,"placeactivity","updated")              
+            return{
                 ...state,
 
                 isputPlaceactivitiesLoading: false,
                 putplaceactivities:action.payload.data,
                 message: true,
                 messageData: msgData,
-                getplaceactivitiesbyid:{}
+                getplaceactivitiesbyid:action.payload.statusText === "error"?state. getplaceactivitiesbyid:{}
 
-            }
+          }
         }
-    }
        case `${actions.GET_TRIP_COSTCENTER}_PENDING` : {
             return{
                 ...state,
@@ -3459,19 +3209,12 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_TRIP_COSTCENTER}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Tripcostcentre";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Tripcostcentre updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"placetovisit","updated ")
             return{
                 ...state,
                 isputTripcostcenterLoading: true,
                 puttripcostcenter:action.payload.data,
-                gettripcostcenterbyid:{},
+                gettripcostcenterbyid:action.payload.statusText === "error"?state.gettripcostcenterbyid:{},
                 message: true,
                 messageData: msgData,
             }
@@ -3490,20 +3233,14 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_PLACEACTIVITIES}_FULFILLED` : {
-            let updateCityData = {countryId: 0}, msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the placeactivities";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "placeactivities added successfully.";
-            }
-            return{
+            let msgData=HandlingError(action.payload,"placeactivities","added")
+             return{
                 ...state,
                 ispostPlaceactivitiesLoading: true,
                 postplaceactivities: action.payload.data,
                 message: true,
                 messageData: msgData,
-                getplaceactivitiesbyid:{}
+                getplaceactivitiesbyid:action.payload.statusText === "error"?state.getplaceactivitiesbyid:{}
             }
         }
         case `${actions.PUT_TRIP_COSTCENTER}_REJECTED` : {
@@ -3519,24 +3256,15 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_TRIP_COSTCENTER}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Tripcostcentre";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Tripcostcentre added successfully.";
-
-              msgData.isSuccess = true;
-            }
+          let msgData=HandlingError(action.payload,"tripcostcentre","added")
             return{
                 ...state,
                 isposttripcostcentreLoading: false,
                 posttripcostcenter:action.payload.data,
                 message: true,
                 messageData: msgData,
-                gettripcostcenterbyid:{}
-
-            }
+                gettripcostcenterbyid:action.payload.statusText === "error"?state.gettripcostcenterbyid:{}
+             }
         }
         case `${actions.POST_PLACEACTIVITIES}_REJECTED` : {
             return{
@@ -3697,19 +3425,12 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_ACCESSORIES_BOOKING}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Accessory Booking";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Accessory Booking updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"accessorybooking","updated")
             return{
                 ...state,
                 isputAccessoryBookingLoading: true,
                 putaccessorybooking:action.payload.data,
-                accessorybookingbyid:{},
+                accessorybookingbyid:action.payload.statusText === "error"?state.accessorybookingbyid:{},
                 message: true,
                 messageData: msgData,
             }
@@ -3727,23 +3448,14 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_ACCESSORIES_BOOKING}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Accessory Booking";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Accessory Booking added successfully.";
-
-              msgData.isSuccess = true;
-            }
-            return{
+            let msgData=HandlingError(action.payload,"acessaryboking","added")
+              return{
                 ...state,
                 ispostAccessoryBookingLoading: false,
                 postaccessorybooking:action.payload.data,
                 message: true,
                 messageData: msgData,
-                accessorybookingbyid:{}
-
+                accessorybookingbyid:action.payload.statusText === "error"?state.accessorybookingbyid:{}
             }
         }
         case `${actions.POST_ACCESSORIES_BOOKING}_REJECTED` : {
@@ -3892,6 +3604,27 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 isgetpayementsLoading: false,
             }
         }
+
+        case `${actions.PAYMENTS_BYBOOKING}_PENDING` : {
+            return{
+                ...state,
+                isgetpayementsLoading: true
+            }
+        }
+        case `${actions.PAYMENTS_BYBOOKING}_FULFILLED` : {
+            return{
+                ...state,
+                isgetpayementsLoading: false,
+                getpayement: action.payload.data
+            }
+        }
+        case `${actions.PAYMENTS_BYBOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isgetpayementsLoading: false,
+            }
+        }
+
         case `${actions.GET_PAYMENT_BYID}_PENDING` : {
             return{
                 ...state,
@@ -3937,19 +3670,12 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_PAYMENT}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while updating the Payement Booking";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Payement Booking updated successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"payementdetalis","updated")
             return{
                 ...state,
                 isputpayementLoading: true,
                 putpayement:action.payload.data,
-                getpayementbyid:{},
+                getpayementbyid:action.payload.statusText === "error"?state.getpayementbyid:{},
                 message: true,
                 messageData: msgData,
             }
@@ -3967,19 +3693,12 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_PAYMENT}_FULFILLED` : {
-            let  msgData = {};
-            if(action.payload.statusText === "error") {
-              msgData.message = "Error while adding the Payement Booking";
-              msgData.isSuccess = false;
-            } else {
-              msgData.message = "Payement Booking added successfully.";
-              msgData.isSuccess = true;
-            }
+            let msgData=HandlingError(action.payload,"payments","added")
             return{
                 ...state,
                 ispostpayementLoading: true,
                 postpayement:action.payload.data,
-                getpayementbyid:{},
+                getpayementbyid:action.payload.statusText === "error"?state.getpayementbyid:{},
                 message: true,
                 messageData: msgData,
             }

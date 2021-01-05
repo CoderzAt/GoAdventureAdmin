@@ -7,6 +7,7 @@ import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
 import { getData, postData1, putData1, updatePropAccData, resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
 var condition = false;
 class Coupon extends Component {
@@ -93,11 +94,7 @@ class Coupon extends Component {
                         <div class="content-wrapper">
 
                             <div class="page-header">
-                                <h3 class="page-title">
-                                    <span class="page-title-icon bg-gradient-primary text-white mr-2">
-                                        <i class="mdi mdi-wan"></i>
-                                    </span> Coupon
-                        </h3>
+                            <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                 {this.props.message ?
                                     <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
                                     null

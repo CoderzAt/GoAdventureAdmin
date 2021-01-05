@@ -9,6 +9,8 @@ import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
 import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
+
 
 
 
@@ -250,6 +252,7 @@ class Stay extends Component {
         else if(paramName === "countryId")
         {
             this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+e.target.value)
+            this.props.updatePropAccData("cityId",undefined,"getstaybyid");
             value=e.target.value;
         }
         else if(paramName === "stateId")
@@ -281,10 +284,7 @@ class Stay extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Stay Info
                         </h3>
-                        {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                    null
-                        }
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -371,7 +371,7 @@ class Stay extends Component {
                                                     <select class="form-control travellerMode" value={this.props.getstaybyid.stateId?this.props.getstaybyid.stateId:"0"} 
                                                     onChange={(e)=>this.updateStay(e,"stateId")}>
                                                         <option value={0}>Select</option>
-                                                       {this.props.states.map(obj=>
+                                                       {(this.props.getstaybyid.countryId?this.props.states:[]).map(obj=>
                                                       <option value={obj.stateId}>{obj.stateName}</option>
                                                         )}
                                                     </select>
@@ -385,7 +385,7 @@ class Stay extends Component {
                                                     <select class="form-control travellerMode"  value={this.props.getstaybyid.cityId?this.props.getstaybyid.cityId:"0"} 
                                                     onChange={(e)=>this.updateStay(e,"cityId")}>
                                                         <option value={0}>Select</option>
-                                                       {this.props.cities.map(obj=>
+                                                       {(this.props.getstaybyid.stateId?this.props.cities:[]).map(obj=>
                                                       <option value={obj.cityId}>{obj.cityName}</option>
                                                         )}
                                                     </select>

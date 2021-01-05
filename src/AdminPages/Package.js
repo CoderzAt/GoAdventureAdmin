@@ -9,6 +9,7 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import { connect } from 'react-redux';
 import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
 
 class Package extends Component {
@@ -162,10 +163,8 @@ class Package extends Component {
                                 <i class="mdi mdi-home-map-marker"></i>
                             </span>Package
                         </h3>
-                            {this.props.message ?
-                                <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                null
-                            }
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+
                             <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -276,7 +275,7 @@ class Package extends Component {
                                                     <label for="duration"
                                                         class="col-sm-3 col-form-label">Places</label>
                                                     <div class="col-sm-9">
-                                                    <Multiselect   options={this.props. placetovisitbydestination} displayValue={"placeName"} 
+                                                    <Multiselect   options={this.props.packagebyid.destinationId?this.props. placetovisitbydestination:[]} displayValue={"placeName"} 
                                                     class="form-control" onSelect={(e)=>this.updatePackage(e,"placetovisitIds")} onRemove={(e)=>this.updatePackage(e,"placetovisitIds")} />
                                                     </div>
                                                 </div>

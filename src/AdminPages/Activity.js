@@ -7,6 +7,7 @@ import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
 import {getActivity,getData,putData1,postData1,resetData,updatePropAccData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
 var condition=false;
 class Activity extends Component {
@@ -98,10 +99,7 @@ updateActivity = (e, paramName) => {
                                 <i class="mdi mdi-wan"></i>
                             </span>Activity
                         </h3>
-                        {this.props.message?
-                        <div className={`message-wrapper ${this.props.messageData.isSuccess? "success":"error"}`}>{this.props.messageData.message}</div> :
-                        null
-                        }
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>

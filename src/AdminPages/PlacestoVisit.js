@@ -111,7 +111,7 @@ class PlacestoVisit extends Component {
             description: this.props.getplacetovisitbyid.description,
             placeTypeId: parseInt(this.props.getplacetovisitbyid.placeTypeId),
             cityId: parseInt(this.props.getplacetovisitbyid.cityId),
-           // activityIds:this.props.getplacetovisitbyid.activityIds,
+             activityIds:this.props.getplacetovisitbyid.activityIds,
             isDeleted: this.props.getplacetovisitbyid.placeId ? false : true
         };
         let url = PUT_PLACETOVISIT + this.props.getplacetovisitbyid.placeId;
@@ -396,7 +396,7 @@ class PlacestoVisit extends Component {
                                                                 <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.stateId ? this.props.getplacetovisitbyid.stateId : "0"}
                                                                     onChange={(e) => this.updatePlacetovisit(e,"stateId")}>
                                                                     <option value={0}>Select</option>
-                                                                    {this.props.states.map(obj =>
+                                                                    {(this.props.getplacetovisitbyid.countryId?this.props.states:[]).map(obj =>
                                                                         <option value={obj.stateId}>{obj.stateName}</option>
                                                                     )}
                                                                 </select>
@@ -411,8 +411,9 @@ class PlacestoVisit extends Component {
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0"}
                                                                     onChange={(e) => this.updatePlacetovisit(e, "cityId")}>
+                                                                        {console.log("stateid",this.props.getplacetovisitbyid.stateId)}
                                                                     <option value={0}>Select</option>
-                                                                    {this.props.cities.map(obj =>
+                                                                    {(this.props.getplacetovisitbyid.stateId?this.props.cities:[]).map(obj =>
                                                                         <option value={obj.cityId}>{obj.cityName}</option>
                                                                     )}
                                                                 </select>

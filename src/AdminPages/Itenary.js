@@ -16,6 +16,9 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw, ContentState, convertFromHTML,convertFromRaw } from 'draft-js';
 import { Multiselect } from 'multiselect-react-dropdown';
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
+
+
 
 
 
@@ -208,10 +211,7 @@ class Itenary extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span> Itenary
                         </h3>
-                                {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                    null
-                                }
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>

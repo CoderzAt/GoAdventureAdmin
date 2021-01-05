@@ -8,6 +8,9 @@ import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
 import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
+
+
 
 class Eventlevel extends Component {
     constructor(props) {
@@ -83,7 +86,7 @@ class Eventlevel extends Component {
         this.setState({ refreshflag: !this.state.refreshflag });
     }
     render() {
-        this.props.getData(action.GET_EVENTLEVEL, GET_EVENTLEVEL)
+        //this.props.getData(action.GET_EVENTLEVEL, GET_EVENTLEVEL)
         return (
             <div>
                 <div class="container-fluid page-body-wrapper" style={{ paddingTop: 80 }}>
@@ -98,10 +101,7 @@ class Eventlevel extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span>Eventlevel
                                 </h3>
-                                {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                    null
-                                }
+                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>

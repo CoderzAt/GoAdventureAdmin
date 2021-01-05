@@ -10,6 +10,9 @@ import { connect } from 'react-redux';
 import { getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import { Multiselect } from 'multiselect-react-dropdown';
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import { Link} from "react-router-dom";
+
 
 
 
@@ -57,13 +60,13 @@ class Booking extends Component {
       componentDidMount()
      {
          debugger
-       //this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
+       this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
        this.props.getData(action.GET_BOOKING,GET_BOOKING);
        this.props.getData(action.GET_TRIP,GET_TRIP)
        this.props.getData(action.GET_ALL_ACCESSORIES,GET_ALL_ACCESSORIES) 
        this.props.getData(action.GET_AVCTIVITIES,GET_ACTIVITIES)
        this.props.getData(action.GET_USER,GET_USER)
-       //this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
+       this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
         }   //there is an issue with api
         refresh(e)
      {
@@ -249,7 +252,8 @@ class Booking extends Component {
             cancellationDate:this.state.cancellationDate,
             cancellationFee:parseInt(this.state.cancellationFee),
             isAmountReturned:this.state.isAmountReturned,
-            returnedAmount:parseInt(this.state.returnedAmount)
+            returnedAmount:parseInt(this.state.returnedAmount),
+            
            }
 
         let editurl=bookingupdateapi+this.state.editData.bookingId;
@@ -328,6 +332,8 @@ class Booking extends Component {
         cancellationFee:parseInt(this.props.getbookingbyid.cancellationFee),
         isAmountReturned:JSON.parse(this.props.getbookingbyid.isAmountReturned),
         returnedAmount:parseInt(this.props.getbookingbyid.returnedAmount),
+        confirmedStayIds:this.props.getbookingbyid.confirmedStayIds,
+        confirmedTravelIds:this.props.getbookingbyid.confirmedTravelIds,
         isDeleted:this.props.getbookingbyid.bookingId?false:true
                };
         
@@ -377,12 +383,20 @@ class Booking extends Component {
         {
             value= Array.prototype.map.call(e, function(item) { return item.activityId;}).join(",");   
         }
+        else if(paramName === "confirmedStayIds")
+        {
+            value= Array.prototype.map.call(e, function(item) { return item.stayTypeId;}).join(",");
+        }
+        else if(paramName === "confirmedTravelIds")
+        {
+            value= Array.prototype.map.call(e, function(item) { return item.travelTypeId;}).join(",");
+        }
         else if(paramName === "tripId")
         {
-            if(e.target.value !== "0"){
+           
             this.props.getData(action.GET_STAYTYPE_BYTRIPID,GET_STAYTYPE_BYTRIPID+e.target.value)
             this.props.getData(action.GET_TRAVELTYPE_BYTRIPID,GET_TRAVELTYPE_BYTRIPID+e.target.value)
-            }
+        
             value=e.target.value
         }
         else
@@ -413,10 +427,7 @@ class Booking extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span>Booking
                         </h3>
-                        {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                    null
-                        }
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -467,7 +478,7 @@ class Booking extends Component {
                                                     <select class="form-control travellerMode" value={this.props.getbookingbyid.travelTypeId?this.props.getbookingbyid.travelTypeId:"0"} 
                                                     onChange={(e)=>this.updateBooking(e,"travelTypeId")}>
                                                          <option value={0}>Select</option>
-                                                        {this.props.gettraveltype.map(obj=>
+                                                        {(this.props.getbookingbyid.tripId?this.props.gettraveltype:[]).map(obj=>
                                                          <option value={obj.travelTypeId}>{obj.travelTypeName}</option>
                                                           )}
                                                    </select>
@@ -482,7 +493,7 @@ class Booking extends Component {
                                                     <select class="form-control travellerMode" value={this.props.getbookingbyid.stayTypeId?this.props.getbookingbyid.stayTypeId:"0"} 
                                                     onChange={(e)=>this.updateBooking(e,"stayTypeId")}>
                                                          <option value={0}>Select</option>
-                                                        {this.props.getstaytype.map(obj=>
+                                                        {(this.props.getbookingbyid.tripId?this.props.getstaytype:[]).map(obj=>
                                                          <option value={obj.stayTypeId}>{obj.stayTypeName}</option>
                                                           )}
                                                    </select>
@@ -661,8 +672,10 @@ class Booking extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayConfirmation</label>
                                                     <div class="col-sm-9">
-                                                        <input  type="number" value={this.props.getbookingbyid.stayconfirmation?this.props.getbookingbyid.stayconfirmation:""} 
-                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"stayconfirmation")}/>
+                                                    <Multiselect /* selectedValues={this.props.staytypeids} */  options={this.props.getstaytype} displayValue={"stayTypeName"} 
+                                                    class="form-control" onSelect={(e)=>this.updateBooking(e,"confirmedStayIds")} onRemove={(e)=>this.updateBooking(e,"confirmedStayIds")} />
+                                                       {/*  <input  type="number" value={this.props.getbookingbyid.stayconfirmation?this.props.getbookingbyid.stayconfirmation:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"stayconfirmation")}/> */}
                                                     </div>
                                                 </div>
                                             </div>
@@ -670,8 +683,10 @@ class Booking extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">TravelConfirmation</label>
                                                     <div class="col-sm-9">
-                                                        <input  type="number" value={this.props.getbookingbyid.travelconfirmation?this.props.getbookingbyid.travelconfirmation:""} 
-                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"travelconfirmation")}/>
+                                                    <Multiselect /* selectedValues={this.props.staytypeids} */  options={this.props.gettraveltype} displayValue={"travelTypeName"} 
+                                                    class="form-control" onSelect={(e)=>this.updateBooking(e,"confirmedTravelIds")} onRemove={(e)=>this.updateBooking(e,"confirmedTravelIds")} />
+                                                        {/* <input  type="number" value={this.props.getbookingbyid.travelconfirmation?this.props.getbookingbyid.travelconfirmation:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"travelconfirmation")}/> */}
                                                     </div>
                                                 </div>
                                             </div>
@@ -721,6 +736,9 @@ class Booking extends Component {
                                           </button>
                                           <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}}  value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
+                                          </button>
+                                          <button type="button"  value={row.value} class="btn btn-icon">
+                                          <Link  to={`/admin/payments/${row.value}`}>Payments</Link>
                                           </button>
                                       </div>)
                                  }

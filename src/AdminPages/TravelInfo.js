@@ -92,6 +92,7 @@ class TravelInfo extends Component {
         if(paramName === "countryId")
         {
             this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+e.target.value)
+            this.props.updatePropAccData("cityId",undefined,"gettravelinfobyid");
         }
         else if(paramName === "stateId")
         {
@@ -234,7 +235,7 @@ class TravelInfo extends Component {
                                                     <select class="form-control travellerMode" value={this.props.gettravelinfobyid.stateId?this.props.gettravelinfobyid.stateId:"0"} 
                                                     onChange={(e)=>this.updateTravelinfo(e,"stateId")}>
                                                         <option value={0}>Select</option>
-                                                       {this.props.states.map(obj=>
+                                                       {(this.props.gettravelinfobyid.countryId?this.props.states:[]).map(obj=>
                                                       <option value={obj.stateId}>{obj.stateName}</option>
                                                         )}
                                                     </select>
@@ -248,7 +249,7 @@ class TravelInfo extends Component {
                                                     <select class="form-control travellerMode" value={this.props.gettravelinfobyid.cityId?this.props.gettravelinfobyid.cityId:"0"} 
                                                     onChange={(e)=>this.updateTravelinfo(e,"cityId")}>
                                                         <option value={0}>Select</option>
-                                                       {this.props.cities.map(obj=>
+                                                       {(this.props.gettravelinfobyid.stateId?this.props.cities:[]).map(obj=>
                                                       <option value={obj.cityId}>{obj.cityName}</option>
                                                         )}
                                                     </select>

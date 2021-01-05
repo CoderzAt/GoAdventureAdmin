@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import { Link } from "react-router-dom";
-import { PUT_PAYMENT, POST_PAYMENT, GET_PAYMENT_BYID, GET_PAYMENTS,DELETE_PAYMENT,GET_USER, GET_USER_BYID, PUT_USER, POST_USER } from '../Shared/Services'
+import { PUT_PAYMENT, GET_BOOKING,POST_PAYMENT, GET_PAYMENT_BYID, GET_PAYMENTS,DELETE_PAYMENT,GET_USER,PAYMENTS_BYBOOKING ,GET_USER_BYID, PUT_USER, POST_USER } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -9,7 +9,9 @@ import { connect } from 'react-redux';
 import dateFormat from 'dateformat';
 import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
+import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
+var valuefromurl
 class Payements extends Component {
     constructor(props) {
         super(props);
@@ -23,9 +25,18 @@ class Payements extends Component {
     }
 
     componentDidMount() {
-        this.props.getData(action.GET_PAYMENTS, GET_PAYMENTS)
-        
-    }
+        if (this.props.match.params.bid != undefined) {
+            valuefromurl = parseInt(this.props.match.params.bid);
+           let url =PAYMENTS_BYBOOKING + valuefromurl;
+            //countryfromurl=valuefromurl;
+            this.props.getData(action.PAYMENTS_BYBOOKING, url)
+          }
+          else 
+          {
+            this.props.getData(action.GET_PAYMENTS, GET_PAYMENTS)
+          }
+          this.props.getData(action.GET_BOOKING,GET_BOOKING)
+}
     refresh(e) {
         e.preventDefault();
         this.props.getData(action.GET_PAYMENTS, GET_PAYMENTS)
@@ -86,6 +97,12 @@ class Payements extends Component {
         this.props.updatePropAccData(paramName, e.target.value, "getpayementbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
+    paymentsbybookig(e)
+    {
+        valuefromurl=e.target.value
+        this.props.getData(action.PAYMENTS_BYBOOKING,PAYMENTS_BYBOOKING+e.target.value)
+    }
+
     render() {
         
         return (
@@ -102,10 +119,8 @@ class Payements extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span>Payment
                                 </h3>
-                                {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                    null
-                                }
+                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -205,6 +220,19 @@ class Payements extends Component {
                                     <div class="card">
                                         <div class="card-body">
                                             <h4 class="card-title">Payments<button onClick={(e) => this.refresh(e)} style={{ backgroundColor: "transparent", border: "none" }}><i class={"mdi mdi-refresh"}></i></button></h4>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 col-form-label">Booking</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control travellerMode" value={valuefromurl?valuefromurl : "0"} onChange={(e) => this.paymentsbybookig(e)}>
+                                                            <option value={0}>Select</option>
+                                                            {this.props.getbooking.map(obj =>
+                                                                <option value={obj.bookingId}>{obj.emailId}</option>
+                                                            )}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="table-responsive"></div>
                                             <ReactTable columns={[
 
@@ -288,6 +316,7 @@ const mapStateToProps = (state) => {
     return {
         getpayement: state.goAdvStore.getpayement,
         getpayementbyid: state.goAdvStore.getpayementbyid,
+        getbooking:state.goAdvStore.getbooking,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData
 

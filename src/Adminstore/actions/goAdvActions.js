@@ -146,7 +146,7 @@ export const postDataWithFile =(actiontype,url,obj)=> {
           })
           .catch(error=>
             {
-               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
+               return { error:error, statusText: "error"};
             })
       });
    }
@@ -166,7 +166,7 @@ export const putDataWithFile =(actiontype,url,obj)=> {
           })
           .catch(error=>
             {
-               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error"};
+               return { error:error, statusText: "error"};
             })
       });
    }

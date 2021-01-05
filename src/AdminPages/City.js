@@ -38,7 +38,7 @@ class City extends Component {
       this.props.getCities();
     }
 
-    //this.props.getStates();
+    this.props.getStates();
     this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
   }
   getCitybystate(e)
@@ -194,7 +194,7 @@ class City extends Component {
                                 <select className="form-control travellerMode"  value={this.props.cityData.stateId? this.props.cityData.stateId : "0"}
                                   onChange={(e) => this.updateCity(e, "stateId")}>
                                   <option value={0}>Select</option>
-                                  {this.props.states.map((obj) => (
+                                  {(this.props.cityData.countryId?this.props.states:[]).map((obj) => (
                                     <option value={obj.stateId}>
                                       {obj.stateName}
                                     </option>
