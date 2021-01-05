@@ -129,7 +129,7 @@ class Coupon extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Percentage</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.couponbyid.couponPercentage ? this.props.couponbyid.couponPercentage : ""}
+                                                                <input type="number" value={this.props.couponbyid.couponPercentage ? this.props.couponbyid.couponPercentage : ""}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "couponPercentage")} />
                                                             </div>
                                                         </div>
@@ -140,7 +140,7 @@ class Coupon extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Value</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.couponbyid.couponValue ? this.props.couponbyid.couponValue : ""}
+                                                                <input type="number" value={this.props.couponbyid.couponValue ? this.props.couponbyid.couponValue : ""}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "couponValue")} />
                                                             </div>
                                                         </div>

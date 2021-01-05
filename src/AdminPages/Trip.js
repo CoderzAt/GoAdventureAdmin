@@ -68,9 +68,12 @@ class Trip extends Component {
             strengthLimit: parseInt(this.props.gettripbyid.strengthLimit),
             travelTypeIds: this.props.gettripbyid.travelTypeIds ? this.props.gettripbyid.travelTypeIds : "",
             basePrice: parseInt(this.props.gettripbyid.basePrice),
+            deposit: parseInt(this.props.gettripbyid.deposit),
             maxPrice: parseInt(this.props.gettripbyid.maxPrice),
             stayTypeIds: this.props.gettripbyid.stayTypeIds ? this.props.gettripbyid.stayTypeIds : "",
             couponCode: this.props.gettripbyid.couponCode,
+            couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount,
+            couponExpiryDate: dateFormat(this.props.gettripbyid.couponExpiryDate,"yyyy-mm-dd"),
             isDeleted: this.props.gettripbyid.tripId ? false : true
 
         };
@@ -198,7 +201,7 @@ class Trip extends Component {
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">StartDate</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Start Date</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="date" value={this.props.gettripbyid.startDate ? this.props.gettripbyid.startDate : "" }
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "startDate")} />
@@ -207,7 +210,7 @@ class Trip extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">EndDate</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">End Date</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="date" value={this.props.gettripbyid.endDate ? this.props.gettripbyid.endDate : ""}
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "endDate")} />
@@ -216,7 +219,7 @@ class Trip extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">TreckLeader Id</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Treck Leader</label>
                                                             <div class="col-sm-9">
                                                                 <select  value={this.props.gettripbyid.treckLeaderId ? this.props.gettripbyid.treckLeaderId : "0" }
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "treckLeaderId")} >
@@ -240,7 +243,7 @@ class Trip extends Component {
 
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">TravelType Ids</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Travel Types</label>
                                                             <div class="col-sm-9">
                                                                 <Multiselect selectedValues={this.props.traveltypeids} options={this.props.gettraveltype} displayValue={"travelTypeName"}
                                                                     onSelect={(e) => this.updateTrip(e, "travelTypeIds")} onRemove={(e) => this.updateTrip(e, "travelTypeIds")} />
@@ -249,10 +252,28 @@ class Trip extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">BasePrice</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Stay Types</label>
+                                                            <div class="col-sm-9">
+                                                                <Multiselect selectedValues={this.props.staytypeids} options={this.props.getstaytype}
+                                                                    displayValue={"stayTypeName"} onSelect={(e) => this.updateTrip(e,"stayTypeIds")} onRemove={(e) => this.updateTrip(e,"stayTypeIds")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Base Price</label>
                                                             <div class="col-sm-9">
                                                                 <input required type="number" value={this.props.gettripbyid.basePrice ? this.props.gettripbyid.basePrice : ""}
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "basePrice")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Deposit (Per Person)</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="number" value={this.props.gettripbyid.deposit ? this.props.gettripbyid.deposit : ""}
+                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "deposit")} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -266,31 +287,41 @@ class Trip extends Component {
                                             </div> */}
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">MaxPrice</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Max Price</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.gettripbyid.maxPrice ? this.props.gettripbyid.maxPrice : ""}
+                                                                <input  type="number" value={this.props.gettripbyid.maxPrice ? this.props.gettripbyid.maxPrice : ""}
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "maxPrice")} />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">CouponCode</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Coupon Code</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.gettripbyid.couponCode ? this.props.gettripbyid.couponCode : ""}
+                                                                <input  type="text" value={this.props.gettripbyid.couponCode ? this.props.gettripbyid.couponCode : ""}
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "couponCode")} />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayTypeIds</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Coupon Capacity</label>
                                                             <div class="col-sm-9">
-                                                                <Multiselect selectedValues={this.props.staytypeids} options={this.props.getstaytype}
-                                                                    displayValue={"stayTypeName"} onSelect={(e) => this.updateTrip(e,"stayTypeIds")} onRemove={(e) => this.updateTrip(e,"stayTypeIds")} />
+                                                                <input  type="number" value={this.props.gettripbyid.couponUserUsageCount ? this.props.gettripbyid.couponUserUsageCount : ""}
+                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "couponUserUsageCount")} />
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Coupon Expiry Date</label>
+                                                            <div class="col-sm-9">
+                                                                <input  type="date" value={this.props.gettripbyid.couponExpiryDate ? this.props.gettripbyid.couponExpiryDate : ""}
+                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "couponExpiryDate")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
                                                     {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">City</label>
