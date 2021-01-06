@@ -189,7 +189,8 @@ const initalState ={
     putpayement:[],
     deletepayment:[],
     placetovisitfunctionaldata:[],
-    getbookingtotatamount:""
+    getbookingtotatamount:"",
+    logindata:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);

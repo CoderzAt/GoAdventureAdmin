@@ -79,6 +79,7 @@ class Package extends Component {
         bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
         bodyFormData.set('thingsTobring', this.props.packagebyid.thingsTobring);
         bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
+        bodyFormData.set('eventLevel', this.props.packagebyid.eventLevel);
         bodyFormData.set('IsDeleted',  false );
         bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
         let url = PUT_PACKAGE+ this.props.packagebyid.packageId;
@@ -197,7 +198,7 @@ class Package extends Component {
                                                     <label for="type"
                                                         class="col-sm-3 col-form-label">EventLevel</label>
                                                     <div class="col-sm-9">
-                                                        <select type="text" value={this.props.packagebyid.eventLevel?this.props.packagebyid.eventLevel:""} class="form-control" id="type" required
+                                                        <select type="text" value={this.props.packagebyid.eventLevel?this.props.packagebyid.eventLevel:"0"} class="form-control" id="type" required
                                                          onChange={(e)=>this.updatePackage(e,"eventLevel")}>
                                                             <option value={0}>Select</option>
                                                         {this.props.geteventlevel.map(obj=>(
@@ -212,7 +213,7 @@ class Package extends Component {
                                                     <label for="type"
                                                         class="col-sm-3 col-form-label">Type</label>
                                                     <div class="col-sm-9">
-                                                        <select type="text" value={this.props.packagebyid.packageType?this.props.packagebyid.packageType:""} class="form-control" id="type" required
+                                                        <select type="text" value={this.props.packagebyid.packageType?this.props.packagebyid.packageType:"0"} class="form-control" id="type" required
                                                          onChange={(e)=>this.updatePackage(e,"packageType")}>
                                                             <option value={0}>Select</option>
                                                         {this.props.geteventtype.map(obj=>(

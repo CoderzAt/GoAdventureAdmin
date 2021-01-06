@@ -8,7 +8,7 @@ import FacebookLogin from 'react-facebook-login';
 
 import {GET_TOKEN} from '../Shared/Services'
 import { connect } from 'react-redux';
-import {googleLogin} from '../Adminstore/actions/goAdvActions'
+import { updatePropAccData} from '../Adminstore/actions/goAdvActions';
 import * as actions from '../Adminstore/actions/actionTypes';
 
 
@@ -23,7 +23,8 @@ export class Login extends Component {
     tokenvalue1:null,
     validated:false,
     error:null,
-    redirect:false
+    redirect:false,
+    refreshflag:false
   }
 }
 /* async handlesignup(event)
@@ -86,7 +87,7 @@ this.setState({
 
 } */
 
-responseGoogle=(response)=>
+/* responseGoogle=(response)=>
 {
   debugger
  console.log("response",response);
@@ -132,6 +133,44 @@ responseFacebook=(response)=>
 
 
 }
+ */
+login()
+{
+  let obj={
+    emailId:this.props.logindata.eamil,
+    firstName:"rajendar",
+    lastName:"prathapagiri",
+    dateOfBirth:"1998-05-04",
+    userTypeId: 1,
+    password:this.props.logindata.password
+  }
+
+  console.log("data",obj)
+
+}
+handleSignin(event)
+{
+  event.preventDefault();
+  
+  const form = event.currentTarget;
+  console.log("checkform",form.checkValidity())
+  if(form.checkValidity() === false)
+  {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  else
+  {
+    this.login()
+  }
+
+}
+updateLogindata(e,paramName)
+{
+  debugger
+  this.props.updatePropAccData(paramName, e.target.value,"logindata");
+  this.setState({ refreshflag: !this.state.refreshflag });
+}
 
 render() {
       return (
@@ -140,25 +179,26 @@ render() {
         <div className="d-flex align-items-center auth px-0">
           <div className="row w-100 mx-0">
             <div className="col-lg-4 mx-auto">
-              <div style={{backgroundColor:"rgba(6, 10, 2, 0.8)"}} className=" text-left py-5 px-4 px-sm-5">
+              <div /* style={{backgroundColor:"rgba(6, 10, 2, 0.8)"}} */ className=" text-left py-5 px-4 px-sm-5">
                 <div className="brand-logo">
                 
                   
                 </div>
-                <h3 style={{color:"rgba(205, 6, 0, 0.5)"}}>Hello! let's get started</h3>
+                <h3 style={{color:"blue"}}>Hello! let's get started</h3>
                 <h5 style={{color:"green"}}>Sign in to continue.</h5>
-               {/*  <Form noValidate validated={this.state.validated} onSubmit={(e) => this.handlesignup(e)}  >
+                <Form noValidate validated={this.state.validated} onSubmit={(e) => this.handlesignup(e)}  >
                   <Form.Group className="d-flex search-field">
-                    <Form.Control required type="email" placeholder="Email" onChange={(e)=>this.setState({email:e.target.value})}  className="form-control" />
+                    <input required type="email" value={this.props.logindata.email?this.props.logindata.email:""} placeholder="Email" onChange={(e)=>this.updateLogindata(e,"email") } className="form-control" />
                   </Form.Group>
                   <Form.Group className="d-flex search-field">
-                    <Form.Control required type="password" placeholder="Password" onChange={(e)=>this.setState({password:e.target.value})}  className="form-control"/>
-              </Form.Group> */}
+                    <Form.Control required type="password" placeholder="Password" onChange={(e)=>this.updateLogindata(e,"password") }  className="form-control"/>
+              </Form.Group> 
+              </Form>
               <div style={{color:"red"}}>
               {this.state.error}
               </div> 
-              <button type="submit" className="btn btn-primary mr-2">SIGN IN</button>
-                   <div className="my-2 d-flex justify-content-between align-items-center">
+              <button type="submit" className="btn btn-primary mr-2" onClick={(e)=>this.handleSignin(e)}>SIGN IN</button>
+                   {/* <div className="my-2 d-flex justify-content-between align-items-center">
                     <div className="form-check">
                       <label className="form-check-label text-muted">
                         <input type="checkbox" className="form-check-input"/>
@@ -167,28 +207,10 @@ render() {
                       </label>
                     </div>
                     <a href="!#" onClick={event => event.preventDefault()} className="text-primary">Forgot password?</a>
-                  </div>
-
-                  <div>
-                   <GoogleLogin
-                   clientId="761668078268-q6et7konnshoqgvh3dr2bn23ssu3p32p.apps.googleusercontent.com"
-                   buttonText="Login"
-                   onSuccess={this.responseGoogle}
-                   onFailure={this.responseGoogle}
-                   cookiePolicy={'single_host_origin'}
-                   />
-                 </div>
-                 <div>
-                 <FacebookLogin
-                   appId="1091809371275006"
-                   autoLoad={true}
-                   fields="name,email,picture"
-                  /*  onClick={this.componentClicked} */
-                   callback={this.responseFacebook} />
-                   </div>
-                <div style={{color:"rgba(265, 6, 0, 0.5)"}} className="text-center mt-4 font-weight-light">
+                  </div> */}
+                 {/*  <div style={{color:"rgba(265, 6, 0, 0.5)"}} className="text-center mt-4 font-weight-light">
                     Don't have an account? <Link to="/regester" className="text-primary">Create</Link>
-                  </div>
+                  </div> */}
                   
                {/*  </Form> */}
               </div>
@@ -201,10 +223,10 @@ render() {
 }
 
 const mapStateToProps = (state) => {
-    return {
-      googletoken:state.goAdvStore. googletoken
-    }
+  return {
+     
+      logindata:state.goAdvStore.logindata
   }
+}
+export default connect(mapStateToProps, {updatePropAccData })(Login);
 
-export default connect(mapStateToProps, {googleLogin})(Login)
-//export default Login
