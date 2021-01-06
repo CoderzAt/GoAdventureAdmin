@@ -99,6 +99,8 @@ export const GET_BOOKING_BYID="GET_BOOKING_BYID";
 export const POST_BOOKING="POST_BOOKING";
 export const PUT_BOOKING="PUT_BOOKING";
 export const DELETE_BOOKING="DELETE_BOOKING";
+export const GET_AMOUNT_BYBOOKING="GET_AMOUNT_BYBOOKING";
+
 //user
 export const GET_USER="GET_USER";
 export const POST_USER="POST_USER";

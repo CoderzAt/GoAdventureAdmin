@@ -40,9 +40,9 @@ class Coupon extends Component {
         debugger
         const obj = {
             couponId: this.props.couponbyid.couponId?this.props.couponbyid.couponId : 0,
-            couponValue: this.props.couponbyid.couponValue * 1,
+            couponValue:this.props.couponbyid.couponValue!==null?this.props.couponbyid.couponValue * 1:null,
             couponCode: this.props.couponbyid.couponCode,
-            couponPercentage: this.props.couponbyid.couponPercentage * 1,
+            couponPercentage:this.props.couponbyid.couponPercentage!==null?this.props.couponbyid.couponPercentage * 1:null,
             isDeleted:this.props.couponbyid.couponId?false:true
         };
         let url = PUT_COUPON + this.props.couponbyid.couponId;
@@ -77,6 +77,21 @@ class Coupon extends Component {
         this.setState({ validated: false });
     }
     updateCoupon = (e, paramName) => {
+        debugger
+        if(e.target.value=== "percentage")
+        {
+            this.props.updatePropAccData("hidepercentage","", "couponbyid");
+            this.props.updatePropAccData("hidevalue","true","couponbyid")
+            this.props.updatePropAccData("couponValue",null, "couponbyid");
+
+        }
+        else if(e.target.value === "value")
+        {
+            this.props.updatePropAccData("hidepercentage","true", "couponbyid");
+            this.props.updatePropAccData("hidevalue","","couponbyid")
+            this.props.updatePropAccData("couponPercentage",null, "couponbyid");
+
+        }
 
         this.props.updatePropAccData(paramName, e.target.value, "couponbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
@@ -92,13 +107,13 @@ class Coupon extends Component {
 
                     <div class="main-panel">
                         <div class="content-wrapper">
-
-                            <div class="page-header">
-                            <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
-                                {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                    null
-                                }
+                        <div class="page-header">
+                        <h3 class="page-title">
+                            <span class="page-title-icon bg-gradient-primary text-white mr-2">
+                                <i class="mdi mdi-wan"></i>
+                            </span>Coupon
+                        </h3>
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -127,6 +142,20 @@ class Coupon extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">ParcentageOrValue</label>
+                                                            <div class="col-sm-9">
+                                                                <select value={this.props.couponbyid.parcentageorvalue ? this.props.couponbyid.parcentageorvalue : "0"}
+                                                                    class="form-control" onChange={(e) => this.updateCoupon(e, "parcentageorvalue")} >
+                                                                    <option value={0}>Slect</option>
+                                                                    <option value="percentage">Percentage</option>
+                                                                    <option value="value">Value</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6" hidden={this.props.couponbyid.hidepercentage ===""?this.props.couponbyid.hidepercentage:'true'}>
+                                                        <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Percentage</label>
                                                             <div class="col-sm-9">
                                                                 <input type="number" value={this.props.couponbyid.couponPercentage ? this.props.couponbyid.couponPercentage : ""}
@@ -134,9 +163,8 @@ class Coupon extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                               
+                                                    <div class="col-md-6" hidden={this.props.couponbyid.hidevalue===""?this.props.couponbyid.hidevalue:"true"}>
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Value</label>
                                                             <div class="col-sm-9">

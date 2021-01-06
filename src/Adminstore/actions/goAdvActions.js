@@ -57,7 +57,8 @@ export const getData =(actiontype,url)=>
                return response;
             })
             .catch(error => {
-               return { data: { errors: [error.toString()], isSuccess: false }, statusText: "error" };
+               debugger
+               return   { error:error, statusText: "error"};
             })
       });
    }

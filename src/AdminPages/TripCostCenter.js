@@ -60,7 +60,7 @@ class TripCostCenter extends Component {
         const obj = {
             tripCostcenterId: this.props.gettripcostcenterbyid.tripCostcenterId? this.props.gettripcostcenterbyid.tripCostcenterId: 0,
             tripId: parseInt(this.props.gettripcostcenterbyid.tripId),
-            itenaryId: parseInt(this.props.gettripcostcenterbyid.itenaryId),
+            //itenaryId: parseInt(this.props.gettripcostcenterbyid.itenaryId),
             price: parseInt(this.props.gettripcostcenterbyid.price),
             travelTypeId:parseInt(this.props.gettripcostcenterbyid.travelTypeId),
             stayTypeId:parseInt(this.props.gettripcostcenterbyid.stayTypeId),
@@ -115,7 +115,7 @@ class TripCostCenter extends Component {
     updateTrip = (e, paramName) => 
     {
         var value
-        if(e.target.value === "staytype")
+        if(e.target.value === "Stay")
         {
            /*  this.setState({
                 hidestaytype:"",
@@ -124,7 +124,7 @@ class TripCostCenter extends Component {
             this.props.updatePropAccData("hidetraveltype","true", "gettripcostcenterbyid");
             this.props.updatePropAccData("hidestaytype","", "gettripcostcenterbyid");
         }
-        else if(e.target.value === "traveltype")
+        else if(e.target.value === "Travel")
         {
             /* this.setState({
                 hidestaytype:"true",
@@ -217,8 +217,8 @@ class TripCostCenter extends Component {
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.type? this.props.gettripcostcenterbyid.type : "0"} onChange={(e) => this.updateTrip(e,"type")}>
                                                                     <option value={0}>Select</option>
-                                                                   <option value="staytype">StayType</option>
-                                                                   <option value="traveltype">TravelType</option>
+                                                                   <option value="Stay">StayType</option>
+                                                                   <option value="Travel">TravelType</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -250,7 +250,7 @@ class TripCostCenter extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                  {/*   <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Itenary</label>
                                                             <div class="col-sm-9">
@@ -262,7 +262,7 @@ class TripCostCenter extends Component {
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Price</label>

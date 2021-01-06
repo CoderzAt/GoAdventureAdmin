@@ -7,6 +7,8 @@ class Displayerrormsg extends Component {
        }
     }
  render() {
+    /*  debugger
+     console.log("props",this.props) */
 	    return (
             <div>
             {this.props.message ?

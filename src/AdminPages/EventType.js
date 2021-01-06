@@ -139,7 +139,7 @@ class EventType extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Status</label>
                                                     <div class="col-sm-9">
@@ -152,7 +152,7 @@ class EventType extends Component {
                                                     </select>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </div>
                                         
                                         <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>

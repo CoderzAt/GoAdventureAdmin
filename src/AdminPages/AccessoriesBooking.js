@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import { Link} from "react-router-dom";
 
 
 
@@ -393,7 +394,11 @@ class AccessoriesBooking extends Component {
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
-                                                    Header: '',
+                                                    Header:"Actions",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    },
                                                     accessor: d => d.accessoryBookingId,
                                                     maxWidth: 300,
                                                     Cell: row => (
@@ -403,6 +408,9 @@ class AccessoriesBooking extends Component {
                                                             </button>
                                                             <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                 <i class="mdi mdi-delete-outline"></i>
+                                                            </button>
+                                                            <button type="button" value={row.value} class="btn btn-icon">
+                                                                <Link to={`/admin/payments/Acessory/${row.value}`}>Payments</Link>
                                                             </button>
                                                         </div>)
                                                 }

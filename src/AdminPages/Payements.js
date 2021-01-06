@@ -26,13 +26,24 @@ class Payements extends Component {
     }
 
     componentDidMount() {
+        debugger
         if (this.props.match.params.bid != undefined) {
+
             valuefromurl = parseInt(this.props.match.params.bid);
-           let url =PAYMENTS_BYBOOKING + valuefromurl;
+            let apiurl=`GetPaymentsByBookigIdType?bookingId=${valuefromurl}&Type=${this.props.match.params.type}`
+          // let url =PAYMENTS_BYBOOKING + valuefromurl;
             //countryfromurl=valuefromurl;
-            this.props.getData(action.PAYMENTS_BYBOOKING, url)
-          }
-          else 
+            this.props.getData(action.PAYMENTS_BYBOOKING,apiurl)
+            if(this.props.match.params.type === "Trip")
+            {
+                this.props.getData(action.GET_BOOKING,GET_BOOKING)
+            }
+            else if(this.props.match.params.type === "Accessory")
+            {
+                /* this.props.getData(action.GET_A,GET_BOOKING) */
+            }
+            }
+         else 
           {
             this.props.getData(action.GET_PAYMENTS, GET_PAYMENTS)
           }
@@ -59,6 +70,8 @@ class Payements extends Component {
             referenceNumber:this.props.getpayementbyid.referenceNumber,
             bookingId:this.props.getpayementbyid.bookingId*1,
             paymentConfirmedDate:dateFormat(this.props.getpayementbyid.paymentConfirmedDate,'yyyy-mm-dd'),
+            paymentMode:this.props.getpayementbyid.paymentMode,
+            type:this.props.getpayementbyid.type,
             isDeleted: this.props.getpayementbyid.paymentId ? false : true
         };
         let url = PUT_PAYMENT+this.props.getpayementbyid.paymentId ;
@@ -139,6 +152,15 @@ class Payements extends Component {
                                             <h4 class="card-title">Payment</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
+                                                <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">BookingId</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="number" value={this.props.getpayementbyid.bookingId ? this.props.getpayementbyid.bookingId : ""}
+                                                                    class="form-control" onChange={(e) => this.updatePayement(e, "bookingId")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Amount</label>
@@ -146,6 +168,19 @@ class Payements extends Component {
                                                                 <input required type="number" value={this.props.getpayementbyid.amount ? this.props.getpayementbyid.amount : ""}
                                                                     class="form-control" onChange={(e) => this.updatePayement(e, "amount")} />
 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Type</label>
+                                                            <div class="col-sm-9">
+                                                                <select  value={this.props.getpayementbyid.type ? this.props.getpayementbyid.type : "0"}
+                                                                    class="form-control" onChange={(e) => this.updatePayement(e, "type")} >
+                                                                 <option value={0}>Select</option>
+                                                                 <option value="Trip">Trip</option>
+                                                                 <option value="Accessory">Accessory</option>
+                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -186,17 +221,7 @@ class Payements extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">BookingId</label>
-                                                            <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.getpayementbyid.bookingId ? this.props.getpayementbyid.bookingId : ""}
-                                                                    class="form-control" onChange={(e) => this.updatePayement(e, "bookingId")} />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
+                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Payment Mode</label>
 

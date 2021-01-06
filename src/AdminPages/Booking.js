@@ -13,11 +13,6 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Link} from "react-router-dom";
 
-
-
-
-
-
 var condition=false;
 class Booking extends Component {
     constructor(props) {
@@ -317,8 +312,8 @@ class Booking extends Component {
         tripId:parseInt(this.props.getbookingbyid.tripId),
         noOfUsers:parseInt(this.props.getbookingbyid.noOfUsers),
         travelTypeId:parseInt(this.props.getbookingbyid.travelTypeId),
-        accessories:this.props.getbookingbyid.accessories,
-        activityIds:this.props.getbookingbyid.activityIds,
+       // accessories:this.props.getbookingbyid.accessories,
+        //activityIds:this.props.getbookingbyid.activityIds,
         userId:parseInt(this.props.getbookingbyid.userId),
         primaryContact:this.props.getbookingbyid.primaryContact,
         secondaryContact:this.props.getbookingbyid.secondaryContact,
@@ -332,8 +327,8 @@ class Booking extends Component {
         cancellationFee:parseInt(this.props.getbookingbyid.cancellationFee),
         isAmountReturned:JSON.parse(this.props.getbookingbyid.isAmountReturned),
         returnedAmount:parseInt(this.props.getbookingbyid.returnedAmount),
-        confirmedStayIds:this.props.getbookingbyid.confirmedStayIds,
-        confirmedTravelIds:this.props.getbookingbyid.confirmedTravelIds,
+        confirmedStayIds:this.props.getbookingbyid.confirmedStayIds?this.props.getbookingbyid.confirmedStayIds:"",
+        confirmedTravelIds:this.props.getbookingbyid.confirmedTravelIds?this.props.getbookingbyid.confirmedTravelIds:"",
         isDeleted:this.props.getbookingbyid.bookingId?false:true
                };
         
@@ -402,6 +397,13 @@ class Booking extends Component {
         else
         {
              value=e.target.value
+        }
+        debugger
+        if(this.props.getbookingbyid.stayTypeId && this.props.getbookingbyid.travelTypeId && this.props.getbookingbyid.noOfUsers && this.props.getbookingbyid.tripId)
+        {
+           
+            let amounturl=`GetAmountByBookings?StayTypeId=${this.props.getbookingbyid.stayTypeId }&TravelTypeId=${this.props.getbookingbyid.travelTypeId}&NoOfPersons=${this.props.getbookingbyid.noOfUsers }&TripId=${this.props.getbookingbyid.tripId}&couponCode=${this.props.getbookingbyid.appliedCoupon?this.props.getbookingbyid.appliedCoupon:""}`
+            this.props.getData(action.GET_AMOUNT_BYBOOKING,amounturl)
         }
         this.props.updatePropAccData(paramName,value,"getbookingbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
@@ -538,6 +540,15 @@ class Booking extends Component {
                                                    </div>
                                                 </div>
                                                 </div> */} {/* its important dont remove, keep it as coment we need it in future */}
+                                                 <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Applied Coupon</label>
+                                                    <div class="col-sm-9">
+                                                        <input required type="text"  value={this.props.getbookingbyid.appliedCoupon?this.props.getbookingbyid.appliedCoupon:""} 
+                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"appliedCoupon")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
                                                 
                                                 <div class="col-md-6">
                                                 <div class="form-group row">
@@ -608,15 +619,7 @@ class Booking extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Applied Coupon</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="text"  value={this.props.getbookingbyid.appliedCoupon?this.props.getbookingbyid.appliedCoupon:""} 
-                                                        class="form-control"  onChange={(e)=>this.updateBooking(e,"appliedCoupon")}/>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                           
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Booking Date</label>
@@ -738,7 +741,7 @@ class Booking extends Component {
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
                                           <button type="button"  value={row.value} class="btn btn-icon">
-                                          <Link  to={`/admin/payments/${row.value}`}>Payments</Link>
+                                          <Link  to={`/admin/payments/Trip/${row.value}`}>Payments</Link>
                                           </button>
                                       </div>)
                                  }
@@ -767,11 +770,12 @@ class Booking extends Component {
             getbooking:state.goAdvStore.getbooking,
             getuser:state.goAdvStore.getuser,
            message: state.goAdvStore.message,
-          messageData: state.goAdvStore.messageData,
+           messageData: state.goAdvStore.messageData,
           getbookingbyid:state.goAdvStore.getbookingbyid,
           accessoryids:state.goAdvStore.accessoryids,
           activityids:state.goAdvStore.activityids,
-          getstaytype:state.goAdvStore.getstaytype
+          getstaytype:state.goAdvStore.getstaytype,
+          getbookingtotatamount:state.goAdvStore.getbookingtotatamount
         }
       }
       export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Booking);

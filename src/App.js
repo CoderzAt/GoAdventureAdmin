@@ -88,10 +88,11 @@ class App extends Component {
             <Route exact path="/admin/tripcostcenter" component={TripCostCenter}/>
             <Route exact path="/admin/tripcostcenter/:tid" component={TripCostCenter}/>
             <Route exact path="/admin/accessorybooking" component={AccessoriesBooking}/>
+            <Route exact path="/admin/accessorybooking/:type/:bid" component={AccessoriesBooking}/>
             {/* <Route exact path="/admin/accessorybooking/:id" component={AccessoriesBooking}/>*/}
             <Route exact path="/admin/user" component={User}/>
             <Route exact path="/admin/payments" component={Payements}/>
-            <Route exact path="/admin/payments/:bid" component={Payements}/>
+            <Route exact path="/admin/payments/:type/:bid" component={Payements}/>
             <Route exact path="/admin/login-1" component={Login}/>
             </Switch>
 

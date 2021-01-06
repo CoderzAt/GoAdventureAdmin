@@ -161,7 +161,7 @@ class TravelInfo extends Component {
                                                          class="form-control" onChange={(e)=>this.updateTravelinfo(e,"traveltype")}>
                                                              <option value={0}>Select</option>
                                                              {this.props.gettraveltype.map(obj=>(
-                                                                 <option value={obj.travelTypeName}>{obj.travelTypeId}</option>
+                                                                 <option value={obj.travelTypeId}>{obj.travelTypeName}</option>
                                                              ))}
                                                         </select>
                                                     </div>

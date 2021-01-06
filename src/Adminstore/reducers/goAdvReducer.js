@@ -25,6 +25,21 @@ const HandlingError=(payload,paramName,actiontype)=>
 
 }
 
+const deleteMsgHandling=(payload,param)=>
+{  
+    let msgData = {};
+    if(payload.statusText === "error") {
+    msgData.message = [{message:`Error while delting the ${param}`}];
+    msgData.isSuccess = false;
+    } else {
+    msgData.message =  [{message:`${param} deleted successfully.`}];
+    msgData.isSuccess = true;
+    }
+
+    return msgData;
+
+}
+
 const initalState ={
     isPkgLoading: false,
     packages:[],
@@ -173,11 +188,38 @@ const initalState ={
     postpayement:[],
     putpayement:[],
     deletepayment:[],
-    placetovisitfunctionaldata:[]
+    placetovisitfunctionaldata:[],
+    getbookingtotatamount:""
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
     switch(action.type) {
+        case `${actions.GET_AMOUNT_BYBOOKING}_PENDING` : {
+            return{
+                ...state,
+                isBTMLoading: true
+            }
+        }
+        case `${actions.GET_AMOUNT_BYBOOKING}_FULFILLED` : {
+            let msgData=HandlingError(action.payload,"totalamount","fetched")
+            debugger
+            let totalamount=state.getbookingbyid
+             totalamount["totalAmount"]=action.payload.data;
+            return{
+                ...state,
+                isBTMLoading: false,
+                getbookingtotatamount: action.payload.data,
+                getbookingbyid:totalamount,
+                message: true,
+                messageData: msgData,
+            }
+        }
+        case `${actions.GET_AMOUNT_BYBOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isBTMLoading: false,
+            }
+        }
         case `${actions.GET_ALL_PACKAGES}_PENDING` : {
             return{
                 ...state,
@@ -550,14 +592,8 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.DELETE_COUNTRY}_FULFILLED` : {
             debugger
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Country";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Country deleted successfully.";
-                msgData.isSuccess = true;
-              }
+           let msgData =deleteMsgHandling(action.payload,"Country")
+           
             return{
                 ...state,
                 isdeleteCountryLoading: false,
@@ -669,10 +705,24 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_COUPON_BYID}_FULFILLED` : {
+            var couponbyid1= action.payload.data
+            if(action.payload.data.couponValue === null)
+            {
+                couponbyid1["parcentageorvalue"]="percentage"
+                couponbyid1["hidepercentage"]=""
+                couponbyid1["hidevalue"]="true"
+
+            }
+            else if(action.payload.data.couponPercentage === null)
+            {
+                couponbyid1["parcentageorvalue"]="value"
+                couponbyid1["hidepercentage"]="true"
+                couponbyid1["hidevalue"]=""
+            }
             return{
                 ...state,
                 isCouponLoading: false,
-                couponbyid: action.payload.data
+                couponbyid:couponbyid1
             }
         }
         case `${actions.GET_COUPON_BYID}_REJECTED` : {
@@ -2261,7 +2311,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.GET_BOOKING_BYID}_FULFILLED` : {
             debugger
-            let accessoryids=(action.payload.data.accessories).split(",");
+           /*  let accessoryids=(action.payload.data.accessories).split(",");
             var accessorynames1=[]
 
             accessoryids.map(obj=>
@@ -2281,13 +2331,13 @@ const goAdvReducer = (state =initalState, action) => {
                         {
                             activitynames1.push({activityName:item.activityName,activityId:item.activityId}); //reusability
                         }
-                    }))
+                    })) */
             return{
                 ...state,
                 isgetBookingbyidLoading: false,
                 getbookingbyid: action.payload.data,
-                accessoryids:accessorynames1,
-                activityids:activitynames1
+                /* accessoryids:accessorynames1,
+                activityids:activitynames1 */
             }
         }
         case `${actions.GET_BOOKING_BYID}_REJECTED` : {
@@ -2459,10 +2509,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.DELETE_USER}_FULFILLED` : {
+            let msgData =deleteMsgHandling(action.payload,"User")
             return{
                 ...state,
                 isdeleteUserLoading: false,
-                deleteuser: action.payload.data
+                deleteuser: action.payload.data,
+                message: true,
+                messageData: msgData
+
             }
         }
         case `${actions.DELETE_USER}_REJECTED` : {
@@ -2533,14 +2587,8 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.DELETE_PACKAGE}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Package";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Package deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Package")
+
             return{
                 ...state,
                 isdeletePackageLoading: false,
@@ -2563,14 +2611,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_ACCESSORIES}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Accessory";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Accessory deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Accessory")
             return{
                 ...state,
                 isdeleteAccessoryLoading: false,
@@ -2593,14 +2634,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_TRIP}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Trip";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Trip deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Trip")
+
             return{
                 ...state,
                 isdeleteTripLoading: false,
@@ -2623,14 +2658,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_ITENARY}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Itenary";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Itenary deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Itenary")
+
             return{
                 ...state,
                 isdeleteItenaryLoading: false,
@@ -2653,14 +2682,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_ACTIVITY}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Activity";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Activity deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Activity")
+
             return{
                 ...state,
                 isdeleteActivityLoading: false,
@@ -2683,14 +2706,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_COSTCENTRE}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the CostCenter";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "CostCenter deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Costcentre")
+
             return{
                 ...state,
                 isdeleteCostCenterLoading: false,
@@ -2714,14 +2731,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_CITY}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the City";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "City deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"City")
+
             return{
                 ...state,
                 isdeleteCityLoading: false,
@@ -2744,14 +2755,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_COUPON}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Coupon";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Coupon deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Coupon")
+
             return{
                 ...state,
                 isdeleteCouponLoading: false,
@@ -2774,14 +2779,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_EVENTLEVEL}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the EventLevel";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "EventLevel deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Eventlevel")
+
             return{
                 ...state,
                 isdeleteEventLevelLoading: false,
@@ -2804,14 +2803,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_STATUS}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Status";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Status deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Status")
+
             return{
                 ...state,
                 isdeleteStatusLoading: false,
@@ -2834,14 +2827,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_EVENTTYPE}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the EventType";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "EventType deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Eventtype")
+
             return{
                 ...state,
                 isdeleteEventTypeLoading: false,
@@ -2864,14 +2851,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_PLACETOVISIT}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the PlaceToVisit";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "PlaceToVisit deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Placetovisit")
+
             return{
                 ...state,
                 isdeletePlaceToVisitLoading: false,
@@ -2894,14 +2875,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_BOOKING}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Booking";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Booking deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"booking")
+
             return{
                 ...state,
                 isdeleteBookingLoading: false,
@@ -2924,14 +2899,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_PLACETYPE}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the PlaceType";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "PlaceType deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"placetype")
+
             return{
                 ...state,
                 isdeletePlaceTypeLoading: false,
@@ -2954,14 +2923,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_STATE}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the State";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "State deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"State")
+
             return{
                 ...state,
                 isdeleteStateLoading: false,
@@ -2984,14 +2947,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_STAY}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Stay";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Stay deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Stay")
+
             return{
                 ...state,
                 isdeleteStayLoading: false,
@@ -3014,14 +2971,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_STAYTYPE}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the StayType";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "StayType deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Staytype")
+
             return{
                 ...state,
                 isdeleteStayTypeLoading: false,
@@ -3044,14 +2995,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_TRAVELINFO}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Travel Info";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Travel Info deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Travelinfo")
+
             return{
                 ...state,
                 isdeleteTravelInfoLoading: false,
@@ -3074,14 +3019,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_TRAVELTYPE}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Travel Type";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Travel Type deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Traveltype")
+
             return{
                 ...state,
                 isdeleteTravelTypeLoading: false,
@@ -3104,14 +3043,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_DESTINATION}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the Destination";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Destination deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Destination")
+
             return{
                 ...state,
                 isdeleteDestinationLoading: false,
@@ -3280,13 +3213,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_PLACEACTITIES}_FULFILLED` : {
             debugger
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while deleting the Placeactivities";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "Placeactivity deleted successfully.";
-              }
+            let msgData =deleteMsgHandling(action.payload,"Placeactivities")
+
               return{
                 ...state,
                 isdeletePlaceactivitiesLoading: false,
@@ -3310,14 +3238,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_TRIP_COSTCENTER}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the tripcostcetre";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "tripcostcentre deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Tripcostcentre")
+
             return{
                 ...state,
                 isdeleteTripcostcenterLoading: false,
@@ -3369,12 +3291,12 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         case `${actions.GET_TRIP_COSTCENTERBYID}_FULFILLED` : {
           debugger
             var  gettripcostcenterbyid=action.payload.data;
-            if(gettripcostcenterbyid.type === "staytype")
+            if(gettripcostcenterbyid.type === "Stay")
             {
             gettripcostcenterbyid["hidestaytype"]=""
             gettripcostcenterbyid["hidetraveltype"]="true"
             }
-            else if(gettripcostcenterbyid.type === "traveltype")
+            else if(gettripcostcenterbyid.type === "Travel")
             {
                 gettripcostcenterbyid["hidestaytype"]="true"
                 gettripcostcenterbyid["hidetraveltype"]=""
@@ -3484,14 +3406,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.DELETE_ACCESSORIES_BOOKING}_FULFILLED` : {
 
-           let msgData = {};
-            if(action.payload.statusText === "error") {
-                msgData.message = "Error while delting the tripcostcetre";
-                msgData.isSuccess = false;
-              } else {
-                msgData.message = "tripcostcentre deleted successfully.";
-                msgData.isSuccess = true;
-              }
+            let msgData =deleteMsgHandling(action.payload,"Accessorybooking")
+
             return{
                 ...state,
                 isdeleteAccessorybookingLoading: false,
@@ -3624,6 +3540,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PAYMENTS_BYBOOKING}_FULFILLED` : {
+            debugger
             return{
                 ...state,
                 isgetpayementsLoading: false,
@@ -3663,10 +3580,15 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.DELETE_PAYMENT}_FULFILLED` : {
+            let msgData =deleteMsgHandling(action.payload,"Country")
+
             return{
                 ...state,
                 isdeletepaymentLoading: false,
-                deletepayment: action.payload.data
+                deletepayment: action.payload.data,
+                message: true,
+                messageData: msgData
+
             }
         }
         case `${actions.DELETE_PAYMENT}_REJECTED` : {
