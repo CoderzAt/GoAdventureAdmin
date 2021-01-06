@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { GET_TRIP_COSTCENTER,GET_TRAVELTYPE,GET_STAYTYPE ,GET_TRIP_COSTCENTERBYID, GET_ITENARY,GET_TRIP_COSTCENTER_BYTRIPID, POST_TRIP_COSTCENTER, PUT_TRIP_COSTCENTER, GET_COSTCENTRE, GET_TRIP, DELETE_TRIP_COSTCENTER } from '../Shared/Services'
+import { GET_TRIP_COSTCENTER,GET_TRAVELTYPE,GET_STAYTYPE ,GET_TRIP_COSTCENTERBYID, GET_ITENARY,GET_TRIP_COSTCENTER_BYTRIPID, POST_TRIP_COSTCENTER, PUT_TRIP_COSTCENTER, GET_COSTCENTRE, GET_TRIP, DELETE_TRIP_COSTCENTER,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -20,7 +20,9 @@ class TripCostCenter extends Component {
         super(props);
         this.state = {
             validated: false,
-            refreshflag: false
+            refreshflag: false,
+            hidestaytype:"true",
+            hidetraveltype:"true"
         }
 
     }
@@ -62,6 +64,7 @@ class TripCostCenter extends Component {
             price: parseInt(this.props.gettripcostcenterbyid.price),
             travelTypeId:parseInt(this.props.gettripcostcenterbyid.travelTypeId),
             stayTypeId:parseInt(this.props.gettripcostcenterbyid.stayTypeId),
+            type:this.props.gettripcostcenterbyid.type,
             isDeleted:this.props.gettripcostcenterbyid.tripCostcenterId? false : true
 
         };
@@ -99,32 +102,69 @@ class TripCostCenter extends Component {
         this.props.resetData(action.RESET_DATA, "gettripcostcenterbyid");
         this.setState({ validated: false });
     }
-    refresh()
+    refresh(e)
     {
        
-        this.props.getData(action.GET_TRIP_COSTCENTER_BYTRIPID, GET_TRIP_COSTCENTER_BYTRIPID +valuefromurl)
+        this.props.getData(action.GET_TRIP_COSTCENTER, GET_TRIP_COSTCENTER)
     }
     editReacord(id) {
         debugger
         this.props.getData(action.GET_TRIP_COSTCENTERBYID, GET_TRIP_COSTCENTERBYID + id)
+        
     }
-    updateTrip = (e, paramName) => {
-        let value
-       /* if (paramName === "travelTypeIds") {
-            value = Array.prototype.map.call(e, function (item) { return item.travelTypeId; }).join(",");
+    updateTrip = (e, paramName) => 
+    {
+        var value
+        if(e.target.value === "staytype")
+        {
+           /*  this.setState({
+                hidestaytype:"",
+                hidetraveltype:"true"
+            })  */
+            this.props.updatePropAccData("hidetraveltype","true", "gettripcostcenterbyid");
+            this.props.updatePropAccData("hidestaytype","", "gettripcostcenterbyid");
         }
-        else if (paramName === "stayTypeIds") {
-            value = Array.prototype.map.call(e, function (item) { return item.stayTypeId; }).join(",")
+        else if(e.target.value === "traveltype")
+        {
+            /* this.setState({
+                hidestaytype:"true",
+                hidetraveltype:""
+            })   */            
+            this.props.updatePropAccData("hidetraveltype","", "gettripcostcenterbyid");
+            this.props.updatePropAccData('hidestaytype',"true", "gettripcostcenterbyid");
         }
-        else {*/
-            value = e.target.value
-       /* }*/
+        else if(paramName === "tripId")
+        {
+          this.props.getData(action.GET_STAYTYPE_BYTRIPID,GET_STAYTYPE_BYTRIPID+e.target.value)
+          this.props.getData(action.GET_TRAVELTYPE_BYTRIPID,GET_TRAVELTYPE_BYTRIPID+e.target.value)
+        }
+        value = e.target.value
         this.props.updatePropAccData(paramName, value, "gettripcostcenterbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
     render() {
-        return (
+       /*  debugger
+        if(this.props.gettripcostcenterbyid)
+        {
+            
+        if(this.props.gettripcostcenterbyid.type==="staytype")
+        {
+            this.setState({
+                hidestaytype:"",
+                hidetraveltype:"true"
+            }) 
+        }
+        else if(this.props.gettripcostcenterbyid.type === "traveltype")
+        {
+            this.setState({
+                hidestaytype:"true",
+                hidetraveltype:""
+            })  
+        } 
+    }
+ */        return (
             <div>
+                
 
                 <div class="container-fluid page-body-wrapper" style={{ paddingTop: 80 }}>
                     <Sidebar />
@@ -161,7 +201,8 @@ class TripCostCenter extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Trip</label>
                                                             <div class="col-sm-9">
-                                                                <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.tripId? this.props.gettripcostcenterbyid.tripId : "0"} onChange={(e) => this.updateTrip(e,"tripId")}>
+                                                                <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.tripId? this.props.gettripcostcenterbyid.tripId : "0"} 
+                                                                onChange={(e) => this.updateTrip(e,"tripId")}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.gettrip.map(obj =>
                                                                         <option value={obj.tripId}>{obj.tripName}</option>
@@ -172,18 +213,31 @@ class TripCostCenter extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Type</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.type? this.props.gettripcostcenterbyid.type : "0"} onChange={(e) => this.updateTrip(e,"type")}>
+                                                                    <option value={0}>Select</option>
+                                                                   <option value="staytype">StayType</option>
+                                                                   <option value="traveltype">TravelType</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6"  hidden={this.props.gettripcostcenterbyid.hidetraveltype === ""?this.props.gettripcostcenterbyid.hidetraveltype:"true"}>
+                                                        <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Traveltype</label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.travelTypeId?this.props.gettripcostcenterbyid.travelTypeId:"0"} onChange={(e) => this.updateTrip(e,"travelTypeId")}>
                                                                     <option value={0}>Select</option>
-                                                                    {this.props.gettraveltype.map(obj =>
+                                                                    {(this.props.gettripcostcenterbyid.tripId?this.props.gettraveltype:[]).map(obj =>
                                                                         <option value={obj.travelTypeId}>{obj.travelTypeName}</option>
                                                                     )}
                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-6"  hidden={this.props.gettripcostcenterbyid.hidestaytype === ""?this.props.gettripcostcenterbyid.hidestaytype:"true"}>
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Staytype</label>
                                                             <div class="col-sm-9">

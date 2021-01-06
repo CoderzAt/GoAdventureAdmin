@@ -3367,10 +3367,22 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.GET_TRIP_COSTCENTERBYID}_FULFILLED` : {
+          debugger
+            var  gettripcostcenterbyid=action.payload.data;
+            if(gettripcostcenterbyid.type === "staytype")
+            {
+            gettripcostcenterbyid["hidestaytype"]=""
+            gettripcostcenterbyid["hidetraveltype"]="true"
+            }
+            else if(gettripcostcenterbyid.type === "traveltype")
+            {
+                gettripcostcenterbyid["hidestaytype"]="true"
+                gettripcostcenterbyid["hidetraveltype"]=""
+            }
             return{
                 ...state,
                 isTripCostcenterbidLoading: false,
-                gettripcostcenterbyid: action.payload.data
+                gettripcostcenterbyid:gettripcostcenterbyid
             }
         }
         case `${actions.GET_TRIP_COSTCENTERBYID}_REJECTED` : {
