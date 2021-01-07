@@ -82,6 +82,7 @@ class Package extends Component {
         bodyFormData.set('eventLevel', this.props.packagebyid.eventLevel);
         bodyFormData.set('IsDeleted',  false );
         bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
+        bodyFormData.append('coverPhotoFormFile', this.state.coverPhotoFormFile?this.state.coverPhotoFormFile:null);
         let url = PUT_PACKAGE+ this.props.packagebyid.packageId;
         if (this.props.packagebyid.packageId) {
             this.props.putDataWithFile(action.PUT_PACKAGE,url,bodyFormData);
@@ -326,7 +327,7 @@ class Package extends Component {
                                         <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
-                                                        class="col-sm-3 col-form-label">Thingsto Bring</label>
+                                                        class="col-sm-3 col-form-label">Things To Bring</label>
                                                     <div class="col-sm-9">
                                                     <textarea class="form-control" value={this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:""} id="placeTypeName"
                                                         
