@@ -121,6 +121,14 @@ class Package extends Component {
             formFile: e.target.files[0]
         })
     }
+    saveCoverFile = (e) => {
+        debugger
+        console.log(e.target.files[0])
+        console.log("contentdisposition", e.target.files[0]);
+        this.setState({
+            coverPhotoFormFile: e.target.files[0]
+        })
+    }
     editReacord(id) {
         this.props.getData(action.GET_PACKAGE_BYID, GET_PACKAGE_BYID+id)
     }
@@ -298,13 +306,30 @@ class Package extends Component {
                                                    
                                                 </div>
                                             </div>
-                                        
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription"
+                                                        class="col-sm-3 col-form-label">Cover Image</label>
+                                                        <div class="col-sm-9">
+                                                         <span class="input-group-append">
+                                                         <input
+
+                                                                  class="file-upload-browse btn btn-gradient-primary"
+                                                                    type="file"
+                                                                    onChange={this.saveCoverFile}/>
+
+                                                        </span>
+                                                        </div>
+                                                   
+                                                </div>
+                                            </div>
                                         <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">Thingsto Bring</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" value={this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:""} class="form-control" id="placeTypeName" required
+                                                    <textarea class="form-control" value={this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:""} id="placeTypeName"
+                                                        
                                                              onChange={(e)=>this.updatePackage(e,"thingsTobring")}/>
                                                     </div>
                                                 </div>
