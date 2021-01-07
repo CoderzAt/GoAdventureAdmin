@@ -14,11 +14,7 @@ import { getData, postData1, putData1, updatePropAccData, resetData, removeError
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
-
-
-
 var condition = false;
-
 
 class Trip extends Component {
     constructor(props) {
@@ -27,7 +23,6 @@ class Trip extends Component {
             validated: false,
             refreshflag: false
         }
-
     }
     componentDidMount() {
         debugger
@@ -136,10 +131,8 @@ class Trip extends Component {
     render() {
         return (
             <div>
-
                 <div class="container-fluid page-body-wrapper" style={{ paddingTop: 80 }}>
                     <Sidebar />
-
                     <div class="main-panel">
                         <div class="content-wrapper">
 
@@ -321,7 +314,7 @@ class Trip extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">City</label>
@@ -470,4 +463,3 @@ const mapStateToProps = (state) => {
 }
 export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(Trip);
     //export default Trip
-

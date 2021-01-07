@@ -1,9 +1,10 @@
 import * as actions from '../actions/actionTypes';
+import moment from 'moment'
 
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 
 const HandlingError=(payload,paramName,actiontype)=>
-{ 
+{
     debugger
     let msgData = {};
     if (payload.statusText === "error") {
@@ -20,13 +21,13 @@ const HandlingError=(payload,paramName,actiontype)=>
         msgData.isSuccess = true;
         //updatedata.push(payload)
     }
-     
+
     return msgData;
 
 }
 
 const deleteMsgHandling=(payload,param)=>
-{  
+{
     let msgData = {};
     if(payload.statusText === "error") {
     msgData.message = [{message:`Error while delting the ${param}`}];
@@ -432,14 +433,12 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_TRIP_BYID}_FULFILLED` : {
-            debugger
             let staytypeids=(action.payload.data.stayTypeIds).split(",");
             var staytypenames1=[]
 
             staytypeids.map(obj=>
                 state.getstaytype.map((item)=>{
-                    if(parseInt(obj) == item.stayTypeId)
-                    {
+                    if(parseInt(obj) == item.stayTypeId) {
                       staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
                     }
                 }))
@@ -448,16 +447,22 @@ const goAdvReducer = (state =initalState, action) => {
                 var traveltypenames=[]
                 traveltypeids.map(obj=>
                     state.gettraveltype.map((item)=>{
-                        if(parseInt(obj) == item.travelTypeId)
-                        {
+                        if(parseInt(obj) == item.travelTypeId) {
                           traveltypenames.push({travelTypeName:item.travelTypeName,travelTypeId:item.travelTypeId}); //reusability
                         }
                     }))
-
+            let getTripDet = action.payload.data;
+            if(getTripDet.startDate) {
+              getTripDet.startDate = moment(getTripDet.startDate).format('YYYY-MM-DD');
+            }
+            if(getTripDet.endDate) {
+              getTripDet.endDate = moment(getTripDet.endDate).format('YYYY-MM-DD');
+            }
+            console.log(getTripDet);
             return{
                 ...state,
                 isTrbidLoading: false,
-                gettripbyid: action.payload.data,
+                gettripbyid: getTripDet,
                 staytypeids:staytypenames1,
                 traveltypeids:traveltypenames
             }
@@ -594,7 +599,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.DELETE_COUNTRY}_FULFILLED` : {
             debugger
            let msgData =deleteMsgHandling(action.payload,"Country")
-           
+
             return{
                 ...state,
                 isdeleteCountryLoading: false,
@@ -618,7 +623,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.GET_CITY_BYID}_FULFILLED` : {
             let stateid=action.payload.data.stateId;
             let citydata=action.payload.data;
-           
+
                 let countryId
                 state.states.map(obj=>{
                     if(obj.stateId === stateid)
@@ -1699,7 +1704,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STATE}_FULFILLED` : {
-            
+
             let msgData=HandlingError(action.payload,"state","added")
 
             return{
@@ -1709,7 +1714,7 @@ const goAdvReducer = (state =initalState, action) => {
                 message: true,
                 messageData: msgData,
                 getstatebyid:action.payload.statusText === "error"?state. getstatebyid:{}
-                
+
             }
         }
         case `${actions.POST_STATE}_REJECTED` : {
@@ -2302,7 +2307,7 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetBookingLoading: false,
             }
         }
-        
+
 
         case `${actions.GET_BOOKING_BYID}_PENDING` : {
             return{
@@ -3105,7 +3110,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_PLACEACTIVITIES}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"placeactivity","updated")              
+            let msgData=HandlingError(action.payload,"placeactivity","updated")
             return{
                 ...state,
 
