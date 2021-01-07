@@ -17,6 +17,7 @@ var selectcountrymsg
 class PlacestoVisit extends Component {
     constructor(props) {
         super(props);
+        this.multiselectRef = React.createRef();
         this.state = {
             validated: false,
             //citynames:[],
@@ -159,11 +160,13 @@ class PlacestoVisit extends Component {
         else {
             event.preventDefault();
             this.postPlacetovisitData();
+            this.multiselectRef.current.resetSelectedValues();
         }
     }
 
     handleReset() {
         this.props.resetData(action.RESET_DATA, "getplacetovisitbyid");
+        this.multiselectRef.current.resetSelectedValues();
         this.setState({ validated: false });
     }
     async refresh(e) {
@@ -237,7 +240,7 @@ class PlacestoVisit extends Component {
             this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+e.target.value)
             value=e.target.value
             this.props.updatePropAccData("cityId",undefined, "getplacetovisitbyid");
-            
+
         }
         else if(paramName === "stateId")
         {
@@ -269,7 +272,7 @@ class PlacestoVisit extends Component {
         debugger
         this.props.deleteRecord(action.DELETE_PLACETOVISIT, DELETE_PLACETOVISIT + id)
     }
-  
+
     render() {
         /*  this.props.getcities.map(obj=>{
              if(obj.cityId===this.props.getplacetovisitbyid.cityId)
@@ -277,7 +280,7 @@ class PlacestoVisit extends Component {
                  this.setState({
                      stateId:obj.stateId
                  })
- 
+
              }
          }) */
         return (
@@ -295,7 +298,7 @@ class PlacestoVisit extends Component {
                                         <i class="mdi mdi-home-map-marker"></i>
                                     </span>Place To Visit
                         </h3>
-                              
+
                                 <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
@@ -370,7 +373,9 @@ class PlacestoVisit extends Component {
                                                                 class="col-sm-3 col-form-label">Activities</label>
                                                             <div class="col-sm-9">
                                                                 <Multiselect options={this.props.activities} displayValue={"activityName"}
-                                                                    class="form-control" onSelect={(e) => this.updatePlacetovisit(e, "activityIds")} onRemove={(e) => this.updatePlacetovisit(e,"activityIds")} />
+                                                                    class="form-control" onSelect={(e) => this.updatePlacetovisit(e, "activityIds")}
+                                                                    onRemove={(e) => this.updatePlacetovisit(e,"activityIds")}
+                                                                    ref={this.multiselectRef} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -413,7 +418,7 @@ class PlacestoVisit extends Component {
                                                                     onChange={(e) => this.updatePlacetovisit(e, "cityId")}>
                                                                         {console.log("stateid",this.props.getplacetovisitbyid.stateId)}
                                                                     <option value={0}>Select</option>
-                                                                    {(this.props.getplacetovisitbyid.stateId?this.props.cities:[]).map(obj =>
+                                                                    {(this.props.getplacetovisitbyid.stateId && this.props.cities?this.props.cities:[]).map(obj =>
                                                                         <option value={obj.cityId}>{obj.cityName}</option>
                                                                     )}
                                                                 </select>
@@ -489,7 +494,7 @@ class PlacestoVisit extends Component {
                                                     /* {
                                                          Header: "PlaceId",
                                                          accessor: "placeId"
- 
+
                                                      },*/
                                                     {
                                                         Header: "Name",
@@ -571,4 +576,3 @@ const mapStateToProps = (state) => {
 }
 export default connect(mapStateToProps, { getData,getActivity,postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg, deleteRecord })(PlacestoVisit);
     //export default PlacestoVisit
-
