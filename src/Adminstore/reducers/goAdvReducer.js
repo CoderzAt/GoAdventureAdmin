@@ -1399,6 +1399,15 @@ const goAdvReducer = (state =initalState, action) => {
                     }
                 })
 
+                let activityids=action.payload.data.activityIds && action.payload.data.activityIds.split(",")
+                var activitynames=[]
+                activityids && activityids.map(obj=>
+                  state.activities.map((item)=>{
+                      if(parseInt(obj) == item.activityId) {
+                        activitynames.push({activityName:item.activityName,activityId:item.activityId}); //reusability
+                      }
+                  }))
+
                 let countryId
                 state.states.map(obj=>{
                     if(obj.stateId === stateId)
@@ -1412,7 +1421,8 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isgetPlacetovisitbyidLoading: false,
-                getplacetovisitbyid:placetovisitdata/* action.payload.data */
+                getplacetovisitbyid:placetovisitdata,/* action.payload.data */
+                activityids:activitynames
             }
         }
         case `${actions.GET_PLACETOVISIT_BYID}_REJECTED` : {

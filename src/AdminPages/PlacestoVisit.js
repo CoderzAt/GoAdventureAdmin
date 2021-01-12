@@ -372,7 +372,7 @@ class PlacestoVisit extends Component {
                                                             <label for="duration"
                                                                 class="col-sm-3 col-form-label">Activities</label>
                                                             <div class="col-sm-9">
-                                                                <Multiselect options={this.props.activities} displayValue={"activityName"}
+                                                                <Multiselect selectedValues={this.props.activityids} options={this.props.activities} displayValue={"activityName"}
                                                                     class="form-control" onSelect={(e) => this.updatePlacetovisit(e, "activityIds")}
                                                                     onRemove={(e) => this.updatePlacetovisit(e,"activityIds")}
                                                                     ref={this.multiselectRef} />
@@ -571,7 +571,8 @@ const mapStateToProps = (state) => {
         placetovisitfunctionaldata: state.goAdvStore.placetovisitfunctionaldata,
         activities:state.goAdvStore.activities,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        activityids: state.goAdvStore.activityids
     }
 }
 export default connect(mapStateToProps, { getData,getActivity,postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg, deleteRecord })(PlacestoVisit);
