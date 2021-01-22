@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Redirect } from 'react-router'
 
 /* import './assets/vendors/mdi/css/materialdesignicons.min.css'
 import './assets/vendors/css/vendor.bundle.base.css'
@@ -9,6 +10,15 @@ class AdminHeader extends Component {
         super(props);
        this.state = {
           }
+    }
+  async  logout(e)
+    {
+        e.preventDefault()
+       await  localStorage.removeItem("GoAdventureLoginToken")
+        
+       window.location.reload(); // actually we need to go login page but history.push is not working
+       
+
     }
     render() {
 	    return (
@@ -40,7 +50,7 @@ class AdminHeader extends Component {
                     </li>
                     <li class="nav-item nav-logout d-none d-lg-block">
                         <a class="nav-link" href="#">
-                            <i class="mdi mdi-power"></i>
+                            <i class="mdi mdi-power" onClick={(e)=>this.logout(e)} data-toggle="tooltip" title="Logout"></i>
                         </a>
                     </li>
                 </ul>

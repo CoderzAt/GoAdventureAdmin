@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
-
+import { Redirect } from 'react-router'
 var condition=false;
 var editorstate='<div>hi<div>';
 class Country extends Component {
@@ -151,6 +151,7 @@ class Country extends Component {
          <div>
 
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
+        {localStorage.getItem("GoAdventureLoginToken") === null?<Redirect to="/admin/login-1"/>:null}
             <Sidebar/>
 
             <div class="main-panel">

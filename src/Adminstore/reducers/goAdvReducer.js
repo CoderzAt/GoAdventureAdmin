@@ -2,6 +2,7 @@ import * as actions from '../actions/actionTypes';
 import moment from 'moment'
 
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
+import { Redirect } from 'react-router-dom';
 
 const HandlingError=(payload,paramName,actiontype)=>
 {
@@ -191,7 +192,9 @@ const initalState ={
     deletepayment:[],
     placetovisitfunctionaldata:[],
     getbookingtotatamount:"",
-    logindata:[]
+    logintoken:"",
+    userid:0,
+    loginmsgdata:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -3317,6 +3320,14 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 gettripcostcenterbyid["hidestaytype"]="true"
                 gettripcostcenterbyid["hidetraveltype"]=""
             }
+            let tripid=gettripcostcenterbyid.tripId;
+            
+            state.packages.map(obj=>{
+                if(obj.packageId === tripid)
+                {
+                    gettripcostcenterbyid["packageId"]=obj.packageId
+                }
+            })
             return{
                 ...state,
                 isTripCostcenterbidLoading: false,
@@ -3392,6 +3403,8 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_ACCESSORIES_BOOKING}_PENDING` : {
+            debugger
+            let msgData=HandlingError(action.payload,"acessaryboking","added")
             return{
                 ...state,
                 ispostAccessoryBookingLoading: true
@@ -3657,6 +3670,51 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             return{
                 ...state,
                 ispostpayementLoading: false,
+            }
+        }
+        case `${actions.ADMIN_LOGIN}_PENDING` : {
+            return{
+                ...state,
+                isgoogleLoginLoading: true
+            }
+        }
+        case `${actions.ADMIN_LOGIN}_FULFILLED` : {
+            debugger
+            let loginmsgdata1={}
+            let msg
+            if (action.payload.statusText === "error") {
+            if(action.payload.error.response.status === 400 || action.payload.error.response.status === 500)
+            {
+            loginmsgdata1.msg="login failed"
+            loginmsgdata1.status=false
+            }
+            }
+            else
+            {
+                localStorage.setItem("userid",action.payload.data.id)
+                console.log("userid",localStorage.getItem("userid"))
+                console.log("token",action.payload.data.token)
+                localStorage.setItem("GoAdventureLoginToken","Bearer "+action.payload.data.token)
+                loginmsgdata1.msg="login success"
+                loginmsgdata1.status=true
+               
+                //this.props.history.push("/");
+            }
+            return{
+                ...state,
+                isgoogleLoginLoading: false,
+                loginmsgdata:loginmsgdata1
+               /*  logintoken: action.payload.data.token,
+                userid:action.payload.data.id, */
+                
+               
+            }
+        }
+        case `${actions.ADMIN_LOGIN}_REJECTED` : {
+            return{
+                ...state,
+                isgoogleLoginLoading: false,
+                
             }
         }
         default: return state;

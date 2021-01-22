@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router,Route,Switch } from 'react-router-dom';
+import { Redirect } from 'react-router'
+
 /* import "../assets/vendors/mdi/css/materialdesignicons.min.css"
 import   "../assets/vendors/css/vendor.bundle.base.css" */
 
@@ -43,7 +45,7 @@ import TripCostCenter from './AdminPages/TripCostCenter';
 import AccessoriesBooking from './AdminPages/AccessoriesBooking';
 import User from './AdminPages/User';
 import Payements from './AdminPages/Payements';
-import { Login } from './AdminPages/Login';
+import Login  from './AdminPages/Login';
 //import './App.scss'
 //import AppRoutes from './AppRoutes'
 
@@ -55,14 +57,15 @@ class App extends Component {
   render () {
     return(
       <div>
-      <Router>
+      <Router >
 <AdminHeader/>
+         
+         {localStorage.getItem("GoAdventureLoginToken") !== null?
          <Switch>
-
             <Route exact path="/admin/package" component={Package}/>
             <Route exact path="/admin/destination" component={Destination}/>
             <Route exact path="/admin/placetype" component={PlaceType}/>
-            <Route exact path="/" component={Country}/>
+            {/* <Route exact path="/" component={Country}/> */}
             <Route exact path="/admin/state" component={State}/>
             <Route exact path="/admin/state/:sid" component={State} />
             <Route exact path="/admin/city" component={City}/>
@@ -93,7 +96,11 @@ class App extends Component {
             <Route exact path="/admin/user" component={User}/>
             <Route exact path="/admin/payments" component={Payements}/>
             <Route exact path="/admin/payments/:type/:bid" component={Payements}/>
+            </Switch>
+            :<Redirect to="/admin/login-1"/>}
+            <Switch>
             <Route exact path="/admin/login-1" component={Login}/>
+            <Route exact path="/" component={Country}/>
             </Switch>
 
         </Router>
