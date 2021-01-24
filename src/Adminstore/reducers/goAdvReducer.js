@@ -194,7 +194,8 @@ const initalState ={
     getbookingtotatamount:"",
     logintoken:"",
     userid:0,
-    loginmsgdata:[]
+    loginmsgdata:[],
+    getstatusbytype:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -242,6 +243,25 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isPkgLoading: false,
+            }
+        }
+        case `${actions.GET_STATUS_BYTYPE}_PENDING` : {
+            return{
+                ...state,
+                isstatusbytypeLoading: true
+            }
+        }
+        case `${actions.GET_STATUS_BYTYPE}_FULFILLED` : {
+            return{
+                ...state,
+                isstatusbytypeLoading: false,
+                getstatusbytype: action.payload.data
+            }
+        }
+        case `${actions.GET_STATUS_BYTYPE}_REJECTED` : {
+            return{
+                ...state,
+                isstatusbytype: false,
             }
         }
         case `${actions.ACCESSARY_TYPE}_PENDING` : {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { postData, GET_ALL_ACCESSORIES,GET_STATUS,POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID,DELETE_ACCESSORIES,ACCESSARY_TYPE } from '../Shared/Services'
+import { postData, GET_ALL_ACCESSORIES,GET_STATUS,POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID,GET_STATUS_BYTYPE,DELETE_ACCESSORIES,ACCESSARY_TYPE } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -28,6 +28,7 @@ class Accessories extends Component {
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
         this.props.getData(action.ACCESSARY_TYPE,ACCESSARY_TYPE)
         this.props.getData(action.GET_STATUS,GET_STATUS)
+        this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"Accessory")
     }
     refresh(e)
     {
@@ -81,13 +82,14 @@ class Accessories extends Component {
         bodyFormData.set('accessoriesId', this.props.getaccessorybyid.accessoriesId ? this.props.getaccessorybyid.accessoriesId:0);
         bodyFormData.set('accessoryName', this.props.getaccessorybyid.accessoryName);
         bodyFormData.set('accessoryCode', this.props.getaccessorybyid.accessoryCode);
-        bodyFormData.set('statusId', this.props.getaccessorybyid.statusId);
+        //bodyFormData.set('statusId', this.props.getaccessorybyid.statusId);
         bodyFormData.set('type', this.props.getaccessorybyid.type);
         bodyFormData.set('saleOrRent', this.props.getaccessorybyid.saleOrRent);
         bodyFormData.set('salePrice', this.props.getaccessorybyid.salePrice?this.props.getaccessorybyid.salePrice*1:0);
         bodyFormData.set('rentPrice', this.props.getaccessorybyid.rentPrice?this.props.getaccessorybyid.rentPrice*1:0);
         bodyFormData.set('isAvailable', JSON.parse(this.props.getaccessorybyid.isAvailable));
         //bodyFormData.set('PromoImage', this.state.formFile.name);
+        bodyFormData.set('statusId', parseInt(this.props.getaccessorybyid.statusId?this.props.getaccessorybyid.statusId:0))
         bodyFormData.set('isDeleted', this.props.getaccessorybyid.accessoriesId?false:true);
         bodyFormData.append('formFile', this.state.formFile);
         let url = PUT_ACCESSORIES + this.props.getaccessorybyid.accessoriesId;
@@ -209,7 +211,7 @@ class Accessories extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                   {/*  <div class="col-md-6">
                                                         <div class="form-group row">
 
                                                             <label class="col-sm-3 col-form-label">Status</label>
@@ -223,7 +225,7 @@ class Accessories extends Component {
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">saleOrRent</label>
@@ -295,6 +297,20 @@ class Accessories extends Component {
                                                                     <option value={false}>NO</option>
                                                                 </select>
                                                                 <div style={{ color: "red" }}>{this.state.errors.saleOrrent}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Status</label>
+                                                            <div class="col-sm-9">
+                                                                <select  value={this.props.getaccessorybyid.statusId ? this.props.getaccessorybyid.statusId : "0" }
+                                                                    class="form-control" onChange={(e) => this.updateAccessory(e, "statusId")} >
+                                                                        <option value={0}>Select</option>
+                                                                        {this.props.getstatusbytype.map(obj=>(
+                                                                            <option value={obj.statusId}>{`${obj.statusCode}`}</option>
+                                                                        ))}
+                                                                        </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -392,7 +408,8 @@ const mapStateToProps = (state) => {
         getaccessorybyid: state.goAdvStore.getaccessorybyid,
         getaccessarytype:state.goAdvStore.getaccessarytype,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        getstatusbytype:state.goAdvStore.getstatusbytype
     }
 }
 export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile })(Accessories);

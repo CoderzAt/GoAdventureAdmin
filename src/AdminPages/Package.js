@@ -10,8 +10,17 @@ import { connect } from 'react-redux';
 import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+//import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import parse from 'html-react-parser'
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
 
 
+
+var editorstate='<div>hi<div>';
 class Package extends Component {
     constructor(props) {
         super(props);
@@ -32,6 +41,7 @@ class Package extends Component {
         this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
         this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
         this.props.getData(action.GET_EVENTLEVEL,GET_EVENTLEVEL)
+      
 
     }
 
@@ -46,7 +56,95 @@ class Package extends Component {
             packagedescription:event.target.value
         })
     }
-   
+    componentDidUpdate(prevProps, prevState, snapshotValue) {
+        if(this.props.packagebyid.thingsTobring !== prevProps.packagebyid.thingsTobring) {
+          if( this.props.packagebyid.thingsTobring) {
+            const blocksFromHtml = htmlToDraft(this.props.packagebyid.thingsTobring);
+            const { contentBlocks, entityMap } = blocksFromHtml;
+            const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+  
+            this.setState({
+              editorState: EditorState.createWithContent(contentState)
+            });
+          } else {
+            this.setState({
+              editorState: EditorState.createEmpty()
+            });
+          }
+        }
+
+        if(this.props.packagebyid.inclusions !== prevProps.packagebyid.inclusions) {
+            if( this.props.packagebyid.inclusions) {
+              const blocksFromHtml = htmlToDraft(this.props.packagebyid.inclusions);
+              const { contentBlocks, entityMap } = blocksFromHtml;
+              const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+    
+              this.setState({
+                InclusionseditorState: EditorState.createWithContent(contentState)
+              });
+            } else {
+              this.setState({
+                InclusionseditorState: EditorState.createEmpty()
+              });
+            }
+          }
+
+          if(this.props.packagebyid.exclusions !== prevProps.packagebyid.exclusions) {
+            if( this.props.packagebyid.exclusions) {
+              const blocksFromHtml = htmlToDraft(this.props.packagebyid.exclusions);
+              const { contentBlocks, entityMap } = blocksFromHtml;
+              const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+    
+              this.setState({
+                ExclusionseditorState: EditorState.createWithContent(contentState)
+              });
+            } else {
+              this.setState({
+                ExclusionseditorState: EditorState.createEmpty()
+              });
+            }
+          }
+          if(this.props.packagebyid.packageDescription !== prevProps.packagebyid.packageDescription) {
+            if( this.props.packagebyid.packageDescription) {
+              const blocksFromHtml = htmlToDraft(this.props.packagebyid.packageDescription);
+              const { contentBlocks, entityMap } = blocksFromHtml;
+              const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+    
+              this.setState({
+                DescriptioneditorState: EditorState.createWithContent(contentState)
+              });
+            } else {
+              this.setState({
+                DescriptioneditorState: EditorState.createEmpty()
+              });
+            }
+          }
+      }
+    onEditorStateChange = (editorState) => {
+        this.setState({
+            editorState
+        });
+      }
+
+      onInclusionsEditorStateChange =(InclusionseditorState)=>
+      {
+          this.setState({
+            InclusionseditorState
+          })
+      }
+      onExclusionsEditorStateChange =(ExclusionseditorState)=>
+      {
+        this.setState({
+            ExclusionseditorState
+          })
+      }
+      DescriptionEditorStateChange=(DescriptioneditorState)=>
+      {
+        this.setState({
+            DescriptioneditorState
+          })
+      }
+
     postPackagedata()
     {
         debugger
@@ -74,11 +172,14 @@ class Package extends Component {
         //bodyFormData.set('CouponCode', this.props.packagebyid.couponcode);
         //bodyFormData.set('CouponExpiryDate', this.props.packagebyid.couponexpirydate);
         //bodyFormData.set('CouponUserUsageCount', parseInt(this.props.packagebyid.couponuserusagecount));
-        bodyFormData.set('Inclusions', this.props.packagebyid.inclusions);
+        //bodyFormData.set('Inclusions', this.props.packagebyid.inclusions);
+        bodyFormData.set('Inclusions',draftToHtml(convertToRaw(this.state.InclusionseditorState.getCurrentContent())));
         //bodyFormData.set('placetovisitIds', this.props.packagebyid.placetovisitIds);
-        bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
-        bodyFormData.set('thingsTobring', this.props.packagebyid.thingsTobring);
-        bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
+        //bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
+        bodyFormData.set('Exclusions',draftToHtml(convertToRaw(this.state.ExclusionseditorState.getCurrentContent())));
+        bodyFormData.set('thingsTobring',draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())));
+        //bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
+        bodyFormData.set('PackageDescription',draftToHtml(convertToRaw(this.state.DescriptioneditorState.getCurrentContent())));
         bodyFormData.set('eventLevel', this.props.packagebyid.eventLevel);
         bodyFormData.set('IsDeleted',  false );
         bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
@@ -90,6 +191,12 @@ class Package extends Component {
         else {
             this.props.postDataWithFile(action.POST_PACKAGE,POST_PACKAGE,bodyFormData);
         }
+        this.setState({
+            editorState: EditorState.createEmpty(),
+            InclusionseditorState:EditorState.createEmpty(),
+            ExclusionseditorState:EditorState.createEmpty(),
+            DescriptioneditorState:EditorState.createEmpty()
+          });
         this.setState({ validated: false });
     }
 
@@ -113,6 +220,12 @@ class Package extends Component {
     handleReset() {
         this.props.resetData(action.RESET_DATA, "packagebyid");
         this.setState({ validated: false });
+        this.setState({
+            editorState: EditorState.createEmpty(),
+            InclusionseditorState:EditorState.createEmpty(),
+            ExclusionseditorState:EditorState.createEmpty(),
+            DescriptioneditorState:EditorState.createEmpty()
+          });
     }
     saveFile = (e) => {
         debugger
@@ -128,7 +241,7 @@ class Package extends Component {
         console.log(e.target.files[0])
         console.log("contentdisposition", e.target.files[0]);
         this.setState({
-            coverphotoformFile: e.target.files[0]
+            coverPhotoFormFile: e.target.files[0]
         })
 
         console.log("coeverphoto",e.target.files[0])
@@ -160,7 +273,31 @@ class Package extends Component {
         debugger
     this.props.deleteRecord(action.DELETE_PACKAGE,DELETE_PACKAGE+id)
     }
+  /*   updateThingstobring = (e, paramName) => {
+
+        var value
+        if(paramName === "thingsTobring")
+        {
+            value=draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+        }
+        else
+        {
+            value=e.target.value
+        }
+        this.props.updatePropAccData(paramName,value,"packagebyid");
+        this.setState({ refreshflag:!this.state.refreshflag });
+    } */
     render() {
+        /* editorstate=EditorState.createWithContent(
+            ContentState.createFromBlockArray(
+              convertFromHTML(this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:'<div><div>')
+            )
+          ) */
+          if(this.props.packagebyid.destinationId)
+          { 
+              debugger
+              this.props.getData(action.PLACETOVISIT_BYDESTINATION,PLACETOVISIT_BYDESTINATION+this.props.packagebyid.destinationId)
+          } 
 	    return (
 
         <div>
@@ -327,20 +464,106 @@ class Package extends Component {
                                                    
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label"><b>Things ToBring</b></label>
+                                                    <div class="col-sm-12">
+                                                    <div>
+
+                                                       {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
+                                                       <Editor
+                                                 editorState={this.state.editorState}
+                                                 wrapperClassName="demo-wrapper"
+                                                 editorClassName="demo-editor"
+                                                 onEditorStateChange={this.onEditorStateChange}
+                                                 //onChange={(e)=>this.updateCountry(e,"countryDesc")}
+                                                      />
+
+                                                      </div>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label"><b>Inclusions</b></label>
+                                                    <div class="col-sm-12">
+                                                    <div>
+
+                                                       {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
+                                                       <Editor
+                                                 editorState={this.state.InclusionseditorState}
+                                                 wrapperClassName="demo-wrapper"
+                                                 editorClassName="demo-editor"
+                                                 onEditorStateChange={this.onInclusionsEditorStateChange}
+                                                 //onChange={(e)=>this.updateCountry(e,"countryDesc")}
+                                                      />
+
+                                                      </div>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label"><b>Exclusions</b></label>
+                                                    <div class="col-sm-12">
+                                                    <div>
+
+                                                       {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
+                                                       <Editor
+                                                 editorState={this.state.ExclusionseditorState}
+                                                 wrapperClassName="demo-wrapper"
+                                                 editorClassName="demo-editor"
+                                                 onEditorStateChange={this.onExclusionsEditorStateChange}
+                                                 //onChange={(e)=>this.updateCountry(e,"countryDesc")}
+                                                      />
+
+                                                      </div>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label"><b>Description</b></label>
+                                                    <div class="col-sm-12">
+                                                    <div>
+
+                                                       {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
+                                                       <Editor
+                                                 editorState={this.state.DescriptioneditorState}
+                                                 wrapperClassName="demo-wrapper"
+                                                 editorClassName="demo-editor"
+                                                 onEditorStateChange={this.DescriptionEditorStateChange}
+                                                 //onChange={(e)=>this.updateCountry(e,"countryDesc")}
+                                                      />
+
+                                                      </div>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
+                                       {/*  
                                         <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">Things To Bring</label>
-                                                    <div class="col-sm-9">
-                                                    <textarea class="form-control" value={this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:""} id="placeTypeName"
+                                                    <div class="col-sm-12">
+                                                    <Editor
+                                                 editorState={this.state.editorState}
+                                                 wrapperClassName="demo-wrapper"
+                                                 editorClassName="demo-editor"
+                                                 onEditorStateChange={this.onEditorStateChange}
+                                                 //onChange={(e)=>this.updateCountry(e,"countryDesc")}
+                                                      />
+                                                   {/*  <textarea class="form-control" value={this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:""} id="placeTypeName"
                                                         
                                                              onChange={(e)=>this.updatePackage(e,"thingsTobring")}/>
-                                                    </div>
+                                                   </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                      
-                                            <div class="col-md-6">
+                                           {/*  <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">Inclusions</label>
@@ -349,8 +572,8 @@ class Package extends Component {
                                                           required  rows="4" onChange={(e)=>this.updatePackage(e,"inclusions")}></textarea>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
+                                            </div> */}
+                                           {/*  <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Exclusions</label>
                                                     <div class="col-sm-9">
@@ -358,18 +581,18 @@ class Package extends Component {
                                                           required  rows="4" onChange={(e)=>this.updatePackage(e,"exclusions")}></textarea>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         
                                         
-                                            <div class="col-md-6">
-                                                <div class="form-group row">
+                                           
+                                               {/*  <div class="form-group row">
                                                     <label for="placeTypeDescription"
                                                         class="col-sm-3 col-form-label">Description</label>
                                                     <div class="col-sm-9">
                                                         <textarea class="form-control" value={this.props.packagebyid.packageDescription?this.props.packagebyid.packageDescription:""} id="placeTypeDescription"
                                                           required  rows="4" onChange={(e)=>this.updatePackage(e,"packageDescription")}></textarea>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                            
                                             {/* <div class="col-md-6">
                                                 <div class="form-group row">
@@ -408,7 +631,7 @@ class Package extends Component {
                                         <div class="row">
  */}                                            
                                         </div>
-                                        </div>
+                                        
                                         <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>

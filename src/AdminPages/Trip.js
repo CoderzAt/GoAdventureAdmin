@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { loadData, gettripbyid, GET_TRIP,GET_TRECKLEADERS, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID, POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
+import { loadData, gettripbyid, GET_TRIP,GET_TRECKLEADERS, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID,GET_STATUS_BYTYPE,POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Link} from "react-router-dom";
@@ -41,6 +41,7 @@ class Trip extends Component {
         this.props.getData(action.GET_TRAVELTYPE, GET_TRAVELTYPE)
         this.props.getData(action.GET_STAYTYPE, GET_STAYTYPE)
         this.props.getData(action.GET_TRECKLEADERS,GET_TRECKLEADERS)
+        this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"Trip")
     }
     componentWillMount() {
         this.props.removeErrormsg()
@@ -68,6 +69,7 @@ class Trip extends Component {
             stayTypeIds: this.props.gettripbyid.stayTypeIds ? this.props.gettripbyid.stayTypeIds : "",
             couponCode: this.props.gettripbyid.couponCode,
             couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount,
+            statusId:parseInt(this.props.gettripbyid.statusId?this.props.gettripbyid.statusId:0),
             couponExpiryDate: dateFormat(this.props.gettripbyid.couponExpiryDate,"yyyy-mm-dd"),
             isDeleted: this.props.gettripbyid.tripId ? false : true
 
@@ -314,6 +316,20 @@ class Trip extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Status</label>
+                                                            <div class="col-sm-9">
+                                                                <select  value={this.props.gettripbyid.statusId ? this.props.gettripbyid.statusId : "0" }
+                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "statusId")} >
+                                                                        <option value={0}>Select</option>
+                                                                        {this.props.getstatusbytype.map(obj=>(
+                                                                            <option value={obj.statusId}>{`${obj.statusCode}`}</option>
+                                                                        ))}
+                                                                        </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
                                                     {/* <div class="col-md-6">
                                                 <div class="form-group row">
@@ -458,7 +474,8 @@ const mapStateToProps = (state) => {
         traveltypeids: state.goAdvStore.traveltypeids,
         gettreckleaders:state.goAdvStore.gettreckleaders,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        getstatusbytype:state.goAdvStore.getstatusbytype
     }
 }
 export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(Trip);

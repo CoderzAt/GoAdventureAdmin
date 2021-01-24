@@ -80,6 +80,7 @@ export const DELETE_EVENTLEVEL="DELETE_EVENTLEVEL";
 //status
 export const GET_STATUS="GET_STATUS";
 export const DELETE_STATUS="DELETE_STATUS";
+export const GET_STATUS_BYTYPE="GET_STATUS_BYTYPE";
 //eventtype
 export const GET_EVENTTYPE="GET_EVENTTYPE";
 export const POST_EVENTTYPE="POST_EVENTTYPE";

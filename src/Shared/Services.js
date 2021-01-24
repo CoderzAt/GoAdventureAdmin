@@ -266,6 +266,7 @@ export const DELETE_EVENTLEVEL="DeleteMdEventLevel?id=";
 export const getstatusapi="https://ga-api.azurewebsites.net/api/v1/GetAllMdStatus";
 
 export const GET_STATUS="GetAllMdStatus";
+export const GET_STATUS_BYTYPE="GetMdStatusByType?type=";
 
 //eventtype
 export const eventtypepostapi="https://ga-api.azurewebsites.net/api/v1/CreateMdEventType";

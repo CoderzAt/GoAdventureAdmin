@@ -31,6 +31,11 @@ class Country extends Component {
            viewData:[],
            editorState:EditorState.createEmpty()
        }
+    } 
+    componentWillMount()
+    {
+      this.props.removeErrormsg()
+  
     }
     componentDidMount() {
       this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
@@ -226,6 +231,7 @@ class Country extends Component {
                                             </div>
                                         </div>
 
+                                        {/* <div dangerouslySetInnerHTML={{__html:this.props.getcountrybyid.countryDesc}} /> */}
 
                                         <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>

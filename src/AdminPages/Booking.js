@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,GET_STAYTYPE,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID} from '../Shared/Services'
+import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,GET_STAYTYPE,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID, GET_STATUS_BYTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -62,6 +62,7 @@ class Booking extends Component {
        this.props.getData(action.GET_AVCTIVITIES,GET_ACTIVITIES)
        this.props.getData(action.GET_USER,GET_USER)
        this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
+       this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"Trip Booking")
         }   //there is an issue with api
         refresh(e)
      {
@@ -327,6 +328,7 @@ class Booking extends Component {
         cancellationFee:parseInt(this.props.getbookingbyid.cancellationFee),
         isAmountReturned:JSON.parse(this.props.getbookingbyid.isAmountReturned),
         returnedAmount:parseInt(this.props.getbookingbyid.returnedAmount),
+        statusId:parseInt(this.props.getbookingbyid.statusId?this.props.getbookingbyid.statusId:0),
         confirmedStayIds:this.props.getbookingbyid.confirmedStayIds?this.props.getbookingbyid.confirmedStayIds:"",
         confirmedTravelIds:this.props.getbookingbyid.confirmedTravelIds?this.props.getbookingbyid.confirmedTravelIds:"",
         isDeleted:this.props.getbookingbyid.bookingId?false:true
@@ -693,8 +695,23 @@ class Booking extends Component {
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Status</label>
+                                                            <div class="col-sm-9">
+                                                                <select  value={this.props.getbookingbyid.statusId ? this.props.getbookingbyid.statusId : "0" }
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "statusId")} >
+                                                                        <option value={0}>Select</option>
+                                                                        {this.props.getstatusbytype.map(obj=>(
+                                                                            <option value={obj.statusId}>{`${obj.statusCode}`}</option>
+                                                                        ))}
+                                                                        </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                             
                                         </div>
+
                                        <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
@@ -775,7 +792,8 @@ class Booking extends Component {
           accessoryids:state.goAdvStore.accessoryids,
           activityids:state.goAdvStore.activityids,
           getstaytype:state.goAdvStore.getstaytype,
-          getbookingtotatamount:state.goAdvStore.getbookingtotatamount
+          getbookingtotatamount:state.goAdvStore.getbookingtotatamount,
+          getstatusbytype:state.goAdvStore.getstatusbytype
         }
       }
       export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Booking);
