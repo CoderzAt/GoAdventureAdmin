@@ -339,18 +339,9 @@ class TripCostCenter extends Component {
                                                     }
 
                                                 },
-                                                {
-                                                    Header: "Cost Center Name",
-                                                    accessor: "costCenterId",
-                                                    headerStyle: {
-                                                        textAlign: 'left',
-                                                        fontWeight: 'bold'
-                                                    }
-
-                                                },
-                                                {
-                                                    Header: "Cost Center Type",
-                                                    accessor: "costCenterId",
+                                                 {
+                                                    Header: "Stay or Travel",
+                                                    accessor: "type",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'

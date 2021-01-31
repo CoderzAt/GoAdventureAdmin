@@ -15,7 +15,7 @@ import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
 var condition = false;
-
+var valuefromurl
 class Trip extends Component {
     constructor(props) {
         super(props);
@@ -29,7 +29,7 @@ class Trip extends Component {
         var url
 
         if (this.props.match.params.tid != undefined) {
-            let valuefromurl = parseInt(this.props.match.params.tid);
+             valuefromurl = parseInt(this.props.match.params.tid);
             url = GET_TRIP_BYPACKAGEID + valuefromurl;
             this.props.getData(action.GET_TRIP_BYPACKAGEID, url)
         }
@@ -68,7 +68,7 @@ class Trip extends Component {
             maxPrice: parseInt(this.props.gettripbyid.maxPrice),
             stayTypeIds: this.props.gettripbyid.stayTypeIds ? this.props.gettripbyid.stayTypeIds : "",
             couponCode: this.props.gettripbyid.couponCode,
-            couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount,
+            couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount*1,
             statusId:parseInt(this.props.gettripbyid.statusId?this.props.gettripbyid.statusId:0),
             couponExpiryDate: dateFormat(this.props.gettripbyid.couponExpiryDate,"yyyy-mm-dd"),
             isDeleted: this.props.gettripbyid.tripId ? false : true
@@ -100,6 +100,7 @@ class Trip extends Component {
         }
     }
     tripbypackageOperation(id) {
+        valuefromurl=id;
         this.props.getData(action.GET_TRIP_BYPACKAGEID, GET_TRIP_BYPACKAGEID + id)
     }
 
@@ -372,7 +373,7 @@ class Trip extends Component {
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Package</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control travellerMode" onChange={(e) => this.tripbypackageOperation(e.target.value)}>
+                                                        <select class="form-control travellerMode" value={valuefromurl?valuefromurl:"0"} onChange={(e) => this.tripbypackageOperation(e.target.value)}>
                                                             <option value={0}>Select</option>
                                                             {this.props.packages.map(obj =>
                                                                 <option value={obj.packageId}>{obj.packageName}</option>
@@ -430,10 +431,19 @@ class Trip extends Component {
 
                                                 },
                                                 {
+                                                    Header: "StrengthLimit",
+                                                    accessor: "strengthLimit",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
                                                     id: 'id', // Required because our accessor is not a string
                                                     Header: '',
                                                     accessor: d => d.tripId,
-                                                    maxWidth: 300,
+                                                    maxWidth: 500,
                                                     Cell: row => (
                                                         <div className="template-demo">
                                                             <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
@@ -442,8 +452,12 @@ class Trip extends Component {
                                                             <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                                 <i class="mdi mdi-delete-outline"></i>
                                                             </button>
-                                                            <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
-                                                                <Link to={`/admin/tripcostcenter/${row.value}`}> <i class="mdi mdi-eye-outline"></i></Link>
+                                                            <button type="button" class="btn btn-icon" value={row.value} >
+                                                                <Link to={`/admin/tripcostcenter/${row.value}`}>Costcentre </Link>
+                                                            </button>
+                                                           <br/>
+                                                            <button type="button" value={row.value} class="btn btn-icon">
+                                                                <Link to={`/admin/booking/${row.value}`}>Bookings</Link>
                                                             </button>
                                                         </div>)
                                                 }

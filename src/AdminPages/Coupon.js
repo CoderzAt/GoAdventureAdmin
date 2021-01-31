@@ -146,7 +146,7 @@ class Coupon extends Component {
                                                             <div class="col-sm-9">
                                                                 <select value={this.props.couponbyid.parcentageorvalue ? this.props.couponbyid.parcentageorvalue : "0"}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "parcentageorvalue")} >
-                                                                    <option value={0}>Slect</option>
+                                                                    <option value={0}>Select</option>
                                                                     <option value="percentage">Percentage</option>
                                                                     <option value="value">Value</option>
                                                                 </select>

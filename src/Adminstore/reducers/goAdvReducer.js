@@ -195,7 +195,11 @@ const initalState ={
     logintoken:"",
     userid:0,
     loginmsgdata:[],
-    getstatusbytype:[]
+    getstatusbytype:[],
+    getPickupanddrop:[],
+    padbyid:[],
+    getbookingoptions:[],
+    getuserbyidprofile:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -243,6 +247,65 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isPkgLoading: false,
+            }
+        }
+        case `${actions.GET_BOOKING_BYID_TABLE}_PENDING` : {
+            return{
+                ...state,
+                isbookingbyidtableLoading: true
+            }
+        }
+        case `${actions.GET_BOOKING_BYID_TABLE}_FULFILLED` : {
+            return{
+                ...state,
+                isbookingbyidtableLoading: false,
+                getbooking:[action.payload.data]
+            }
+        }
+        case `${actions.GET_BOOKING_BYID_TABLE}_REJECTED` : {
+            return{
+                ...state,
+                isbookingbyidtableLoading: false,
+            }
+        }
+        
+        case `${actions.GET_PICKUPANDDROP}_PENDING` : {
+            return{
+                ...state,
+                isPadLoading: true
+            }
+        }
+        
+        case `${actions.GET_PICKUPANDDROP}_FULFILLED` : {
+            return{
+                ...state,
+                isPadLoading: false,
+                getPickupanddrop:action.payload.data
+            }
+        }
+        case `${actions.GET_PICKUPANDDROP}_REJECTED` : {
+            return{
+                ...state,
+                isPadLoading: false,
+            }
+        }
+        case `${actions.GET_PICKUPANDDROPBYID}_PENDING` : {
+            return{
+                ...state,
+                isPadbyidLoading: true
+            }
+        }
+        case `${actions.GET_PICKUPANDDROPBYID}_FULFILLED` : {
+            return{
+                ...state,
+                isPadbyidLoading: false,
+                padbyid: action.payload.data
+            }
+        }
+        case `${actions.GET_PICKUPANDDROPBYID}_REJECTED` : {
+            return{
+                ...state,
+                isPadbyidLoading: false,
             }
         }
         case `${actions.GET_STATUS_BYTYPE}_PENDING` : {
@@ -329,6 +392,54 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 ispostPackageLoading: false,
+            }
+        }
+        case `${actions.POST_PICKUPANDDROP}_PENDING` : {
+            return{
+                ...state,
+                ispostPadLoading: true
+            }
+        }
+        case `${actions.POST_PICKUPANDDROP}_FULFILLED` : {
+            let msgData=HandlingError(action.payload,"pickupanddrop","added")
+            return{
+                ...state,
+                ispostPadLoading: false,
+                postpickupanddrop: action.payload.data,
+                message: true,
+                messageData: msgData,
+                padbyid:action.payload.statusText === "error"?state.padbyid:{}
+
+            }
+        }
+        case `${actions.POST_PICKUPANDDROP}_REJECTED` : {
+            return{
+                ...state,
+                ispostPadLoading: false,
+            }
+        }
+        case `${actions.PUT_PICKUPANDDROP}_PENDING` : {
+            return{
+                ...state,
+                isputPadLoading: true
+            }
+        }
+        case `${actions.PUT_PICKUPANDDROP}_FULFILLED` : {
+            let msgData=HandlingError(action.payload,"pickupanddrop","updated")
+            return{
+                ...state,
+                isputPadLoading: false,
+                putpickupanddrop: action.payload.data,
+                message: true,
+                messageData: msgData,
+                padbyid:action.payload.statusText === "error"?state.padbyid:{}
+
+            }
+        }
+        case `${actions.PUT_PICKUPANDDROP}_REJECTED` : {
+            return{
+                ...state,
+                isputPadLoading: false,
             }
         }
         case `${actions.GET_ALL_ACCESSORIES}_PENDING` : {
@@ -635,6 +746,30 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isdeleteCountryLoading: false,
+            }
+        }
+        case `${actions.DELETE_PICKUPANDDROP}_PENDING` : {
+            return{
+                ...state,
+                isdeletePadLoading: true
+            }
+        }
+        case `${actions.DELETE_PICKUPANDDROP}_FULFILLED` : {
+            debugger
+           let msgData =deleteMsgHandling(action.payload,"PickupandDrop")
+
+            return{
+                ...state,
+                isdeletePadLoading: false,
+                deletepickupanddrop:action.payload.data,
+                message: true,
+                messageData: msgData
+            }
+        }
+        case `${actions.DELETE_PICKUPANDDROP}_REJECTED` : {
+            return{
+                ...state,
+                isdeletePadLoading: false,
             }
         }
         case `${actions.GET_CITY_BYID}_PENDING` : {
@@ -2331,10 +2466,31 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isgetBookingLoading: false,
-                getbooking: action.payload.data
+                getbooking: action.payload.data,
+                
             }
         }
         case `${actions.GET_BOOKING}_REJECTED` : {
+            return{
+                ...state,
+                isgetBookingLoading: false,
+            }
+        }
+        case `${actions.GET_BOOKING_OPTIONS}_PENDING` : {
+            return{
+                ...state,
+                isgetBookingLoading: true
+            }
+        }
+        case `${actions.GET_BOOKING_OPTIONS}_FULFILLED` : {
+            return{
+                ...state,
+                isgetBookingLoading: false,
+              
+                getbookingoptions:action.payload.data
+            }
+        }
+        case `${actions.GET_BOOKING_OPTIONS}_REJECTED` : {
             return{
                 ...state,
                 isgetBookingLoading: false,
@@ -2386,6 +2542,52 @@ const goAdvReducer = (state =initalState, action) => {
 
             }
         }
+        
+        case `${actions.GET_BOOKING_BYTRIPID}_PENDING` : {
+            return{
+                ...state,
+                isgetBookingbytripbyidLoading: true
+            }
+        }
+        case `${actions.GET_BOOKING_BYTRIPID}_FULFILLED` : {
+            debugger
+           /*  let accessoryids=(action.payload.data.accessories).split(",");
+            var accessorynames1=[]
+
+            accessoryids.map(obj=>
+                state.accessories.map((item)=>{
+                    if(parseInt(obj) == item.accessoryName)
+                    {
+                        accessorynames1.push({accessoryName:item.accessoryName,accessoriesId:item.accessoriesId}); //reusability
+                    }
+                }))
+
+                let activityids=(action.payload.data.activityIds).split(",");
+                var activitynames1=[]
+
+                activityids.map(obj=>
+                    state.activities.map((item)=>{
+                        if(parseInt(obj) == item.activityName)
+                        {
+                            activitynames1.push({activityName:item.activityName,activityId:item.activityId}); //reusability
+                        }
+                    })) */
+            return{
+                ...state,
+                isgetBookingbytripidLoading: false,
+                getbooking: action.payload.data,
+                /* accessoryids:accessorynames1,
+                activityids:activitynames1 */
+            }
+        }
+        case `${actions.GET_BOOKING_BYTRIPID}_REJECTED` : {
+            return{
+                ...state,
+                isgetBookingbytripidLoading: false,
+
+            }
+        }
+        
         case `${actions.PUT_BOOKING}_PENDING` : {
             return{
                 ...state,
@@ -2485,7 +2687,7 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isgetUserLoading: false,
-                getuserbyid: action.payload.data
+                getuserbyid: action.payload.data,
             }
         }
         case `${actions.GET_USER_BYID}_REJECTED` : {
@@ -2494,6 +2696,26 @@ const goAdvReducer = (state =initalState, action) => {
                 isgetUserLoading: false,
             }
         }
+        case `${actions.GET_USER_BYID_PROFILE}_PENDING` : {
+            return{
+                ...state,
+                isgetUserLoading: true
+            }
+        }
+        case `${actions.GET_USER_BYID_PROFILE}_FULFILLED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
+                getuserbyidprofile: action.payload.data,
+            }
+        }
+        case `${actions.GET_USER_BYID_PROFILE}_REJECTED` : {
+            return{
+                ...state,
+                isgetUserLoading: false,
+            }
+        }
+
 
         case `${actions.PUT_USER}_PENDING` : {
             return{
@@ -3424,7 +3646,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
         }
         case `${actions.POST_ACCESSORIES_BOOKING}_PENDING` : {
             debugger
-            let msgData=HandlingError(action.payload,"acessaryboking","added")
+            //let msgData=HandlingError(action.payload,"acessaryboking","added")
             return{
                 ...state,
                 ispostAccessoryBookingLoading: true

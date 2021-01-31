@@ -50,6 +50,7 @@ class User extends Component {
             dateOfBirth: dateFormat(this.props.getuserbyid.dateOfBirth,"yyyy-mm-dd"),
             phoneNumber:this.props.getuserbyid.phoneNumber,
             emailId:this.props.getuserbyid.emailId,
+            password:this.props.getuserbyid.password,
             addressInfo:this.props.getuserbyid.addressInfo,
             isDeleted:this.props.getuserbyid.userId ? false : true
         };
@@ -218,6 +219,15 @@ class User extends Component {
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.emailId ? this.props.getuserbyid.emailId : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "emailId")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Password</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="text" value={this.props.getuserbyid.password?this.props.getuserbyid.password:""}
+                                                                    class="form-control" onChange={(e) => this.updateUser(e, "password")} />
                                                             </div>
                                                         </div>
                                                     </div>

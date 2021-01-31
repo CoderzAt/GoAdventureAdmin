@@ -297,8 +297,8 @@ deleteRecord(id)
                                 <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                   <i class="mdi mdi-delete-outline"></i>
                                 </button>
-                                <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
-                                  <Link style={{ color: '#A9A9A9' }} to={`/admin/city/${row.value}`}> <i class="mdi mdi-eye-outline"></i></Link>
+                                <button type="button" class="btn btn-icon" value={row.value} >
+                                  <Link  to={`/admin/city/${row.value}`}>Cities</Link>
                                 </button>
                               </div>)
 

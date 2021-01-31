@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,GET_STAYTYPE,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID, GET_STATUS_BYTYPE} from '../Shared/Services'
+import {postData,loadData,getbookings, bookingpostapi,getbookingbyid,bookingupdateapi,GET_STAYTYPE,GET_BOOKING_BYTRIPID,GET_BOOKING_BYID,GET_BOOKING,POST_BOOKING,PUT_BOOKING,GET_ACTIVITIES,GET_TRAVELTYPE,GET_ALL_ACCESSORIES,GET_TRIP,GET_USER,DELETE_BOOKING,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID, GET_STATUS_BYTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -14,6 +14,7 @@ import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Link} from "react-router-dom";
 
 var condition=false;
+var valuefromurl
 class Booking extends Component {
     constructor(props) {
         super(props);
@@ -44,7 +45,8 @@ class Booking extends Component {
         activities:[],
         users:[],
         hide:"true",
-        errors:{}
+        errors:{},
+        bookimgoptionvalue:"0"
          }
     }
     componentWillMount()
@@ -56,18 +58,37 @@ class Booking extends Component {
      {
          debugger
        this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
-       this.props.getData(action.GET_BOOKING,GET_BOOKING);
+      
        this.props.getData(action.GET_TRIP,GET_TRIP)
        this.props.getData(action.GET_ALL_ACCESSORIES,GET_ALL_ACCESSORIES) 
        this.props.getData(action.GET_AVCTIVITIES,GET_ACTIVITIES)
        this.props.getData(action.GET_USER,GET_USER)
        this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
        this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"Trip Booking")
+       debugger
+       if (this.props.match.params.tid != undefined) {
+        valuefromurl = parseInt(this.props.match.params.tid);
+        //this.props.getData(act)
+        this.props.getData(action.GET_BOOKING_BYTRIPID,GET_BOOKING_BYTRIPID+valuefromurl)
+        this.props.getData(action.GET_BOOKING_OPTIONS,GET_BOOKING_BYTRIPID+valuefromurl);
+       }
+       else
+       {
+        this.props.getData(action.GET_BOOKING,GET_BOOKING);
+        this.props.getData(action.GET_BOOKING_OPTIONS,GET_BOOKING);
+       }
+
+
         }   //there is an issue with api
         refresh(e)
      {
+         
          e.preventDefault();
+         this.setState({
+             bookimgoptionvalue:"0"
+         })
          this.props.getData(action.GET_BOOKING,GET_BOOKING);
+         //this.props.getData(action.GET_BOOKING_OPTIONS,GET_BOOKING_BYTRIPID+valuefromurl);
      }
     tripOperation(event)
     {
@@ -410,6 +431,13 @@ class Booking extends Component {
         this.props.updatePropAccData(paramName,value,"getbookingbyid");
         this.setState({ refreshflag: !this.state.refreshflag });
     }
+    bookingbyid(id)
+    {
+        this.setState({
+            bookimgoptionvalue:id
+        })
+        this.props.getData(action.GET_BOOKING_BYID_TABLE,GET_BOOKING_BYID+id)
+    }
     deleteRecord(id)
     {
         debugger
@@ -615,8 +643,8 @@ class Booking extends Component {
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Total Amount</label>
-                                                    <div class="col-sm-9">
-                                                        <input required type="number" value={this.props.getbookingbyid.totalAmount?this.props.getbookingbyid.totalAmount:""} 
+                                                    <div class="col-sm-9" >
+                                                        <input required type="number" disabled value={this.props.getbookingbyid.totalAmount?this.props.getbookingbyid.totalAmount:""} 
                                                         class="form-control"  onChange={(e)=>this.updateBooking(e,"totalAmount")}/>
                                                     </div>
                                                 </div>
@@ -726,43 +754,72 @@ class Booking extends Component {
                             <div class="card">
                                 <div class="card-body">
                                     <h4 class="card-title">Bookings<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
+                                    <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 col-form-label">BookingId</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control travellerMode" value={this.state.bookimgoptionvalue} onChange={(e) => this.bookingbyid(e.target.value)}>
+                                                            <option value={0}>Select</option>
+                                                            {this.props.getbookingoptions.map(obj =>
+                                                                <option value={obj.bookingId}>{obj.bookingId}</option>
+                                                            )}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     <div class="table-responsive"></div>
                                       <ReactTable columns={[
-                                   
-                                  {
-                                    Header: "PrimaryContact",
-                                    accessor: "primaryContact"
-                                    
-                                  },
-                                  {
-                                    Header: "SecondaryContact",
-                                    accessor: "secondaryContact"
-                                    
-                                  },
-                                  {
-                                    Header: "emailId",
-                                    accessor: "emailId"
-                                    
-                                  },
-                                  {
-                                    id:'id', // Required because our accessor is not a string
-                                    Header: 'Actions',
-                                    accessor: d => d.bookingId,
-                                    maxWidth:300,
-                                    Cell: row => (
-                                      <div className="template-demo">
-                                          <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => {  this.editReacord(row.value)}} >
-                                                            <i class="mdi mdi-pencil-outline"></i>
-                                          </button>
-                                          <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}}  value={row.value} >
-                                                            <i class="mdi mdi-delete-outline"></i>
-                                          </button>
-                                          <button type="button"  value={row.value} class="btn btn-icon">
-                                          <Link  to={`/admin/payments/Trip/${row.value}`}>Payments</Link>
-                                          </button>
-                                      </div>)
-                                 }
-                                ]}
+                                                {
+                                                    Header: "BookingID",
+                                                    accessor: "bookingId"
+
+                                                },
+
+                                                {
+                                                    Header: "PrimaryContact",
+                                                    accessor: "primaryContact"
+
+                                                },
+                                                {
+                                                    Header: "SecondaryContact",
+                                                    accessor: "secondaryContact"
+
+                                                },
+                                                {
+                                                    Header: "emailId",
+                                                    accessor: "emailId"
+
+                                                },
+                                                {
+                                                    Header: "TotalAmount",
+                                                    accessor: "totalAmount"
+
+                                                },
+                                                {
+                                                    Header: "StatusId",
+                                                    accessor: "statusId"
+
+                                                },
+                                                
+                                                {
+                                                    id: 'id', // Required because our accessor is not a string
+                                                    Header: 'Actions',
+                                                    accessor: d => d.bookingId,
+                                                    maxWidth: 300,
+                                                    Cell: row => (
+                                                        <div className="template-demo">
+                                                            <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" onClick={(e) => { this.editReacord(row.value) }} >
+                                                                <i class="mdi mdi-pencil-outline"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) => { if (window.confirm('Are you sure to delete this record?')) { this.deleteRecord(row.value) }; }} value={row.value} >
+                                                                <i class="mdi mdi-delete-outline"></i>
+                                                            </button>
+                                                            <button type="button" value={row.value} class="btn btn-icon">
+                                                                <Link to={`/admin/payments/Trip/${row.value}`}>Payments</Link>
+                                                            </button>
+                                                        </div>)
+                                                }
+                                            ]}
                                 data={this.props.getbooking}
                                 showPagination={true}
                                 defaultPageSize={5}
@@ -793,7 +850,8 @@ class Booking extends Component {
           activityids:state.goAdvStore.activityids,
           getstaytype:state.goAdvStore.getstaytype,
           getbookingtotatamount:state.goAdvStore.getbookingtotatamount,
-          getstatusbytype:state.goAdvStore.getstatusbytype
+          getstatusbytype:state.goAdvStore.getstatusbytype,
+          getbookingoptions:state.goAdvStore.getbookingoptions
         }
       }
       export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Booking);

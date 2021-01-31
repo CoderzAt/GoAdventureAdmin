@@ -42,7 +42,7 @@ class Sidebar extends Component {
     componentDidMount()
     {
       debugger
-      this.props.getData(action.GET_USER_BYID,GET_USER_BYID+localStorage.getItem("userid"))
+      this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
 
     }
 
@@ -72,7 +72,7 @@ class Sidebar extends Component {
                     <li class="nav-item nav-profile">
                         <a href="#" class="nav-link">
                             <div class="nav-profile-image">
-                                <img src="/assets/images/faces/face1.jpg" alt="profile"/>
+                                <img src="https://conservation-innovations.org/wp-content/uploads/2019/09/Dummy-Person.png" alt="profile"/>
                                 <span class="login-status online"></span>
                           </div>
                             <div class="nav-profile-text d-flex flex-column">
@@ -96,7 +96,7 @@ class Sidebar extends Component {
 
     const mapStateToProps = (state) => {
       return {
-        getuserbyid:state.goAdvStore.getuserbyid
+        getuserbyid:state.goAdvStore.getuserbyidprofile
         
       }
   }

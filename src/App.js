@@ -46,6 +46,7 @@ import AccessoriesBooking from './AdminPages/AccessoriesBooking';
 import User from './AdminPages/User';
 import Payements from './AdminPages/Payements';
 import Login  from './AdminPages/Login';
+import Pickupanddrop from './AdminPages/Pickupanddrop';
 //import './App.scss'
 //import AppRoutes from './AppRoutes'
 
@@ -80,6 +81,7 @@ class App extends Component {
             <Route exact path="/admin/trip" component={Trip}/>
             <Route exact path="/admin/trip/:tid" component={Trip}/>
             <Route exact path="/admin/booking" component={Booking}/>
+            <Route exact path="/admin/booking/:tid" component={Booking}/>
             <Route exact path="/admin/itenary" component={Itenary}/>
             <Route exact path="/admin/itenary/:pid" component={Itenary}/>
             <Route exact path="/admin/activity" component={Activity}/>
@@ -94,8 +96,10 @@ class App extends Component {
             <Route exact path="/admin/accessorybooking/:type/:bid" component={AccessoriesBooking}/>
             {/* <Route exact path="/admin/accessorybooking/:id" component={AccessoriesBooking}/>*/}
             <Route exact path="/admin/user" component={User}/>
+            <Route exact path="/admin/pickupanddrop" component={Pickupanddrop}/>
             <Route exact path="/admin/payments" component={Payements}/>
             <Route exact path="/admin/payments/:type/:bid" component={Payements}/>
+            <Redirect to="/admin/login-1"/>
             </Switch>
             :<Redirect to="/admin/login-1"/>}
             <Switch>

@@ -269,7 +269,7 @@ class Payements extends Component {
                                                         <select class="form-control travellerMode" value={valuefromurl?valuefromurl : "0"} onChange={(e) => this.paymentsbybookig(e)}>
                                                             <option value={0}>Select</option>
                                                             {this.props.getbooking.map(obj =>
-                                                                <option value={obj.bookingId}>{obj.emailId}</option>
+                                                                <option value={obj.bookingId}>{obj.bookingId}</option>
                                                             )}
                                                         </select>
                                                     </div>
@@ -299,6 +299,15 @@ class Payements extends Component {
                                                 {
                                                     Header: "ReferenceNumber",
                                                     accessor: "referenceNumber",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
+                                                    Header: "Amount",
+                                                    accessor: "amount",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'

@@ -218,6 +218,7 @@ export const getbookings="https://ga-api.azurewebsites.net/api/v1/getAllBookings
 export const bookingpostapi="https://ga-api.azurewebsites.net/api/v1/createBookings";
 export const bookingupdateapi="https://ga-api.azurewebsites.net/api/v1/updateBookings?id=";
 export const getbookingbyid="https://ga-api.azurewebsites.net/api/v1/getBookingsByid?id=";
+export const GET_BOOKING_BYTRIPID="GetBookingsByTripId?tripId=";
 
 
 export const GET_BOOKING="getAllBookings";
@@ -262,6 +263,17 @@ export const POST_EVENTLEVEL="createMdEventLevel";
 export const PUT_EVENTLEVEL="updateMdEventLevel?id=";
 export const GET_EVENTLEVEL_BYID="GetMdEventLevelById?id=";
 export const DELETE_EVENTLEVEL="DeleteMdEventLevel?id=";
+
+//pickupanddroplocations
+export const GET_PICKUPANDDROP="GetAllPickAndDropLocations";
+export const POST_PICKUPANDDROP="CreatePickAndDropLocation";
+export const PUT_PICKUPANDDROP="UpdatePickAndDropLocation?id=";
+export const GET_PICKUPANDDROPBYID="GetPickAndDropLocationsById?id=";
+export const DELETE_PICKUPANDDROP="DeletePickAndDropLocation?id=";
+
+
+
+
 //status
 export const getstatusapi="https://ga-api.azurewebsites.net/api/v1/GetAllMdStatus";
 

@@ -293,11 +293,11 @@ class Package extends Component {
               convertFromHTML(this.props.packagebyid.thingsTobring?this.props.packagebyid.thingsTobring:'<div><div>')
             )
           ) */
-          if(this.props.packagebyid.destinationId)
+          /* if(this.props.packagebyid.destinationId)
           { 
               debugger
               this.props.getData(action.PLACETOVISIT_BYDESTINATION,PLACETOVISIT_BYDESTINATION+this.props.packagebyid.destinationId)
-          } 
+          }  */
 	    return (
 
         <div>
@@ -693,8 +693,8 @@ class Package extends Component {
                                           <button type="button" class="btn btn-gradient-danger btn-rounded btn-icon" onClick={(e) =>{if(window.confirm('Are you sure to delete this record?')){ this.deleteRecord(row.value)};}} value={row.value} >
                                                             <i class="mdi mdi-delete-outline"></i>
                                           </button>
-                                          <button type="button" class="btn btn-gradient-primary btn-rounded btn-icon" value={row.value} >
-                                          <Link  to={`/admin/trip/${row.value}`}> <i class="mdi mdi-eye-outline"></i></Link>
+                                          <button type="button" class="btn btn-icon" value={row.value} >
+                                          <Link  to={`/admin/trip/${row.value}`}>Trips</Link>
                                           </button>
                                           <button type="button"  value={row.value} class="btn btn-icon">
                                           <Link  to={`/admin/itenary/${row.value}`}>Itenary</Link>

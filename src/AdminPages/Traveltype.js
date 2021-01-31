@@ -25,6 +25,7 @@ class Traveltype extends Component {
     }
     componentWillMount()
     {
+        debugger
       this.props.removeErrormsg()
   
     }

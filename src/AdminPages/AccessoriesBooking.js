@@ -68,6 +68,7 @@ class AccessoriesBooking extends Component {
             givenDate: dateFormat(this.props.accessorybookingbyid.givenDate,"yyyy-mm-dd"),
             returnedDate:dateFormat(this.props.accessorybookingbyid.returnedDate,"yyyy-mm-dd"),
             price: parseInt(this.props.accessorybookingbyid.price),
+            statusId:parseInt(this.props.accessorybookingbyid.statusId?this.props.accessorybookingbyid.statusId:0),
             isDeleted:this.props.accessorybookingbyid.accessoryBookingId? false : true
 
         };
