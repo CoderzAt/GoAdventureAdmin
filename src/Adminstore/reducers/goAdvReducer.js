@@ -214,11 +214,15 @@ const goAdvReducer = (state =initalState, action) => {
             let msgData=HandlingError(action.payload,"totalamount","fetched")
             debugger
             let totalamount=state.getbookingbyid
-             totalamount["totalAmount"]=action.payload.data;
+            if(msgData.isSuccess)
+            {
+             totalamount["totalAmount"]=action.payload.data.totalAmount;
+             totalamount["depositAmount"]=action.payload.data.depositAmount;
+            }
             return{
                 ...state,
                 isBTMLoading: false,
-                getbookingtotatamount: action.payload.data,
+                //getbookingtotatamount: action.payload.data.totalAmount,
                 getbookingbyid:totalamount,
                 message: true,
                 messageData: msgData,

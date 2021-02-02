@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,countrypostapi,getcounties,loadData,deletecountry,getcountrybyid,countryupdateapi,GET_COUNTRIES,GET_COUNTRY_BYID,POST_COUNTRY,PUT_COUNTRY,DELETE_COUNTRY} from '../Shared/Services'
+import {postData,countrypostapi,getcounties,loadData,deletecountry,getcountrybyid,countryupdateapi,GET_USER_BYID,GET_COUNTRIES,GET_COUNTRY_BYID,POST_COUNTRY,PUT_COUNTRY,DELETE_COUNTRY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -39,6 +39,7 @@ class Country extends Component {
     }
     componentDidMount() {
       this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
+      this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     refresh(e)
   {
@@ -81,6 +82,8 @@ class Country extends Component {
           countryName:this.props.getcountrybyid.countryName,
           countryCode:this.props.getcountrybyid.countryCode,
           countryDesc:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
+          createdBy:this.props.getcountrybyid.countryId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+          modifiedBy:this.props.getcountrybyid.countryId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
           isDeleted: false
         };
         let url = PUT_COUNTRY+this.props.getcountrybyid.countryId;
@@ -336,6 +339,7 @@ class Country extends Component {
             countries: state.goAdvStore.countries,
             getcountrybyid:state.goAdvStore.getcountrybyid,
             message: state.goAdvStore.message,
+            getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
             messageData: state.goAdvStore.messageData
         }
     }

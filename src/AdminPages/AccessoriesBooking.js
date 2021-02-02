@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { GET_ACCESSORIES_BOOKING, GET_USER,GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_BOOKING_BYBOOKINGID, POST_ACCESSORIES_BOOKING, PUT_ACCESSORIES_BOOKING,  DELETE_ACCESSORIES_BOOKING,GET_ACCESSORIES_BOOKING_BYACCESSORYID,GET_ALL_ACCESSORIES,ACCESSARY_TYPE, GET_ACCESSORIES_BYID, GET_ACCESSORY_BYTYPE, GET_STATUS_BYTYPE} from '../Shared/Services'
+import { GET_ACCESSORIES_BOOKING, GET_USER,GET_USER_BYID,GET_ACCESSORIES_BOOKING_BYID, GET_ACCESSORIES_BOOKING_BYBOOKINGID, POST_ACCESSORIES_BOOKING, PUT_ACCESSORIES_BOOKING,  DELETE_ACCESSORIES_BOOKING,GET_ACCESSORIES_BOOKING_BYACCESSORYID,GET_ALL_ACCESSORIES,ACCESSARY_TYPE, GET_ACCESSORIES_BYID, GET_ACCESSORY_BYTYPE, GET_STATUS_BYTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -45,6 +45,7 @@ class AccessoriesBooking extends Component {
         this.props.getData(action.GET_USER,GET_USER)
         this.props.getData(action.ACCESSARY_TYPE,ACCESSARY_TYPE)
         this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"accessorybooking")
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     componentWillMount() {
         this.props.removeErrormsg()
@@ -69,6 +70,8 @@ class AccessoriesBooking extends Component {
             returnedDate:dateFormat(this.props.accessorybookingbyid.returnedDate,"yyyy-mm-dd"),
             price: parseInt(this.props.accessorybookingbyid.price),
             statusId:parseInt(this.props.accessorybookingbyid.statusId?this.props.accessorybookingbyid.statusId:0),
+            createdBy:this.props.accessorybookingbyid.accessoryBookingId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.accessorybookingbyid.accessoryBookingId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.accessorybookingbyid.accessoryBookingId? false : true
 
         };
@@ -454,7 +457,8 @@ const mapStateToProps = (state) => {
         getuser:state.goAdvStore.getuser,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
-        getstatusbytype:state.goAdvStore.getstatusbytype
+        getstatusbytype:state.goAdvStore.getstatusbytype,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
     }
 }
 export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(AccessoriesBooking);

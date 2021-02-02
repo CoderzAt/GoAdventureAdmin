@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_ACTIVITY_BYID,GE,GET_ACTIVITIES,PUT_ACTIVITY,POST_ACTIVITY,DELETE_ACTIVITY} from '../Shared/Services'
+import {GET_ACTIVITY_BYID,GET_USER_BYID,GET_ACTIVITIES,PUT_ACTIVITY,POST_ACTIVITY,DELETE_ACTIVITY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -25,6 +25,7 @@ class Activity extends Component {
       componentDidMount()
      {
         this.props.getActivity()
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
      }
      refresh(e)
      {
@@ -37,6 +38,8 @@ class Activity extends Component {
             activityId:this.props.getactivitybyid.activityId?this.props.getactivitybyid.activityId:0,
             activityName:this.props.getactivitybyid.activityName,
             activityGenre:this.props.getactivitybyid.activityGenre,
+            createdBy:this.props.getactivitybyid.activityId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getactivitybyid.activityId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.getactivitybyid.activityId?false:true
         };
         let url = PUT_ACTIVITY +this.props.getactivitybyid.activityId;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { postData, GET_ALL_ACCESSORIES,GET_STATUS,POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID,GET_STATUS_BYTYPE,DELETE_ACCESSORIES,ACCESSARY_TYPE } from '../Shared/Services'
+import { postData, GET_ALL_ACCESSORIES,GET_STATUS,GET_USER_BYID,POST_ACCESSORIES, PUT_ACCESSORIES, GET_ACCESSORIES_BYID,GET_STATUS_BYTYPE,DELETE_ACCESSORIES,ACCESSARY_TYPE } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
@@ -29,6 +29,7 @@ class Accessories extends Component {
         this.props.getData(action.ACCESSARY_TYPE,ACCESSARY_TYPE)
         this.props.getData(action.GET_STATUS,GET_STATUS)
         this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"Accessory")
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     refresh(e)
     {
@@ -76,6 +77,7 @@ class Accessories extends Component {
             salePrice: this.props.getaccessorybyid.salePrice?this.props.getaccessorybyid.salePrice*1:0,
             rentPrice: this.props.getaccessorybyid.rentPrice?this.props.getaccessorybyid.rentPrice*1:0,
             isAvailable:JSON.parse(this.props.getaccessorybyid.isAvailable),
+           
             isDeleted:this.props.getaccessorybyid.accessoriesId?false:true
         };
         var bodyFormData = new FormData();
@@ -409,7 +411,8 @@ const mapStateToProps = (state) => {
         getaccessarytype:state.goAdvStore.getaccessarytype,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
-        getstatusbytype:state.goAdvStore.getstatusbytype
+        getstatusbytype:state.goAdvStore.getstatusbytype,
+         getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
     }
 }
 export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile })(Accessories);
