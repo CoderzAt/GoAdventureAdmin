@@ -65,7 +65,7 @@ class Login extends Component {
       console.log("data",localStorage.getItem("GoAdventureLoginToken"));
         return (
           <div>
-          {this.props.loginmsgdata.status?<Redirect to="/"/>:null}
+          {this.props.loginmsgdata.status === "success"?<Redirect to="/"/>:null}
           
           <div style={{backgroundImage: `url(img/trip-details-images/Meghalaya-04.jpeg)`,paddingTop:90 }}>
            

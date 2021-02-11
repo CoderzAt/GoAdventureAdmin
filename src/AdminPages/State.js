@@ -3,12 +3,12 @@ import { Form } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import { postData, statepostapi, loadData, getcounties, getstates, getstatebyid, stateupdateapi, getallstatebycountry, POST_STATE, GET_STATE_BYID, GET_STATES, PUT_STATE, GET_STATE_BYCOUNTRYID,GET_COUNTRIES,DELETE_STATE } from '../Shared/Services'
+import { postData, statepostapi, loadData, getcounties, getstates,getstatebyid,GET_USER_BYID,stateupdateapi, getallstatebycountry, POST_STATE, GET_STATE_BYID, GET_STATES, PUT_STATE, GET_STATE_BYCOUNTRYID,GET_COUNTRIES,DELETE_STATE } from '../Shared/Services'
 import Sidebar from './Sidebar'
 
 import TableWithSelection from '../Components/TablewithdataSelection'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removedata,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -16,6 +16,8 @@ import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
 var valuefromurl
 var countryfromurl
+/* const countries=[{countryid:1,countryname:"india",available:"<p style={{colour:'red'}}>available<p>"},
+{countryid:2,countryname:"india",available:"<p style={{colour:'red'}}>available<p>"}] */
 class State extends Component {
   constructor(props) {
     super(props);
@@ -35,12 +37,12 @@ class State extends Component {
   componentWillMount()
     {
       this.props.removeErrormsg()
-     
-  
-    }
+      this.props.removedata("getstatebyid")
+     }
     componentDidMount() 
     {
-      
+debugger
+     
     var url
    if (this.props.match.params.sid != undefined) {
       valuefromurl = parseInt(this.props.match.params.sid);
@@ -54,6 +56,7 @@ class State extends Component {
       //url=getstates
     }
     this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
+    this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
      }
     statebycountryoperation(event) {
      
@@ -70,6 +73,8 @@ class State extends Component {
       stateCode: this.props.getstatebyid.stateCode,
       stateDesc: this.props.getstatebyid.stateDesc,
       countryId: this.props.getstatebyid.countryId*1,
+      createdBy:this.props.getstatebyid.stateId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+      modifiedBy:this.props.getstatebyid.stateId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
       isDeleted: this.props.getstatebyid.stateId?false:true
       };
     let url = PUT_STATE+ this.props.getstatebyid.stateId;
@@ -115,6 +120,7 @@ refresh(e)
   }
   else
   {
+    countryfromurl="0"
     this.props.getData(action.GET_STATES,GET_STATES)
   }
 }
@@ -142,7 +148,7 @@ deleteRecord(id)
                     <i class="mdi mdi-home-map-marker"></i>
                   </span> State
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                 <nav aria-label="breadcrumb">
                   <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -207,6 +213,8 @@ deleteRecord(id)
                           <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                           <button type="reset" class="btn btn-light">Cancel</button>
                         </div>
+                        <br/>
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                       </Form>
                     </div>
                   </div>
@@ -307,7 +315,7 @@ deleteRecord(id)
                         ]}
                           data={this.props.states}
                           showPagination={true}
-                          defaultPageSize={5}
+                          defaultPageSize={25}
 
                         />
                       </div>
@@ -330,9 +338,10 @@ const mapStateToProps = (state) => {
     countries:state.goAdvStore.countries,
     getstatebyid:state.goAdvStore.getstatebyid,
     message: state.goAdvStore.message,
+    getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
     messageData: state.goAdvStore.messageData
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(State);
+export default connect(mapStateToProps, { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(State);
    // export default State
 

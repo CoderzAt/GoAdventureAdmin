@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
 import { Link} from "react-router-dom";
-import {postData,loadData,eventtypepostapi,eventtypeupdateapi,getstatusapi,geteventtypebyid,geteventtypes,GET_EVENTTYPE,GET_EVENTTYPE_BYID,POST_EVENTTYPE,PUT_EVENTTYPE,GET_STATUS,DELETE_EVENTTYPE} from '../Shared/Services'
+import {postData,loadData,eventtypepostapi,eventtypeupdateapi,getstatusapi,geteventtypebyid,geteventtypes,GET_EVENTTYPE,GET_USER_BYID,GET_EVENTTYPE_BYID,POST_EVENTTYPE,PUT_EVENTTYPE,GET_STATUS,DELETE_EVENTTYPE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removedata,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -22,11 +22,13 @@ class EventType extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata("geteventtypebyid")
     }
    componentDidMount()
      {
        this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
        this.props.getData(action.GET_STATUS,GET_STATUS)
+       this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     } 
     refresh(e)
     {
@@ -47,6 +49,8 @@ class EventType extends Component {
             eventTypeCode:this.props.geteventtypebyid.eventTypeCode,
             eventTypeDesc:this.props.geteventtypebyid.eventTypeDesc,
             statusId:this.props.geteventtypebyid.statusId*1,
+            createdBy:this.props.geteventtypebyid.eventTypeId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.geteventtypebyid.eventTypeId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted: this.props.geteventtypebyid.eventTypeId?false:true
         };
         let url = PUT_EVENTTYPE + this.props.geteventtypebyid.eventTypeId;
@@ -103,7 +107,7 @@ class EventType extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span>EventType
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -159,6 +163,8 @@ class EventType extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
     </Form>
                                 </div>
                             </div>
@@ -211,7 +217,7 @@ class EventType extends Component {
                                 ]}
                                 data={this.props.geteventtype}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                
                          />
                          </div>
@@ -235,11 +241,12 @@ class EventType extends Component {
            geteventtypebyid:state.goAdvStore.geteventtypebyid,
            getstatus:state.goAdvStore.getstatus,
            message: state.goAdvStore.message,
+           getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
            messageData: state.goAdvStore.messageData
            }
     }
     
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(EventType);
+    export default connect(mapStateToProps, {getData,postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(EventType);
 
     //export default EventType
 

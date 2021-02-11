@@ -5,7 +5,7 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getAccessories, getData, postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile } from '../Adminstore/actions/goAdvActions';
+import { getAccessories, getData,removedata,postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -24,12 +24,17 @@ class Accessories extends Component {
             }
         }
     }
+    
     componentDidMount() {
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
         this.props.getData(action.ACCESSARY_TYPE,ACCESSARY_TYPE)
         this.props.getData(action.GET_STATUS,GET_STATUS)
         this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"Accessory")
         this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
+    }
+    componentWillMount()
+    {
+       this.props.removedata("getaccessorybyid");
     }
     refresh(e)
     {
@@ -230,7 +235,7 @@ class Accessories extends Component {
                                                     </div> */}
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">saleOrRent</label>
+                                                            <label class="col-sm-3 col-form-label">sale Or Rent</label>
 
                                                             <div class="col-sm-9">
                                                                 <select class="form-control" value={this.props.getaccessorybyid.saleOrRent ? this.props.getaccessorybyid.saleOrRent : "0"} onChange={(e) => this.updateAccessory(e, "saleOrRent")}>
@@ -390,7 +395,7 @@ class Accessories extends Component {
                                             ]}
                                                 data={this.props.accessories}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -415,7 +420,7 @@ const mapStateToProps = (state) => {
          getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile })(Accessories);
+export default connect(mapStateToProps, { getData, postData1, putData1,removedata,updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile })(Accessories);
 
 
     //export default Accessories

@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_ACTIVITIES,GET_PLACEACTIVITIES_BYID,GET_PLACEACTIVITIES,POST_PLACEACTIVITIES,PUT_PLACEACTIVITIES,DELETE_PLACEACTITIES, GET_PLACETOVISIT} from '../Shared/Services'
+import {GET_ACTIVITIES,GET_PLACEACTIVITIES_BYID,GET_PLACEACTIVITIES,GET_USER_BYID,POST_PLACEACTIVITIES,PUT_PLACEACTIVITIES,DELETE_PLACEACTITIES, GET_PLACETOVISIT} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import {getData,putData1,postData1,resetData,updatePropAccData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import {getData,putData1,postData1,resetData,removedata,updatePropAccData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -23,12 +23,15 @@ class PlaceActivities extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata()
    }
       componentDidMount()
      {
         this.props.getData(action.GET_PLACEACTIVITIES,GET_PLACEACTIVITIES)
         this.props.getData(action.GET_AVCTIVITIES,GET_ACTIVITIES)
         this.props.getData(action.GET_PLACETOVISIT,GET_PLACETOVISIT)
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
+
      }
      refresh(e)
      {
@@ -43,6 +46,8 @@ class PlaceActivities extends Component {
             placeActivityId:this.props.getplaceactivitiesbyid.placeActivityId?this.props.getplaceactivitiesbyid.placeActivityId:0,
             placeId:this.props.getplaceactivitiesbyid.placeId*1,
             activityId:this.props.getplaceactivitiesbyid.activityId*1,
+            createdBy:this.props.getplaceactivitiesbyid.placeActivityId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getplaceactivitiesbyid.placeActivityId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.getplaceactivitiesbyid.placeActivityId?false:true
         };
         let url = PUT_PLACEACTIVITIES +this.props.getplaceactivitiesbyid.placeActivityId;
@@ -104,8 +109,6 @@ updateActivity = (e, paramName) => {
                                 <i class="mdi mdi-wan"></i>
                             </span>PlaceActivities
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
-
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -157,6 +160,8 @@ updateActivity = (e, paramName) => {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
     </Form>
                                 </div>
                             </div>
@@ -209,7 +214,7 @@ updateActivity = (e, paramName) => {
                                 ]}
                                 data={this.props.getplaceactivities}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                
                          />
                          </div>
@@ -240,7 +245,7 @@ updateActivity = (e, paramName) => {
            messageData: state.goAdvStore.messageData
          }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1,resetData,updatePropAccData,removeErrormsg,deleteRecord})(PlaceActivities);
+    export default connect(mapStateToProps, {getData,postData1,removedata,putData1,resetData,updatePropAccData,removeErrormsg,deleteRecord})(PlaceActivities);
     
 
    // export default Activity

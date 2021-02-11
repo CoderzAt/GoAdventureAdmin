@@ -99,7 +99,8 @@ class App extends Component {
             <Route exact path="/admin/pickupanddrop" component={Pickupanddrop}/>
             <Route exact path="/admin/payments" component={Payements}/>
             <Route exact path="/admin/payments/:type/:bid" component={Payements}/>
-            <Redirect to="/admin/login-1"/>
+            <Route exact path="/admin/login-1" component={Login}/>
+            <Redirect to="/"/>
             </Switch>
             :<Redirect to="/admin/login-1"/>}
             <Switch>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { GET_COSTCENTRE_BYID, GET_COSTCENTRE, POST_COSTCENTRE, PUT_COSTCENTRE ,DELETE_COSTCENTRE} from '../Shared/Services'
+import { GET_COSTCENTRE_BYID, GET_COSTCENTRE, POST_COSTCENTRE,GET_USER_BYID,PUT_COSTCENTRE ,DELETE_COSTCENTRE} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, putData1, postData1, updatePropAccData, resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import { getData, putData1, postData1, updatePropAccData,removedata,resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -21,8 +21,9 @@ class Costcentre extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
-  
-    }
+      this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
+      this.props.removedata("getcostcentrebyid")
+   }
     componentDidMount() {
         this.props.getData(action.GET_COSTCENTRE, GET_COSTCENTRE)
     }
@@ -48,6 +49,8 @@ class Costcentre extends Component {
             costCenterTypeDescription: this.props.getcostcentrebyid.costCenterTypeDescription,
             costCenterSubType: this.props.getcostcentrebyid.costCenterSubType,
             maxPersonsAllowed: this.props.getcostcentrebyid.maxPersonsAllowed * 1,
+            createdBy:this.props.getcostcentrebyid.costCenterId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getcostcentrebyid.costCenterId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.getcostcentrebyid.costCenterId?false:true
         };
         let url = PUT_COSTCENTRE + this.props.getcostcentrebyid.costCenterId;
@@ -237,7 +240,7 @@ class Costcentre extends Component {
                                             ]}
                                                 data={this.props.getallcostcentres}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -260,9 +263,10 @@ const mapStateToProps = (state) => {
         getallcostcentres: state.goAdvStore.getallcostcentres,
         getcostcentrebyid: state.goAdvStore.getcostcentrebyid,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,removeErrormsg,deleteRecord })(Costcentre);
+export default connect(mapStateToProps, { getData, postData1,removedata,putData1, updatePropAccData, resetData,removeErrormsg,deleteRecord })(Costcentre);
     //export default Costcentre
 

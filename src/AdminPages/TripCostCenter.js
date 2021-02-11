@@ -1,11 +1,11 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { GET_TRIP_COSTCENTER,GET_TRAVELTYPE,GET_STAYTYPE ,GET_TRIP_COSTCENTERBYID, GET_ITENARY,GET_TRIP_COSTCENTER_BYTRIPID, POST_TRIP_COSTCENTER, PUT_TRIP_COSTCENTER, GET_COSTCENTRE, GET_TRIP, DELETE_TRIP_COSTCENTER,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID, GET_ALL_PACKAGES, GET_TRIP_BYPACKAGEID } from '../Shared/Services'
+import { GET_TRIP_COSTCENTER,GET_TRAVELTYPE,GET_STAYTYPE ,GET_TRIP_COSTCENTERBYID,GET_USER_BYID,GET_ITENARY,GET_TRIP_COSTCENTER_BYTRIPID, POST_TRIP_COSTCENTER, PUT_TRIP_COSTCENTER, GET_COSTCENTRE, GET_TRIP, DELETE_TRIP_COSTCENTER,GET_STAYTYPE_BYTRIPID,GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID, GET_ALL_PACKAGES, GET_TRIP_BYPACKAGEID } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData, resetData,removedata,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -41,14 +41,16 @@ class TripCostCenter extends Component {
 
         this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
         this.props.getData(action.GET_COSTCENTRE, GET_COSTCENTRE)
-        //this.props.getData(action.GET_TRIP, GET_TRIP)
+        this.props.getData(action.GET_TRIP, GET_TRIP)
         this.props.getData(action.GET_ITENARY,GET_ITENARY)
         this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
         this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
         
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata("gettripcostcenterbyid")
     }
     deleteRecord(id)
     {
@@ -66,6 +68,8 @@ class TripCostCenter extends Component {
             travelTypeId:parseInt(this.props.gettripcostcenterbyid.travelTypeId?this.props.gettripcostcenterbyid.travelTypeId:0),
             stayTypeId:parseInt(this.props.gettripcostcenterbyid.stayTypeId?this.props.gettripcostcenterbyid.stayTypeId:0),
             type:this.props.gettripcostcenterbyid.type,
+            createdBy:this.props.gettripcostcenterbyid.tripCostcenterId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+          modifiedBy:this.props.gettripcostcenterbyid.tripCostcenterId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.gettripcostcenterbyid.tripCostcenterId? false : true
 
         };
@@ -105,8 +109,17 @@ class TripCostCenter extends Component {
     }
     refresh(e)
     {
-       
+       if(valuefromurl)
+       {
+        valuefromurl=valuefromurl
+        this.props.getData(action.GET_TRIP_COSTCENTER_BYTRIPID,GET_TRIP_COSTCENTER_BYTRIPID+valuefromurl)
+       }
+       else
+       {
+           valuefromurl="0"
         this.props.getData(action.GET_TRIP_COSTCENTER, GET_TRIP_COSTCENTER)
+       }
+        
     }
     editReacord(id) {
         debugger
@@ -186,7 +199,7 @@ class TripCostCenter extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span> Trip Cost Center
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                       
 
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
@@ -248,7 +261,7 @@ class TripCostCenter extends Component {
 
                                                     <div class="col-md-6"  hidden={this.props.gettripcostcenterbyid.hidetraveltype === ""?this.props.gettripcostcenterbyid.hidetraveltype:"true"}>
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Traveltype</label>
+                                                            <label class="col-sm-3 col-form-label">Travel Type</label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.travelTypeId?this.props.gettripcostcenterbyid.travelTypeId:"0"} onChange={(e) => this.updateTrip(e,"travelTypeId")}>
                                                                     <option value={0}>Select</option>
@@ -303,6 +316,8 @@ class TripCostCenter extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
 
                                             </Form>
                                         </div>
@@ -332,7 +347,7 @@ class TripCostCenter extends Component {
 
                                                 {
                                                     Header: "Trip Name",
-                                                    accessor: "tripId",
+                                                    accessor: "tripName",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'
@@ -342,6 +357,15 @@ class TripCostCenter extends Component {
                                                  {
                                                     Header: "Stay or Travel",
                                                     accessor: "type",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
+                                                    Header: "Stay or Travel Name",
+                                                    accessor: "stayOrTravelTypeName",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'
@@ -375,7 +399,7 @@ class TripCostCenter extends Component {
                                             ]}
                                                 data={this.props.gettripcostcenter}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -400,9 +424,10 @@ const mapStateToProps = (state) => {
         getstaytype:state.goAdvStore.getstaytype,
         packages:state.goAdvStore.packages,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(TripCostCenter);
+export default connect(mapStateToProps, {getData,postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(TripCostCenter);
     //export default Trip
 

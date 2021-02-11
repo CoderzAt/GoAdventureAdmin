@@ -5,7 +5,7 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import {getActivity,getData,putData1,postData1,resetData,updatePropAccData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import {getActivity,getData,putData1,removedata,postData1,resetData,updatePropAccData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -21,6 +21,7 @@ class Activity extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata("getactivitybyid")
    }
       componentDidMount()
      {
@@ -32,7 +33,8 @@ class Activity extends Component {
          e.preventDefault();
          this.props.getActivity()
      }
-     postActivityData() {
+     postActivityData() 
+     {
         debugger
         const obj = {
             activityId:this.props.getactivitybyid.activityId?this.props.getactivitybyid.activityId:0,
@@ -50,7 +52,6 @@ class Activity extends Component {
         }
         this.setState({ validated: false });
     }
-
     async handleSubmit(event)
     {
         event.preventDefault();
@@ -88,6 +89,7 @@ updateActivity = (e, paramName) => {
   }
     render() {
 	    return (
+            
          <div>
             
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
@@ -102,7 +104,7 @@ updateActivity = (e, paramName) => {
                                 <i class="mdi mdi-wan"></i>
                             </span>Activity
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -144,6 +146,8 @@ updateActivity = (e, paramName) => {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
     </Form>
                                 </div>
                             </div>
@@ -196,7 +200,7 @@ updateActivity = (e, paramName) => {
                                 ]}
                                 data={this.props.activities}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                
                          />
                          </div>
@@ -220,10 +224,11 @@ updateActivity = (e, paramName) => {
             activities: state.goAdvStore.activities,
             getactivitybyid:state.goAdvStore.getactivitybyid,
             message: state.goAdvStore.message,
-            messageData: state.goAdvStore.messageData
+            messageData: state.goAdvStore.messageData,
+            getuserbyidprofile:state.goAdvStore.getuserbyidprofile
          }
     }
-    export default connect(mapStateToProps, {getActivity,getData,postData1,putData1,resetData,updatePropAccData,removeErrormsg,deleteRecord})(Activity);
+    export default connect(mapStateToProps, {getActivity,getData,removedata,postData1,putData1,resetData,updatePropAccData,removeErrormsg,deleteRecord})(Activity);
     
 
    // export default Activity

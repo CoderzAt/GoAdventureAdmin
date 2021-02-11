@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_STAYTYPE,GET_STAYTYPE_BYID,POST_STAYTYPE,PUT_STAYTYPE,DELETE_STAYTYPE} from '../Shared/Services'
+import {GET_STAYTYPE,GET_STAYTYPE_BYID,POST_STAYTYPE,PUT_STAYTYPE,DELETE_STAYTYPE,GET_USER_BYID} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removedata,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -22,11 +22,13 @@ class StayType extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata()
   
     }
     componentDidMount()
      {
      this.props.getData(action.GET_STAYTYPE,GET_STAYTYPE)
+     this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
      }  
      refresh(e)
     {
@@ -41,6 +43,8 @@ class StayType extends Component {
             stayTypeName:this.props.getstaytypebyid.stayTypeName,
             stayTypeDescription:this.props.getstaytypebyid.stayTypeDescription,
             maxCapacity:this.props.getstaytypebyid.maxCapacity*1,
+            createdBy:this.props.getstaytypebyid.stayTypeId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getstaytypebyid.stayTypeId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted: this.props.getstaytypebyid.stayTypeId?false:true
      };
     let url = PUT_STAYTYPE+ this.props.getstaytypebyid.stayTypeId;
@@ -154,6 +158,8 @@ class StayType extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
     </Form>
                                 </div>
                             </div>
@@ -211,7 +217,7 @@ class StayType extends Component {
                                 ]}
                                 data={this.props.getstaytype}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                
                          /> 
                          </div>
@@ -234,10 +240,11 @@ class StayType extends Component {
          getstaytypebyid:state.goAdvStore.getstaytypebyid,
          getstaytype:state.goAdvStore.getstaytype,
           message: state.goAdvStore.message,
+          getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
           messageData: state.goAdvStore.messageData
           
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord })(StayType)
+      export default connect(mapStateToProps, { getData,removedata,postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord })(StayType)
     //export default StayType
 

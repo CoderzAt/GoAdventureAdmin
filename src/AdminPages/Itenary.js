@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { deletecountry,PUT_ITENARY,PLACETOVISIT_BYDESTINATION,POST_ITENARY, GET_ITENARY_BYID, GET_ITENARY, GET_ALL_PACKAGES,DELETE_ITENARY, GET_ITENARY_BYPACKAGEID } from '../Shared/Services'
+import { deletecountry,PUT_ITENARY,PLACETOVISIT_BYDESTINATION,POST_ITENARY, GET_ITENARY_BYID,GET_USER_BYID,GET_ITENARY, GET_ALL_PACKAGES,DELETE_ITENARY, GET_ITENARY_BYPACKAGEID } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData,removedata,resetData,editorState,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
@@ -36,7 +36,10 @@ class Itenary extends Component {
         }
     }
    
-
+    componentWillMount() {
+        this.props.removeErrormsg()
+        this.props.removedata("getitenarybyid")
+    }
     componentDidMount() {
         debugger
         var url
@@ -49,6 +52,7 @@ class Itenary extends Component {
             this.props.getData(action.GET_ITENARY, GET_ITENARY)
         }
         this.props.getData(action.GET_ALL_PACKAGES, GET_ALL_PACKAGES);
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     componentDidUpdate(prevProps, prevState, snapshotValue) {
     {	      if(this.props.getitenarybyid.iternaryDescription !== prevProps.getitenarybyid.iternaryDescription) {
@@ -80,8 +84,15 @@ class Itenary extends Component {
     refresh(e)
     {
         e.preventDefault();
-        this.props.getData(action.GET_ITENARY, GET_ITENARY)
-    }
+        if(valuefromurl)
+        {
+          this.props.getData(action.GET_ITENARY_BYPACKAGEID,GET_ITENARY_BYPACKAGEID+valuefromurl)
+        }
+        else{
+            valuefromurl="0"
+            this.props.getData(action.GET_ITENARY,GET_ITENARY)
+        }
+       }
    
     deleteRecord(id)
     {
@@ -98,6 +109,8 @@ class Itenary extends Component {
             iternaryDescription: draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),/* this.state.iternaryDescription *//* this.props.getitenarybyid.iternaryDescription */
             benefitTags: this.props.getitenarybyid.benefitTags,
             packagePlaceIds: this.props.getitenarybyid.packagePlaceIds,
+            createdBy:this.props.getitenarybyid.itenaryId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getitenarybyid.itenaryId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted: false
         };
         let url = PUT_ITENARY + this.props.getitenarybyid.itenaryId;
@@ -211,7 +224,7 @@ class Itenary extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span> Itenary
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -267,22 +280,22 @@ class Itenary extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">BenfitTags</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.getitenarybyid.benefitTags?this.props.getitenarybyid.benefitTags:""}
+                                                                <input  type="text" value={this.props.getitenarybyid.benefitTags?this.props.getitenarybyid.benefitTags:""}
                                                                     class="form-control" onChange={(e) => this.updateItenary(e, "benefitTags")} />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                  {/*   <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">package Places</label>
                                                             <div class="col-sm-9">
                                                             <Multiselect  options={this.props.placetovisitbydestination} displayValue={"placeName"} 
                                                     class="form-control" onSelect={(e)=>this.updateItenary(e, "packagePlaceIds")} onRemove={(e)=>this.updateItenary(e, "packagePlaceIds")} /> 
                                                                 {/* <input required type="text" value={this.props.getitenarybyid.packagePlaceIds ? this.props.getitenarybyid.packagePlaceIds : ""}
-                                                                    class="form-control" onChange={(e) => this.updateItenary(e, "packagePlaceIds")} /> */}
+                                                                    class="form-control" onChange={(e) => this.updateItenary(e, "packagePlaceIds")} /> 
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
 
                                                     <div class="col-md-12">
                                                         <div class="form-group row">
@@ -307,6 +320,8 @@ class Itenary extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                             </Form>
                                         </div>
                                     </div>
@@ -343,8 +358,8 @@ class Itenary extends Component {
 
                                                 },
                                                 {
-                                                    Header: "Description",
-                                                    accessor: "iternaryDescription",
+                                                    Header: "Day",
+                                                    accessor: "dayNumber",
                                                     headerStyle: {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'
@@ -358,6 +373,15 @@ class Itenary extends Component {
                                                         textAlign: 'left',
                                                         fontWeight: 'bold'
                                                     }
+                                                },
+                                                {
+                                                    Header: "Description",
+                                                    accessor: "iternaryDescription",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
                                                 },
                                                 {
                                                     id: 'id', // Required because our accessor is not a string
@@ -380,7 +404,7 @@ class Itenary extends Component {
                                             ]}
                                                 data={this.props.getitenary}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -404,11 +428,12 @@ const mapStateToProps = (state) => {
         geteditorState:state.goAdvStore.geteditorState,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
         placetovisitbydestination:state.goAdvStore.placetovisitbydestination
         //cities:state.goAdvStore.citybyid
         //cities:state.goAdvStore.citybyid
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg ,deleteRecord})(Itenary);
+export default connect(mapStateToProps, { getData,removedata,postData1, putData1, updatePropAccData, resetData,editorState,removeErrormsg ,deleteRecord})(Itenary);
     //export default Itenary
 

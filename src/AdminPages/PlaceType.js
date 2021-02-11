@@ -4,10 +4,10 @@ import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 
-import { GET_PLACETYPE_BYID, GET_PLACETYPE, POST_PLACETYPE, PUT_PLACETYPE,DELETE_PLACETYPE } from '../Shared/Services'
+import { GET_PLACETYPE_BYID, GET_PLACETYPE, POST_PLACETYPE,GET_USER_BYID,PUT_PLACETYPE,DELETE_PLACETYPE } from '../Shared/Services'
 import { namevalidation } from '../Shared/Validations'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData,removedata,resetData, removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -28,6 +28,8 @@ class PlaceType extends Component {
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata("getplacetypebyid")
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     componentDidMount() {
         this.props.getData(action.GET_PLACETYPE, GET_PLACETYPE);
@@ -53,6 +55,8 @@ class PlaceType extends Component {
             placeTypeId: this.props.getplacetypebyid.placeTypeId ? this.props.getplacetypebyid.placeTypeId : 0,
             placeTypeName: this.props.getplacetypebyid.placeTypeName,
             placeTypeDescription: this.props.getplacetypebyid.placeTypeDescription,
+            createdBy:this.props.getplacetypebyid.placeTypeId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getplacetypebyid.placeTypeId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted: this.props.getplacetypebyid.placeTypeId ? false : true
         };
         let url = PUT_PLACETYPE + this.props.getplacetypebyid.placeTypeId;
@@ -111,7 +115,7 @@ class PlaceType extends Component {
                                         <i class="mdi mdi-home-map-marker"></i>
                                     </span>Place Type
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -154,6 +158,8 @@ class PlaceType extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                             </Form>
                                         </div>
                                     </div>
@@ -163,7 +169,7 @@ class PlaceType extends Component {
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h4 class="card-title">List<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
+                                            <h4 class="card-title">Place Types<button onClick={(e)=>this.refresh(e)} style={{backgroundColor:"transparent",border:"none"}}><i  class={"mdi mdi-refresh"}></i></button></h4>
                                             <div className="table-responsive">
                                                 <ReactTable columns={[
                                                   /*  {
@@ -208,7 +214,7 @@ class PlaceType extends Component {
                                                 ]}
                                                     data={this.props.placetype}
                                                     showPagination={true}
-                                                    defaultPageSize={5}
+                                                    defaultPageSize={25}
 
                                                 />
 
@@ -229,10 +235,11 @@ const mapStateToProps = (state) => {
         placetype: state.goAdvStore.placetype,
         getplacetypebyid: state.goAdvStore.getplacetypebyid,
         message: state.goAdvStore.message,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
         messageData: state.goAdvStore.messageData
 
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(PlaceType);
+export default connect(mapStateToProps, { getData, postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(PlaceType);
    // export default PlaceType
 

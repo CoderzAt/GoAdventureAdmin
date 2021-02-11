@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { postData, couponupdateapi, GET_ALL_COUPON, GET_COUPON_BYID, POST_COUPON, PUT_COUPON,DELETE_COUPON } from '../Shared/Services'
+import { postData, couponupdateapi, GET_ALL_COUPON, GET_COUPON_BYID,GET_USER_BYID,POST_COUPON, PUT_COUPON,DELETE_COUPON } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData,removedata,resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -21,10 +21,12 @@ class Coupon extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata("couponbyid")
   
     }
     componentDidMount() {
         this.props.getData(action.GET_ALL_COUPON, GET_ALL_COUPON)
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     refresh(e)
     {
@@ -43,6 +45,8 @@ class Coupon extends Component {
             couponValue:this.props.couponbyid.couponValue!==null?this.props.couponbyid.couponValue * 1:null,
             couponCode: this.props.couponbyid.couponCode,
             couponPercentage:this.props.couponbyid.couponPercentage!==null?this.props.couponbyid.couponPercentage * 1:null,
+            createdBy:this.props.couponbyid.couponId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.couponbyid.couponId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.couponbyid.couponId?false:true
         };
         let url = PUT_COUPON + this.props.couponbyid.couponId;
@@ -113,7 +117,7 @@ class Coupon extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span>Coupon
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -142,7 +146,7 @@ class Coupon extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">ParcentageOrValue</label>
+                                                            <label class="col-sm-3 col-form-label">Parcentage or Value</label>
                                                             <div class="col-sm-9">
                                                                 <select value={this.props.couponbyid.parcentageorvalue ? this.props.couponbyid.parcentageorvalue : "0"}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "parcentageorvalue")} >
@@ -180,6 +184,8 @@ class Coupon extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                             </Form>
                                         </div>
                                     </div>
@@ -240,7 +246,7 @@ class Coupon extends Component {
                                             ]}
                                                 data={this.props.coupons}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -258,10 +264,11 @@ const mapStateToProps = (state) => {
         coupons: state.goAdvStore.coupons,
         couponbyid: state.goAdvStore.couponbyid,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData,removeErrormsg,deleteRecord })(Coupon);
+export default connect(mapStateToProps, { getData, postData1,removedata,putData1, updatePropAccData, resetData,removeErrormsg,deleteRecord })(Coupon);
 
    // export default Coupon
 

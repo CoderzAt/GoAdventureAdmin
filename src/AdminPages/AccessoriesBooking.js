@@ -6,7 +6,7 @@ import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import dateFormat from 'dateformat';
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Link} from "react-router-dom";
@@ -49,6 +49,7 @@ class AccessoriesBooking extends Component {
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata("accessorybookingbyid")
     }
     deleteRecord(id)
     {
@@ -433,7 +434,7 @@ class AccessoriesBooking extends Component {
                                             ]}
                                                 data={this.props.accessorybookings}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -461,6 +462,6 @@ const mapStateToProps = (state) => {
         getuserbyidprofile:state.goAdvStore.getuserbyidprofile
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(AccessoriesBooking);
+export default connect(mapStateToProps, { getData,removedata,postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(AccessoriesBooking);
     //export default Trip
 

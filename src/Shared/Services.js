@@ -219,6 +219,7 @@ export const bookingpostapi="https://ga-api.azurewebsites.net/api/v1/createBooki
 export const bookingupdateapi="https://ga-api.azurewebsites.net/api/v1/updateBookings?id=";
 export const getbookingbyid="https://ga-api.azurewebsites.net/api/v1/getBookingsByid?id=";
 export const GET_BOOKING_BYTRIPID="GetBookingsByTripId?tripId=";
+export const GET_PAYMENTS_BYID_TRIP="GetPaymentsByBookig?bookingId=";
 
 
 export const GET_BOOKING="getAllBookings";

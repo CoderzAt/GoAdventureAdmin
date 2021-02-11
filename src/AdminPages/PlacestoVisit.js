@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
-import {displayerrormsg,GET_COUNTRIES, GET_STATES, GET_ACTIVITIES,GET_STATE_BYCOUNTRYID, GET_CITY_STATEID, loadData, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT, GET_PLACEACTIVITIES } from '../Shared/Services'
+import {displayerrormsg,GET_COUNTRIES, GET_STATES, GET_ACTIVITIES,GET_STATE_BYCOUNTRYID,GET_USER_BYID,GET_CITY_STATEID, loadData, getplacetovisit, getplacetovisitbyid, placetovisitupdateapi, getplacetovisitbycity, getplacetovisitbydestination, GET_CITIES, GET_PLACETYPE, POST_PLACETOVISIT, GET_PLACETOVISIT_BYID, GET_DESTINATION, PUT_PLACETOVISIT, DELETE_PLACETOVISIT, GET_PLACETOVISIT, GET_PLACEACTIVITIES } from '../Shared/Services'
 import Sidebar from './Sidebar'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Multiselect } from 'multiselect-react-dropdown';
 import { connect } from 'react-redux';
-import { getDestination, getActivity,getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getDestination, getActivity,getData, postData1, putData1,removedata,updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import * as validation from "../Shared/Validations";
 var valuefromurl
@@ -46,6 +46,7 @@ class PlacestoVisit extends Component {
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata("getplacetovisitbyid")
 
     }
     async componentDidMount() {
@@ -90,6 +91,7 @@ class PlacestoVisit extends Component {
         this.props.getData(action.GET_PLACETYPE, GET_PLACETYPE)
         this.props.getData(action.GET_COUNTRIES, GET_COUNTRIES)
         this.props.getActivity()
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
 
     }
 
@@ -113,6 +115,8 @@ class PlacestoVisit extends Component {
             placeTypeId: parseInt(this.props.getplacetovisitbyid.placeTypeId),
             cityId: parseInt(this.props.getplacetovisitbyid.cityId),
              activityIds:this.props.getplacetovisitbyid.activityIds,
+             createdBy:this.props.getplacetovisitbyid.placeId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+             modifiedBy:this.props.getplacetovisitbyid.placeId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted: this.props.getplacetovisitbyid.placeId ? false : true
         };
         let url = PUT_PLACETOVISIT + this.props.getplacetovisitbyid.placeId;
@@ -168,6 +172,7 @@ class PlacestoVisit extends Component {
         this.props.resetData(action.RESET_DATA, "getplacetovisitbyid");
         this.multiselectRef.current.resetSelectedValues();
         this.setState({ validated: false });
+        
     }
     async refresh(e) {
         debugger
@@ -299,7 +304,7 @@ class PlacestoVisit extends Component {
                                     </span>Place To Visit
                         </h3>
 
-                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -453,6 +458,8 @@ class PlacestoVisit extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                             </Form>
                                         </div>
                                     </div>
@@ -542,7 +549,7 @@ class PlacestoVisit extends Component {
                                                 ]}
                                                     data={this.state.placetovisitTable}
                                                     showPagination={true}
-                                                    defaultPageSize={5}
+                                                    defaultPageSize={25}
 
                                                 />
                                             </div>
@@ -572,8 +579,9 @@ const mapStateToProps = (state) => {
         activities:state.goAdvStore.activities,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
         activityids: state.goAdvStore.activityids
     }
 }
-export default connect(mapStateToProps, { getData,getActivity,postData1, putData1, getDestination, updatePropAccData, resetData, removeErrormsg, deleteRecord })(PlacestoVisit);
+export default connect(mapStateToProps, { getData,getActivity,postData1,removedata,putData1, getDestination, updatePropAccData, resetData, removeErrormsg, deleteRecord })(PlacestoVisit);
     //export default PlacestoVisit

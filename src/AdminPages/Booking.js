@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
-import { postData, loadData, getbookings, bookingpostapi, getbookingbyid, bookingupdateapi, GET_STAYTYPE, GET_BOOKING_BYTRIPID, GET_BOOKING_BYID, GET_BOOKING, POST_BOOKING, PUT_BOOKING, GET_ACTIVITIES, GET_TRAVELTYPE, GET_ALL_ACCESSORIES, GET_TRIP, GET_USER, DELETE_BOOKING, GET_STAYTYPE_BYTRIPID, GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID, GET_STATUS_BYTYPE } from '../Shared/Services'
+import { postData, loadData, getbookings, bookingpostapi, getbookingbyid, bookingupdateapi,GET_USER_BYID,GET_STAYTYPE, GET_BOOKING_BYTRIPID, GET_BOOKING_BYID, GET_BOOKING, POST_BOOKING, PUT_BOOKING, GET_ACTIVITIES, GET_TRAVELTYPE, GET_ALL_ACCESSORIES, GET_TRIP, GET_USER, DELETE_BOOKING, GET_STAYTYPE_BYTRIPID, GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYTRIPID, GET_STATUS_BYTYPE } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import * as validation from '../Shared/Validations'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,removedata,updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import { Multiselect } from 'multiselect-react-dropdown';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
@@ -53,11 +53,13 @@ class Booking extends Component {
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata("getbookingbyid")
 
     }
     componentDidMount() {
         debugger
         this.props.getData(action.GET_TRAVELTYPE, GET_TRAVELTYPE)
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
 
         this.props.getData(action.GET_TRIP, GET_TRIP)
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
@@ -82,10 +84,19 @@ class Booking extends Component {
     refresh(e) {
 
         e.preventDefault();
+       
+       
         this.setState({
             bookimgoptionvalue: "0"
         })
+        if(valuefromurl)
+        {
+         this.props.getData(action.GET_BOOKING_BYTRIPID,GET_BOOKING_BYTRIPID+valuefromurl)
+        }
+        else{
         this.props.getData(action.GET_BOOKING, GET_BOOKING);
+        }
+        
         //this.props.getData(action.GET_BOOKING_OPTIONS,GET_BOOKING_BYTRIPID+valuefromurl);
     }
     tripOperation(event) {
@@ -316,17 +327,19 @@ class Booking extends Component {
             secondaryContact: this.props.getbookingbyid.secondaryContact,
             emailId: this.props.getbookingbyid.emailId,
             contactAddress: this.props.getbookingbyid.contactAddress,
-            primaryContactAadharNo: this.props.getbookingbyid.primaryContactAadharNo,
+            /* primaryContactAadharNo: this.props.getbookingbyid.primaryContactAadharNo, */
             totalAmount: parseInt(this.props.getbookingbyid.totalAmount),
             appliedCoupon: this.props.getbookingbyid.appliedCoupon,
-            bookingDate:dateFormat(this.props.gettripbyid.bookingDate,"yyyy-mm-dd"),
+            bookingDate:dateFormat(this.props.getbookingbyid.bookingDate,"yyyy-mm-dd"),
             cancellationDate:dateFormat(this.props.getbookingbyid.cancellationDate,"yyyy-mm-dd"),
             cancellationFee: parseInt(this.props.getbookingbyid.cancellationFee),
-            isAmountReturned: JSON.parse(this.props.getbookingbyid.isAmountReturned),
+            isAmountReturned: JSON.parse(this.props.getbookingbyid.isAmountReturned?this.props.getbookingbyid.isAmountReturned:true),
             returnedAmount: parseInt(this.props.getbookingbyid.returnedAmount),
             statusId: parseInt(this.props.getbookingbyid.statusId ? this.props.getbookingbyid.statusId : 0),
             confirmedStayIds: this.props.getbookingbyid.confirmedStayIds ? this.props.getbookingbyid.confirmedStayIds : "",
             confirmedTravelIds: this.props.getbookingbyid.confirmedTravelIds ? this.props.getbookingbyid.confirmedTravelIds : "",
+            createdBy:this.props.getbookingbyid.bookingId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getbookingbyid.bookingId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted: this.props.getbookingbyid.bookingId ? false : true
         };
 
@@ -546,7 +559,7 @@ class Booking extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Applied Coupon</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.getbookingbyid.appliedCoupon ? this.props.getbookingbyid.appliedCoupon : ""}
+                                                                <input  type="text" value={this.props.getbookingbyid.appliedCoupon ? this.props.getbookingbyid.appliedCoupon : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "appliedCoupon")} />
                                                             </div>
                                                         </div>
@@ -580,7 +593,7 @@ class Booking extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Secondary Contact</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.getbookingbyid.secondaryContact ? this.props.getbookingbyid.secondaryContact : ""}
+                                                                <input  type="number" value={this.props.getbookingbyid.secondaryContact ? this.props.getbookingbyid.secondaryContact : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "secondaryContact")} />
                                                             </div>
                                                         </div>
@@ -603,7 +616,7 @@ class Booking extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    {/* <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Primary Contact Adhar Number</label>
                                                             <div class="col-sm-9">
@@ -611,7 +624,7 @@ class Booking extends Component {
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "primaryContactAadharNo")} />
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Total Amount</label>
@@ -644,7 +657,7 @@ class Booking extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Cancellation Date</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="date" value={this.props.getbookingbyid.cancellationDate ? this.props.getbookingbyid.cancellationDate : ""}
+                                                                <input  type="date" value={this.props.getbookingbyid.cancellationDate ? this.props.getbookingbyid.cancellationDate : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "cancellationDate")} />
                                                             </div>
                                                         </div>
@@ -653,7 +666,7 @@ class Booking extends Component {
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Cancellation Fee</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="number" value={this.props.getbookingbyid.cancellationFee ? this.props.getbookingbyid.cancellationFee : ""}
+                                                                <input  type="number" value={this.props.getbookingbyid.cancellationFee ? this.props.getbookingbyid.cancellationFee : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "cancellationFee")} />
                                                             </div>
                                                         </div>
@@ -809,7 +822,7 @@ class Booking extends Component {
                                             ]}
                                                 data={this.props.getbooking}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -838,10 +851,11 @@ const mapStateToProps = (state) => {
         getstaytype: state.goAdvStore.getstaytype,
         getbookingtotatamount: state.goAdvStore.getbookingtotatamount,
         getstatusbytype: state.goAdvStore.getstatusbytype,
-        getbookingoptions: state.goAdvStore.getbookingoptions
+        getbookingoptions: state.goAdvStore.getbookingoptions,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord })(Booking);
+export default connect(mapStateToProps, { getData, postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord })(Booking);
 
     //export default Booking
 

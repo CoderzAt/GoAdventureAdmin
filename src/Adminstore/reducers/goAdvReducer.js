@@ -17,8 +17,12 @@ const HandlingError=(payload,paramName,actiontype)=>
             msgData.message = [{ message: "internal server" }];
             msgData.isSuccess = false;
         }
+        else if(payload.error.response.status === 401)
+        {
+            window.open("/admin/login-1","_self")
+        }
     } else {
-        msgData.message = [{ message: `${paramName} ${actiontype}successfully `}];
+        msgData.message = [{ message: `${paramName} ${actiontype} successfully`}];
         msgData.isSuccess = true;
         //updatedata.push(payload)
     }
@@ -199,7 +203,9 @@ const initalState ={
     getPickupanddrop:[],
     padbyid:[],
     getbookingoptions:[],
-    getuserbyidprofile:[]
+    getuserbyidprofile:[],
+    placetovisitbydestinationids:[],
+    getbookingbyidtri:[]
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -211,7 +217,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_AMOUNT_BYBOOKING}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"totalamount","fetched")
+            let msgData=HandlingError(action.payload,"Total amount","fetched")
             debugger
             let totalamount=state.getbookingbyid
             if(msgData.isSuccess)
@@ -245,6 +251,7 @@ const goAdvReducer = (state =initalState, action) => {
                 ...state,
                 isPkgLoading: false,
                 packages: action.payload.data
+                
             }
         }
         case `${actions.GET_ALL_PACKAGES}_REJECTED` : {
@@ -291,6 +298,26 @@ const goAdvReducer = (state =initalState, action) => {
             return{
                 ...state,
                 isPadLoading: false,
+            }
+        }
+        case `${actions.GET_BOOKING_BYID_TRIP}_PENDING` : {
+            return{
+                ...state,
+                isBbidTtpLoading: true
+            }
+        }
+        
+        case `${actions.GET_BOOKING_BYID_TRIP}_FULFILLED` : {
+            return{
+                ...state,
+                isBbidTtpLoading: false,
+                getbookingbyidtrip:action.payload.data
+            }
+        }
+        case `${actions.GET_BOOKING_BYID_TRIP}_REJECTED` : {
+            return{
+                ...state,
+                isBbidTtpLoading: false,
             }
         }
         case `${actions.GET_PICKUPANDDROPBYID}_PENDING` : {
@@ -358,7 +385,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.PUT_PACKAGE}_FULFILLED` : {
             debugger
-            let msgData=HandlingError(action.payload,"package","updated")
+            let msgData=HandlingError(action.payload,"Package","updated")
             return{
                 ...state,
                 isputPackageLoading: false,
@@ -381,7 +408,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PACKAGE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"package","added")
+            let msgData=HandlingError(action.payload,"Package","added")
             return{
                 ...state,
                 ispostPackageLoading: false,
@@ -405,7 +432,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PICKUPANDDROP}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"pickupanddrop","added")
+            let msgData=HandlingError(action.payload,"Pickup and Drop","added")
             return{
                 ...state,
                 ispostPadLoading: false,
@@ -429,7 +456,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_PICKUPANDDROP}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"pickupanddrop","updated")
+            let msgData=HandlingError(action.payload,"Pickup And Drop","updated")
             return{
                 ...state,
                 isputPadLoading: false,
@@ -533,10 +560,24 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_PACKAGE_BYID}_FULFILLED` : {
+            
+            var places1=[]
+            if(action.payload.data.places)
+            {
+                let placetovisitids=(action.payload.data.places).split(",");
+                placetovisitids.map(obj=>
+                state.placetovisitbydestination.map((item)=>{
+                    if(parseInt(obj) == item.stayTypeId) {
+                      places1.push({placeName:item.placeName,placeId:item.placeId}); //reusability
+                    }
+                }))
+            }
+
             return{
                 ...state,
                 isPkgbidLoading: false,
-                packagebyid: action.payload.data
+                packagebyid: action.payload.data,
+                placetovisitbydestinationids:places1
             }
         }
         case `${actions.GET_PACKAGE_BYID}_REJECTED` : {
@@ -596,6 +637,9 @@ const goAdvReducer = (state =initalState, action) => {
             if(getTripDet.endDate) {
               getTripDet.endDate = moment(getTripDet.endDate).format('YYYY-MM-DD');
             }
+            if(getTripDet.couponExpiryDate) {
+                getTripDet.couponExpiryDate = moment(getTripDet.couponExpiryDate).format('YYYY-MM-DD');
+              }
             console.log(getTripDet);
             return{
                 ...state,
@@ -664,7 +708,10 @@ const goAdvReducer = (state =initalState, action) => {
                         traveltypeids:{},
                         staytypeids:{},
                         accessoryids:{},
-                        activityids:{}
+                        activityids:{},
+                        messageData:{},
+                        message:false
+
             }
         }
         case `${actions.GET_COUNTRIES}_FULFILLED` : {
@@ -687,7 +734,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COUNTRY}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"country","added")
+            let msgData=HandlingError(action.payload,"Country","added")
             return{
                 ...state,
                 ispostCoutryLoading: false,
@@ -712,7 +759,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.PUT_COUNTRY}_FULFILLED` : {
 
-           let msgData=HandlingError(action.payload,"country","updated")
+           let msgData=HandlingError(action.payload,"Country","updated")
             return{
                 ...state,
                 isputCountryLoading: false,
@@ -906,7 +953,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COUPON}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"coupon","added")
+            let msgData=HandlingError(action.payload,"Coupon","added")
             return{
                 ...state,
                 ispostCouponLoading: false,
@@ -930,7 +977,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COUPON}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"coupon","updated")
+            let msgData=HandlingError(action.payload,"Coupon","updated")
             return{
                 ...state,
                 isputCouponLoading: false,
@@ -1016,7 +1063,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ACCESSORIES}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"accessories","added")
+            let msgData=HandlingError(action.payload,"Accessory","added")
             return{
                 ...state,
                 ispostAccessoryLoading: false,
@@ -1040,7 +1087,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_ACCESSORIES}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"accessories","updated")
+            let msgData=HandlingError(action.payload,"Accessory","updated")
             return{
                 ...state,
                 isputAccessoryLoading: false,
@@ -1102,7 +1149,7 @@ const goAdvReducer = (state =initalState, action) => {
                }
         }
         case `${actions.POST_ACTIVITY}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"activity","added")
+            let msgData=HandlingError(action.payload,"Activity","added")
             return{
                 ...state,
                 ispostAactivityLoading: false,
@@ -1128,7 +1175,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.PUT_ACTIVITY}_FULFILLED` : {
 
-            let msgData=HandlingError(action.payload,"activity","updated")
+            let msgData=HandlingError(action.payload,"Activity","updated")
             return{
                 ...state,
                 isputAactivityLoading: false,
@@ -1189,7 +1236,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_COSTCENTRE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"costcentre","added")
+            let msgData=HandlingError(action.payload,"Costcentre","added")
             return{
                 ...state,
                 ispostCoscentreLoading: false,
@@ -1212,7 +1259,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_COSTCENTRE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"costcentre","updated")
+            let msgData=HandlingError(action.payload,"Cost center","updated")
             return{
                 ...state,
                 isputCoscentreLoading: false,
@@ -1292,7 +1339,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_EVENTLEVEL}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"eventlevel","added")
+            let msgData=HandlingError(action.payload,"Event level","added")
             return{
                 ...state,
                 ispostEventlevelLoading: false,
@@ -1315,7 +1362,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_EVENTLEVEL}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"eventlevel","updated")
+            let msgData=HandlingError(action.payload,"Event level","updated")
             return{
                 ...state,
                 isputEventlevelLoading: false,
@@ -1395,7 +1442,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_EVENTTYPE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"eventtype","added")
+            let msgData=HandlingError(action.payload,"Event type","added")
             return{
                 ...state,
                 ispostEventtypeLoading: false,
@@ -1418,7 +1465,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_EVENTTYPE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"eventtype","updated")
+            let msgData=HandlingError(action.payload,"Event type","updated")
             return{
                 ...state,
                 isputEventtypeLoading: false,
@@ -1484,7 +1531,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_ITENARY}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"itenary","added")
+            let msgData=HandlingError(action.payload,"Itenary","added")
             return{
                 ...state,
                 ispostItenaryLoading: false,
@@ -1507,7 +1554,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_ITENARY}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"itenary","updated")
+            let msgData=HandlingError(action.payload,"Itenary","updated")
             return{
                 ...state,
                 isputItenaryLoading: false,
@@ -1600,7 +1647,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PLACETOVISIT}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"placetovisit","added")
+            let msgData=HandlingError(action.payload,"Place to visit","added")
             return{
                 ...state,
                 ispostPlacetovisitLoading: false,
@@ -1624,7 +1671,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.PUT_PLACETOVISIT}_FULFILLED` : {
             debugger
-            let msgData=HandlingError(action.payload,"placetovisit","updated")
+            let msgData=HandlingError(action.payload,"Place to visit","updated")
             return{
                 ...state,
                 isputPlacetovisitLoading: false,
@@ -1705,7 +1752,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_DESTINATION}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"destination","added")
+            let msgData=HandlingError(action.payload,"Destination","added")
             return{
                 ...state,
                 ispostDestinationLoading: false,
@@ -1728,7 +1775,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_DESTINATION}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"destination","updated")
+            let msgData=HandlingError(action.payload,"Destination","updated")
             return{
                 ...state,
                 isputDestinationLoading: false,
@@ -1752,7 +1799,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_PLACETYPE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"placetype","added")
+            let msgData=HandlingError(action.payload,"Placetype","added")
             return{
                 ...state,
                 ispostPlacetypeLoading: false,
@@ -1776,7 +1823,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.PUT_PLACETYPE}_FULFILLED` : {
             debugger
-            let msgData=HandlingError(action.payload,"placetype","updated")
+            let msgData=HandlingError(action.payload,"Place type","updated")
             return{
                 ...state,
                 isputPlacetypeLoading: false,
@@ -1877,7 +1924,7 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.POST_STATE}_FULFILLED` : {
 
-            let msgData=HandlingError(action.payload,"state","added")
+            let msgData=HandlingError(action.payload,"State","added")
 
             return{
                 ...state,
@@ -1904,7 +1951,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STATE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"placetovisit","added")
+            let msgData=HandlingError(action.payload,"Place to visit","added")
             return{
                 ...state,
                 isputStateLoading: false,
@@ -1947,7 +1994,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STAY}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"stay","updated")
+            let msgData=HandlingError(action.payload,"Stay","updated")
             return{
                 ...state,
                 isputStayLoading: false,
@@ -1972,7 +2019,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STAY}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"stay","added")
+            let msgData=HandlingError(action.payload,"Stay","added")
               return{
                 ...state,
                 ispostStayLoading: false,
@@ -2112,7 +2159,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_STAYTYPE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"staytype","added")
+            let msgData=HandlingError(action.payload,"Stay type","added")
             return{
                 ...state,
                 ispostStaytypeLoading: false,
@@ -2275,7 +2322,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STAYTYPE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"staytype","updated")
+            let msgData=HandlingError(action.payload,"Stay type","updated")
             return{
                 ...state,
                 isputStaytypeLoading: false,
@@ -2356,7 +2403,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_TRAVELTYPE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"traveltype","updated")
+            let msgData=HandlingError(action.payload,"Travel type","updated")
             return{
                 ...state,
                 isputTraveltypeLoading: false,
@@ -2373,7 +2420,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_TRAVELTYPE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"traveltype","added")
+            let msgData=HandlingError(action.payload,"Travel type","added")
             return{
                 ...state,
                 ispostTraveltypeLoading: false,
@@ -2415,7 +2462,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_TRIP}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"trip","added")
+            let msgData=HandlingError(action.payload,"Trip","added")
 
             return{
                 ...state,
@@ -2441,7 +2488,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_TRIP}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"trip","updated")
+            let msgData=HandlingError(action.payload,"Trip","updated")
             return{
                 ...state,
                 ispostTripLoading: false,
@@ -2531,10 +2578,19 @@ const goAdvReducer = (state =initalState, action) => {
                             activitynames1.push({activityName:item.activityName,activityId:item.activityId}); //reusability
                         }
                     })) */
+                    let getTripDet = action.payload.data;
+                    if(getTripDet.bookingDate) {
+                      getTripDet.bookingDate = moment(getTripDet.startDate).format('YYYY-MM-DD');
+                    }
+                    if(getTripDet.bookingDate) {
+                        getTripDet.cancellationDate = moment(getTripDet.cancellationDate).format('YYYY-MM-DD');
+                      }
+
+
             return{
                 ...state,
                 isgetBookingbyidLoading: false,
-                getbookingbyid: action.payload.data,
+                getbookingbyid:getTripDet,
                 /* accessoryids:accessorynames1,
                 activityids:activitynames1 */
             }
@@ -2599,7 +2655,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_BOOKING}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"booking","updated")
+            let msgData=HandlingError(action.payload,"Booking","updated")
             return{
                 ...state,
                 isputBookingLoading: false,
@@ -2624,7 +2680,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_BOOKING}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"booking","added")
+            let msgData=HandlingError(action.payload,"Booking","added")
             return{
                 ...state,
                 ispostBookingLoading: false,
@@ -2688,10 +2744,14 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_USER_BYID}_FULFILLED` : {
-            return{
+            let getUserdate=action.payload.data;
+            if(getUserdate.dateOfBirth) {
+                getUserdate.dateOfBirth = moment( getUserdate.dateOfBirth).format('YYYY-MM-DD');
+              }
+         return{
                 ...state,
                 isgetUserLoading: false,
-                getuserbyid: action.payload.data,
+                getuserbyid:getUserdate,
             }
         }
         case `${actions.GET_USER_BYID}_REJECTED` : {
@@ -2728,7 +2788,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_USER}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"user","updated")
+            let msgData=HandlingError(action.payload,"User","updated")
             return{
                 ...state,
                 isputUserLoading: false,
@@ -2751,7 +2811,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.POST_USER}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"user","added")
+            let msgData=HandlingError(action.payload,"User","added")
             return{
                 ...state,
                 ispostUserLoading: false,
@@ -2829,11 +2889,20 @@ const goAdvReducer = (state =initalState, action) => {
         }
         case `${actions.REMOVE_ERROR_MSG}` : {
             debugger
+            
             return{
                 ...state,
                 messageData:action.payload.value,
                 message:false
 
+            }
+        }
+        case `${actions.REMOVE_DATA}` : {
+            debugger
+            return{
+                ...state,
+                [action.payload.type]:action.payload.value,
+              
             }
         }
         case `${actions.EDITOR_STATE}` : {
@@ -3369,7 +3438,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_PLACEACTIVITIES}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"placeactivity","updated")
+            let msgData=HandlingError(action.payload,"Place activity","updated")
             return{
                 ...state,
 
@@ -3388,6 +3457,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.GET_TRIP_COSTCENTER}_FULFILLED` : {
+            debugger
             return{
                 ...state,
                 isTripcostcenterLoading: false,
@@ -3407,7 +3477,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_TRIP_COSTCENTER}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"placetovisit","updated ")
+            let msgData=HandlingError(action.payload,"Place to visit","updated ")
             return{
                 ...state,
                 isputTripcostcenterLoading: true,
@@ -3431,7 +3501,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_PLACEACTIVITIES}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"placeactivities","added")
+            let msgData=HandlingError(action.payload,"Place activities","added")
              return{
                 ...state,
                 ispostPlaceactivitiesLoading: true,
@@ -3454,7 +3524,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_TRIP_COSTCENTER}_FULFILLED` : {
-          let msgData=HandlingError(action.payload,"tripcostcentre","added")
+          let msgData=HandlingError(action.payload,"Trip costcentre","added")
             return{
                 ...state,
                 isposttripcostcentreLoading: false,
@@ -3632,7 +3702,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_ACCESSORIES_BOOKING}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"accessorybooking","updated")
+            let msgData=HandlingError(action.payload,"Accessory booking","updated")
             return{
                 ...state,
                 isputAccessoryBookingLoading: true,
@@ -3657,7 +3727,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_ACCESSORIES_BOOKING}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"acessaryboking","added")
+            let msgData=HandlingError(action.payload,"Accessory boking","added")
               return{
                 ...state,
                 ispostAccessoryBookingLoading: false,
@@ -3836,10 +3906,19 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.GET_PAYMENT_BYID}_FULFILLED` : {
+            let paymentDate=action.payload.data
+            if(action.payload.data.paymentConfirmedDate)
+            {
+                paymentDate.paymentConfirmedDate=moment(paymentDate.paymentConfirmedDate).format('YYYY-MM-DD');
+            }
+            if(action.payload.data.paymentDate)
+            {
+                paymentDate.paymentDate=moment(paymentDate.paymentDate).format('YYYY-MM-DD');
+            }
             return{
                 ...state,
                 isgetpayementbyidLoading: false,
-                getpayementbyid: action.payload.data
+                getpayementbyid:paymentDate
             }
         }
         case `${actions.GET_PAYMENT_BYID}_REJECTED` : {
@@ -3879,7 +3958,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_PAYMENT}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"payementdetalis","updated")
+            let msgData=HandlingError(action.payload,"Payement details","updated")
             return{
                 ...state,
                 isputpayementLoading: true,
@@ -3902,7 +3981,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.POST_PAYMENT}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"payments","added")
+            let msgData=HandlingError(action.payload,"Payement details","added")
             return{
                 ...state,
                 ispostpayementLoading: true,
@@ -3934,6 +4013,10 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             loginmsgdata1.msg="login failed"
             loginmsgdata1.status=false
             }
+            else if(action.payload.error.response.status === 401)
+            {
+                window.open("/admin/login-1","_self")
+            }
             }
             else
             {
@@ -3942,9 +4025,10 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 console.log("token",action.payload.data.token)
                 localStorage.setItem("GoAdventureLoginToken","Bearer "+action.payload.data.token)
                 loginmsgdata1.msg="login success"
-                loginmsgdata1.status=true
+                loginmsgdata1.status="success"
                
                 //this.props.history.push("/");
+
             }
             return{
                 ...state,

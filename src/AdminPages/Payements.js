@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Form } from 'react-bootstrap';
 import { Link } from "react-router-dom";
-import { PUT_PAYMENT, GET_BOOKING,POST_PAYMENT, GET_PAYMENT_BYID, GET_PAYMENTS,DELETE_PAYMENT,GET_USER,PAYMENTS_BYBOOKING ,GET_USER_BYID, PUT_USER, POST_USER } from '../Shared/Services'
+import { PUT_PAYMENT, GET_BOOKING,POST_PAYMENT, GET_PAYMENT_BYID,GET_PAYMENTS,DELETE_PAYMENT,GET_USER,PAYMENTS_BYBOOKING ,GET_USER_BYID, PUT_USER, POST_USER } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
 import dateFormat from 'dateformat';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData,removedata,resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -23,6 +23,7 @@ class Payements extends Component {
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata("getpayementbyid")
     }
 
     componentDidMount() {
@@ -48,10 +49,21 @@ class Payements extends Component {
             this.props.getData(action.GET_PAYMENTS, GET_PAYMENTS)
           }
           this.props.getData(action.GET_BOOKING,GET_BOOKING)
+          this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
 }
     refresh(e) {
         e.preventDefault();
-        this.props.getData(action.GET_PAYMENTS, GET_PAYMENTS)
+      
+          valuefromurl="0"
+          this.props.getData(action.GET_PAYMENTS,GET_PAYMENTS)
+        
+       /*  else
+        {
+            if(this.props.match.params.type === "Trip")
+            {
+            this.props.getData(action.GET_PAYMENTS, GET_PAYMENTS)
+            }
+        } */
     }
     deleteRecord(id) {
         debugger
@@ -72,6 +84,9 @@ class Payements extends Component {
             paymentConfirmedDate:dateFormat(this.props.getpayementbyid.paymentConfirmedDate,'yyyy-mm-dd'),
             paymentMode:this.props.getpayementbyid.paymentMode,
             type:this.props.getpayementbyid.type,
+            bookingType:this.props.getpayementbyid.bookingType,
+            createdBy:this.props.getpayementbyid.paymentId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getpayementbyid.paymentId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted: this.props.getpayementbyid.paymentId ? false : true
         };
         let url = PUT_PAYMENT+this.props.getpayementbyid.paymentId ;
@@ -133,8 +148,7 @@ class Payements extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span>Payment
                                 </h3>
-                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
-
+                               
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -175,8 +189,8 @@ class Payements extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Type</label>
                                                             <div class="col-sm-9">
-                                                                <select  value={this.props.getpayementbyid.type ? this.props.getpayementbyid.type : "0"}
-                                                                    class="form-control" onChange={(e) => this.updatePayement(e, "type")} >
+                                                                <select  value={this.props.getpayementbyid.bookingType ? this.props.getpayementbyid.bookingType : "0"}
+                                                                    class="form-control" onChange={(e) => this.updatePayement(e,"bookingType")} >
                                                                  <option value={0}>Select</option>
                                                                  <option value="Trip">Trip</option>
                                                                  <option value="Accessory">Accessory</option>
@@ -241,7 +255,7 @@ class Payements extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Payment Confirmed Date</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="date" value={this.props.getpayementbyid.paymentConfirmedDate ? this.props.getpayementbyid.paymentConfirmedDate : ""}
+                                                                <input required type="date" value={this.props.getpayementbyid.paymentConfirmedDate? this.props.getpayementbyid.paymentConfirmedDate:""}
                                                                     class="form-control" onChange={(e) => this.updatePayement(e, "paymentConfirmedDate")} />
                                                             </div>
                                                         </div>
@@ -252,6 +266,9 @@ class Payements extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+
                                             </Form>
                                         </div>
                                     </div>
@@ -344,7 +361,7 @@ class Payements extends Component {
                                             ]}
                                                 data={this.props.getpayement}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
 
                                             />
                                         </div>
@@ -369,12 +386,13 @@ const mapStateToProps = (state) => {
         getpayementbyid: state.goAdvStore.getpayementbyid,
         getbooking:state.goAdvStore.getbooking,
         message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
 
     }
 }
 
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord })(Payements);
+export default connect(mapStateToProps, { getData, postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord })(Payements);
 
 
     //export default Eventlevel

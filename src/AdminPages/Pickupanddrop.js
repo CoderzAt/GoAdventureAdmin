@@ -141,7 +141,7 @@ class Pickupanddrop extends Component {
                   </span>{" "}
                   PickupandDropLocation
                 </h3>
-                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+               
                 <nav aria-label="breadcrumb">
                   <ul className="breadcrumb">
                     <li className="breadcrumb-item">
@@ -211,6 +211,8 @@ class Pickupanddrop extends Component {
                           <button type="submit" className="btn btn-gradient-primary mr-2">Submit</button>
                           <button type="reset" className="btn btn-light">Cancel</button>
                         </div>
+                        <br/>
+                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                       </Form>
                     </div>
                   </div>
@@ -287,7 +289,7 @@ class Pickupanddrop extends Component {
                         ]}
                         data={this.props.getPickupanddrop}
                         showPagination={true}
-                        defaultPageSize={5}
+                        defaultPageSize={25}
                       />
                     </div>
                   </div>

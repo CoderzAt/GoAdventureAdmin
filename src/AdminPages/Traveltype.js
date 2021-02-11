@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {GET_TRAVELTYPE_BYID,GET_TRAVELTYPE,POST_TRAVELTYPE,PUT_TRAVELTYPE,DELETE_TRAVELTYPE} from '../Shared/Services'
+import {GET_TRAVELTYPE_BYID,GET_TRAVELTYPE,POST_TRAVELTYPE,PUT_TRAVELTYPE,DELETE_TRAVELTYPE,GET_USER_BYID} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,removedata,resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -27,12 +27,14 @@ class Traveltype extends Component {
     {
         debugger
       this.props.removeErrormsg()
+      this.props.removedata()
   
     }
   
     componentDidMount()
      {
     this.props.getData(action.GET_TRAVELTYPE,GET_TRAVELTYPE)
+    this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     } 
     refresh(e)
     {
@@ -48,6 +50,8 @@ class Traveltype extends Component {
         travelTypeName:this.props.gettraveltypebyid.travelTypeName,
         travelTypeDescription:this.props.gettraveltypebyid.travelTypeDescription,
         maxCapacity:this.props.gettraveltypebyid.maxCapacity*1,
+        createdBy:this.props.gettraveltypebyid.travelTypeId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+          modifiedBy:this.props.gettraveltypebyid.travelTypeId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
         isDeleted: this.props.gettraveltypebyid.travelTypeId ? false : true
         };
     let url = PUT_TRAVELTYPE+ this.props.gettraveltypebyid.travelTypeId;
@@ -110,7 +114,7 @@ class Traveltype extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Traveltype
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -164,6 +168,7 @@ class Traveltype extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
     </Form>
                                 </div>
                             </div>
@@ -224,7 +229,7 @@ class Traveltype extends Component {
                                 ]}
                                 data={this.props.gettraveltype}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                
                          />
                          </div>
@@ -248,10 +253,11 @@ class Traveltype extends Component {
             gettraveltypebyid:state.goAdvStore.gettraveltypebyid,
             gettraveltype:state.goAdvStore.gettraveltype,
          message: state.goAdvStore.message,
-          messageData: state.goAdvStore.messageData
+          messageData: state.goAdvStore.messageData,
+          getuserbyidprofile:state.goAdvStore.getuserbyidprofile
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord})(Traveltype);
+      export default connect(mapStateToProps, { getData,removedata,postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord})(Traveltype);
     
     //export default Traveltype
 

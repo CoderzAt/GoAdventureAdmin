@@ -6,7 +6,7 @@ import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar';
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 
 
@@ -22,6 +22,7 @@ class TravelInfo extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata()
   
     }
    componentDidMount()
@@ -122,10 +123,7 @@ class TravelInfo extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Travel Info
                         </h3>
-                        {this.props.message ?
-                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
-                                    null
-                        }
+                       
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -169,7 +167,7 @@ class TravelInfo extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Vehchile Number</label>
+                                                    <label class="col-sm-3 col-form-label">Vehicle Number</label>
 
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettravelinfobyid.vehicleNumber?this.props.gettravelinfobyid.vehicleNumber:""} 
@@ -263,6 +261,11 @@ class TravelInfo extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        {this.props.message ?
+                                    <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
+                                    null
+                        }
     </Form>
                                 </div>
                             </div>
@@ -341,7 +344,7 @@ class TravelInfo extends Component {
                                 ]}
                                 data={this.props.gettravelinfo}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                
                          /> 
                          </div>
@@ -372,7 +375,7 @@ class TravelInfo extends Component {
          
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(TravelInfo);
+      export default connect(mapStateToProps, { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(TravelInfo);
     
     
     //export default TravelInfo

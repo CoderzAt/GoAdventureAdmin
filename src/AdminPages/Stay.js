@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import { Form } from 'react-bootstrap';
-import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,GET_STATES,GET_CITY_STATEID,GET_COUNTRIES,GET_STATE_BYCOUNTRYID,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY,GET_CITIES,GET_STAYTYPE,DELETE_STAY} from '../Shared/Services'
+import {postData,loadData,getcities,staypostapi,getstays,getstaybyid,GET_STATES,GET_USER_BYID,GET_CITY_STATEID,GET_COUNTRIES,GET_STATE_BYCOUNTRYID,stayupdateapi,getstaytypes,GET_STAY_BYID,GET_STAY,POST_STAY,PUT_STAY,GET_CITIES,GET_STAYTYPE,DELETE_STAY} from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Sidebar from './Sidebar'
 
 import { connect } from 'react-redux';
-import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removedata,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -33,6 +33,7 @@ var condition=false;
 class Stay extends Component {
     constructor(props) {
         super(props);
+        this.multiselectRef = React.createRef();
        this.state = {
            validated:false,
            stayId: 0,
@@ -54,6 +55,7 @@ class Stay extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata("getstaybyid")
    }
    componentDidMount()
      {
@@ -75,7 +77,7 @@ class Stay extends Component {
         this.setState({
            staytypes:staytype
         }) */
-
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
 
      }  
      refresh(e)
@@ -176,6 +178,8 @@ class Stay extends Component {
             contactInfo:this.props.getstaybyid.contactInfo,
             locationDetails:this.props.getstaybyid.locationDetails,
             cityId:this.props.getstaybyid.cityId*1,
+            createdBy:this.props.getstaybyid.stayId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getstaybyid.stayId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.getstaybyid.stayId?false:true
             };
         let url = PUT_STAY+ this.props.getstaybyid.stayId;
@@ -201,6 +205,7 @@ class Stay extends Component {
     else {
         event.preventDefault();
         this.postStaydata();
+        this.multiselectRef.current.resetSelectedValues();
     }   
   } 
     /* handlemultiselect(e)
@@ -214,7 +219,9 @@ class Stay extends Component {
     } */
     handleReset() {
         this.props.resetData(action.RESET_DATA,"getstaybyid");
+        this.multiselectRef.current.resetSelectedValues();
             this.setState({ validated: false });
+
       }
    async editReacord(id) {
        
@@ -285,7 +292,7 @@ class Stay extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Stay Info
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -337,7 +344,8 @@ class Stay extends Component {
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Stay Type</label>
                                                     <div class="col-sm-9">
                                                     <Multiselect selectedValues={this.props.staytypeids}  options={this.props.getstaytype} displayValue={"stayTypeName"} 
-                                                    class="form-control" onSelect={(e)=>this.updateStay(e,"stayTypeIds")} onRemove={(e)=>this.updateStay(e,"stayTypeIds")} /> 
+                                                    class="form-control" onSelect={(e)=>this.updateStay(e,"stayTypeIds")} 
+                                                    onRemove={(e)=>this.updateStay(e,"stayTypeIds")}  ref={this.multiselectRef} /> 
                                                     </div>
                                                 </div>
                                             </div>
@@ -408,6 +416,8 @@ class Stay extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
     </Form>
                                 </div>
                             </div>
@@ -439,15 +449,7 @@ class Stay extends Component {
                                     }
                                     
                                   },
-                                  {
-                                    Header: "Stay Type",
-                                    accessor: "stayType",
-                                    headerStyle: {
-                                        textAlign: 'left',
-                                        fontWeight: 'bold'
-                                    }
-                                    
-                                  },
+                                 
                                   {
                                     id:'id', // Required because our accessor is not a string
                                     Header: '',
@@ -468,7 +470,7 @@ class Stay extends Component {
                                 ]}
                                 data={this.props.getstay}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                
                          />
                          </div>
@@ -497,13 +499,14 @@ class Stay extends Component {
         getstaytype:state.goAdvStore.getstaytype,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
         staytypeids:state.goAdvStore.staytypeids
            //states:state.goAdvStore.getstatebycountry
             //cities:state.goAdvStore.citybyid
             //cities:state.goAdvStore.citybyid
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Stay);
+    export default connect(mapStateToProps, {getData,removedata,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Stay);
     
     //export default Stay
 

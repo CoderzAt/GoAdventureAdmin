@@ -7,7 +7,7 @@ import 'react-table-v6/react-table.css';
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
 import dateFormat from 'dateformat';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData,resetData,removedata,removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -22,11 +22,14 @@ class User extends Component {
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata("getuserbyid")
     }
 
     componentDidMount() {
         this.props.getData(action.GET_USER,GET_USER)
         this.props.getData(action.GET_USERTYPES,GET_USERTYPES)
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
+ 
         //this.props.getData(action.GET_STATUS, GET_STATUS)
     }
     refresh(e) {
@@ -52,6 +55,8 @@ class User extends Component {
             emailId:this.props.getuserbyid.emailId,
             password:this.props.getuserbyid.password,
             addressInfo:this.props.getuserbyid.addressInfo,
+            createdBy:this.props.getuserbyid.userId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.getuserbyid.userId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.getuserbyid.userId ? false : true
         };
         let url = PUT_USER+this.props.getuserbyid.userId;
@@ -107,7 +112,7 @@ class User extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span>User
                                 </h3>
-                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -152,7 +157,7 @@ class User extends Component {
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Middle Name</label>
                                                             <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.getuserbyid.middleName ? this.props.getuserbyid.middleName : ""}
+                                                                <input  type="text" value={this.props.getuserbyid.middleName ? this.props.getuserbyid.middleName : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "middleName")} />
                                                             </div>
                                                         </div>
@@ -246,6 +251,8 @@ class User extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                                             </Form>
                                 </div>
                             </div>
@@ -316,7 +323,7 @@ class User extends Component {
                                     ]}
                                         data={this.props.getuser}
                                         showPagination={true}
-                                        defaultPageSize={5}
+                                        defaultPageSize={25}
 
                                     />
                                 </div>
@@ -342,11 +349,12 @@ const mapStateToProps = (state) => {
         getstatus: state.goAdvStore.getstatus,
         usertypes:state.goAdvStore.usertypes,
         message: state.goAdvStore.message,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
         messageData: state.goAdvStore.messageData
     }
 }
 
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord })(User);
+export default connect(mapStateToProps, {getData,removedata,postData1, putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord })(User);
 
 
     //export default Eventlevel

@@ -4,8 +4,8 @@ import * as services from '../../Shared/Services';
 
 //Get all packages
 export const getPackages = () => {
-    const svcconfig = {
-       headers: { Pragma: 'no-cache' }
+   const svcconfig = {
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
     }
     return dispatch => {
        dispatch({
@@ -25,8 +25,8 @@ export const getPackages = () => {
 
  export const getAccessories = (actiontype,url) => {
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
@@ -46,15 +46,15 @@ export const getData =(actiontype,url)=>
 {
    debugger
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
            payload: axios.get(`${services.BASE_URL}${url}`, svcconfig)
             .then(response => {
               console.log("accessories",response)
-               return response;
+            return response;
             })
             .catch(error => {
                debugger
@@ -69,12 +69,12 @@ export const postData1 =(actiontype,url,obj)=>
 {
    debugger
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
-           payload:axios.post(`${services.BASE_URL}${url}`,obj)
+           payload:axios.post(`${services.BASE_URL}${url}`,obj,svcconfig)
           .then(response=>{
              console.log("postdata",response)
              return response;
@@ -90,12 +90,12 @@ export const putData1 =(actiontype,url,obj)=>
 {
    debugger
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
-           payload:axios.put(`${services.BASE_URL}${url}`,obj)
+           payload:axios.put(`${services.BASE_URL}${url}`,obj,svcconfig)
           .then(response=>{
             response.obj = obj;
              console.log("putdata",response)
@@ -111,9 +111,9 @@ export const putData1 =(actiontype,url,obj)=>
 
 export const googleLogin = (actiontype,url,obj) => { 
    debugger
-  const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+   const svcconfig = {
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
@@ -134,8 +134,8 @@ export const googleLogin = (actiontype,url,obj) => {
 export const postDataWithFile =(actiontype,url,obj)=> {
    debugger
    const svcconfig = {
-      headers: { Pragma: 'no-cache', 'Content-Type': 'multipart/form-data' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
@@ -155,8 +155,8 @@ export const postDataWithFile =(actiontype,url,obj)=> {
 export const putDataWithFile =(actiontype,url,obj)=> {
    debugger
    const svcconfig = {
-      headers: { Pragma: 'no-cache', 'Content-Type': 'multipart/form-data' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
@@ -176,12 +176,12 @@ export const deleteRecord=(actiontype,url)=>
 {
    debugger
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type:actiontype,
-           payload:axios.delete(`${services.BASE_URL}${url}`)
+           payload:axios.delete(`${services.BASE_URL}${url}`,svcconfig)
            .then(response=>{
               console.log("deleteddata",response)
             return response
@@ -197,8 +197,8 @@ export const deleteRecord=(actiontype,url)=>
 
 export const getDestination = () => {
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_DESTINATION,
@@ -219,8 +219,8 @@ export const getDestination = () => {
 
 export const getCalendar = () => {
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_CALENDAR,
@@ -238,8 +238,8 @@ export const getCalendar = () => {
 export const getItenary = (id1) => {
    let id=id1;
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_ITENARY_BYPACKAGEID,
@@ -257,8 +257,8 @@ export const getItenary = (id1) => {
 export const getPackagebyid = (id1) => {
    let id=id1;
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_PACKAGE_BYID,
@@ -277,8 +277,8 @@ export const getPackagebyid = (id1) => {
 export const getTripbypackageid = (id1) => {
    let id=id1;
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_TRIP_BYPACKAGEID,
@@ -297,8 +297,8 @@ export const getTripbypackageid = (id1) => {
 export const getTripbyid = (id1) => {
    let id=id1;
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_TRIP_BYID,
@@ -317,8 +317,8 @@ export const getTripbyid = (id1) => {
 export const getActivity = () => {
 
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_AVCTIVITIES,
@@ -335,8 +335,8 @@ export const getActivity = () => {
 }
 export const getCities = () => {
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_CITIES,
@@ -354,8 +354,8 @@ export const getCities = () => {
 export const getCountries = () => {
 
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_COUNTRIES,
@@ -373,8 +373,8 @@ export const getCountries = () => {
 export const getStates = () => {
 
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_STATES,
@@ -392,8 +392,8 @@ export const getStates = () => {
 export const getCitybyid = (id1) => {
    let id=id1
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_CITY_BYID,
@@ -414,8 +414,8 @@ export const getCitybystate=(id1)=>
 debugger
    let id=id1
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
-   }
+      headers: {'Authorization': `${localStorage.getItem("GoAdventureLoginToken")}`}
+    }
    return dispatch => {
       dispatch({
          type: actions.GET_CITY_STATEID,
@@ -477,6 +477,15 @@ export const editorState = (editorState) => {
       });
    }
 }
+export const removedata=(formdata)=>{
+   debugger
+   return dispatch =>{
+      dispatch({
+         type: actions.REMOVE_DATA,
+         payload:{value:{},type:formdata}
+      });
+   }
+}
 
 
 
@@ -503,7 +512,8 @@ export const editorState = (editorState) => {
  {
     debugger
    const svcconfig = {
-      headers: { Pragma: 'no-cache' }
+      headers: { Pragma: 'no-cache' }a
+      
    }
    return dispatch => {
       dispatch({

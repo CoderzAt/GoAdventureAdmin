@@ -13,7 +13,7 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
 import TextInput from'../Shared/TextInput';
 import { connect } from 'react-redux';
-import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord,removedata} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Redirect } from 'react-router'
@@ -35,6 +35,7 @@ class Country extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata("getcountrybyid")
   
     }
     componentDidMount() {
@@ -74,6 +75,7 @@ class Country extends Component {
           editorState
       });
     }
+    
 
     postCountrydata() {
         debugger
@@ -159,7 +161,7 @@ class Country extends Component {
          <div>
 
         <div class="container-fluid page-body-wrapper" style={{paddingTop:80}}>
-        {localStorage.getItem("GoAdventureLoginToken") === null?<Redirect to="/admin/login-1"/>:null}
+        {/* {localStorage.getItem("GoAdventureLoginToken") === null?<Redirect to="/admin/login-1"/>:null} */}
             <Sidebar/>
 
             <div class="main-panel">
@@ -171,7 +173,6 @@ class Country extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Country
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -240,6 +241,9 @@ class Country extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
     </Form>
                                 </div>
                             </div>
@@ -315,7 +319,7 @@ class Country extends Component {
                                 data={this.props.countries}
                                 showPagination={true}
 
-                                defaultPageSize={5}
+                                defaultPageSize={25}
 
 
                          />
@@ -341,9 +345,10 @@ class Country extends Component {
             message: state.goAdvStore.message,
             getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
             messageData: state.goAdvStore.messageData
+            
         }
     }
-    export default connect(mapStateToProps, {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Country);
+    export default connect(mapStateToProps, {getData,postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(Country);
 
 
 

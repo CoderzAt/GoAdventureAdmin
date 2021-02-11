@@ -3,10 +3,10 @@ import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
-import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid, destinationupdateapi,GET_DESTINATION_BYID,GET_DESTINATION,POST_DESTINATION,PUT_DESTINATION,DELETE_DESTINATION} from '../Shared/Services'
+import {postData,destinationpostapi,loadData,getdestinations,getdestinationbyid, destinationupdateapi,GET_USER_BYID,GET_DESTINATION_BYID,GET_DESTINATION,POST_DESTINATION,PUT_DESTINATION,DELETE_DESTINATION} from '../Shared/Services'
 import Sidebar from './Sidebar'
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -30,11 +30,12 @@ class Destination extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
-
+      this.props.removedata("getdestinationbyid")
     }
    componentDidMount()
     {
      this.props.getData(action.GET_DESTINATION,GET_DESTINATION)
+     this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     refresh(e)
     {
@@ -136,7 +137,6 @@ deleteRecord(id)
                                 <i class="mdi mdi-home-map-marker"></i>
                             </span>Destination
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -218,6 +218,8 @@ deleteRecord(id)
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
 </Form>
                            </div>
                        </div>
@@ -285,7 +287,7 @@ deleteRecord(id)
                                 ]}
                                 data={this.props.getdestination}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
 
                          />
 
@@ -316,7 +318,7 @@ deleteRecord(id)
         messageData: state.goAdvStore.messageData
       }
     }
-    export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord })(Destination);
+    export default connect(mapStateToProps, { getData,removedata,postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord })(Destination);
 
 
     //export default Destination

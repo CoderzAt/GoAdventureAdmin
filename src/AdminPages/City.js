@@ -3,10 +3,10 @@ import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
-import {  POST_CITY, GET_COUNTRIES,GET_STATE_BYCOUNTRYID,PUT_CITY,DELETE_CITY, GET_CITY_STATEID} from "../Shared/Services";
+import {  POST_CITY, GET_COUNTRIES,GET_USER_BYID,GET_STATE_BYCOUNTRYID,PUT_CITY,DELETE_CITY, GET_CITY_STATEID} from "../Shared/Services";
 import Sidebar from "./Sidebar";
 import { connect } from "react-redux";
-import { getCities,  getStates,  getCitybyid,  getCitybystate,
+import { getCities,  getStates,  getCitybyid,  getCitybystate,removedata,
   postData1,  putData1, updatePropData, resetData,removeErrormsg,deleteRecord,getData} from "../Adminstore/actions/goAdvActions";
 import * as action from "../Adminstore/actions/actionTypes";
 import "./admin.scss";
@@ -25,11 +25,11 @@ class City extends Component {
     };
   }
 
-  /* componentWillMount()
+  componentWillMount()
   {
-    this.props.removeErrormsg()
-
-  } */
+   this.props.removedata("cityData")
+   this.props.removeErrormsg()
+  } 
   componentDidMount() {
     if (this.props.match.params.cid !== undefined) {
       valuefromurl = parseInt(this.props.match.params.cid);
@@ -40,6 +40,7 @@ class City extends Component {
 
     this.props.getStates();
     this.props.getData(action.GET_COUNTRIES,GET_COUNTRIES)
+    this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
   }
   getCitybystate(e)
   {
@@ -72,6 +73,8 @@ class City extends Component {
       cityCode: this.props.cityData.cityCode,
       cityDesc: this.props.cityData.cityDesc,
       stateId: this.props.cityData.stateId*1,
+      createdBy:this.props.cityData.cityId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+      modifiedBy:this.props.cityData.cityId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
       isDeleted:this.props.cityData.cityId?false:true
       
     };
@@ -150,10 +153,7 @@ class City extends Component {
                   </span>{" "}
                   City
                 </h3>
-                {this.props.message?
-                  <div className={`message-wrapper ${this.props.messageData.isSuccess? "success":"error"}`}>{this.props.messageData.message.map(obj=>(<li>{obj.message}</li>))}</div> :
-                  null
-                }
+               
                 <nav aria-label="breadcrumb">
                   <ul className="breadcrumb">
                     <li className="breadcrumb-item">
@@ -240,6 +240,11 @@ class City extends Component {
                           <button type="submit" className="btn btn-gradient-primary mr-2">Submit</button>
                           <button type="reset" className="btn btn-light">Cancel</button>
                         </div>
+                        <br/>
+                        {this.props.message?
+                  <div className={`message-wrapper ${this.props.messageData.isSuccess? "success":"error"}`}>{this.props.messageData.message.map(obj=>(<li>{obj.message}</li>))}</div> :
+                  null
+                }
                       </Form>
                     </div>
                   </div>
@@ -331,7 +336,7 @@ class City extends Component {
                         ]}
                         data={this.props.cities}
                         showPagination={true}
-                        defaultPageSize={5}
+                        defaultPageSize={25}
                       />
                     </div>
                   </div>
@@ -354,7 +359,8 @@ const mapStateToProps = (state) => {
     postcity: state.goAdvStore.postcity,
     cityData: state.goAdvStore.cityData,
     message: state.goAdvStore.message,
-    messageData: state.goAdvStore.messageData
+    messageData: state.goAdvStore.messageData,
+    getuserbyidprofile:state.goAdvStore.getuserbyidprofile
   };
 };
 export default connect(mapStateToProps, {
@@ -368,7 +374,8 @@ export default connect(mapStateToProps, {
   resetData,
   removeErrormsg,
   deleteRecord,
-  getData
+  getData,
+  removedata
 })(City);
 
 //export default City

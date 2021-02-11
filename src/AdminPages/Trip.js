@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import { loadData, gettripbyid, GET_TRIP,GET_TRECKLEADERS, GET_TRIP_BYID, GET_TRIP_BYPACKAGEID,GET_STATUS_BYTYPE,POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
+import { loadData, gettripbyid, GET_TRIP,GET_TRECKLEADERS, GET_TRIP_BYID, GET_USER_BYID,GET_TRIP_BYPACKAGEID,GET_STATUS_BYTYPE,POST_TRIP, PUT_TRIP, GET_ALL_PACKAGES, GET_STAYTYPE, GET_TRAVELTYPE,DELETE_TRIP } from '../Shared/Services'
 import ReactTable from 'react-table-v6';
 import 'react-table-v6/react-table.css';
 import { Link} from "react-router-dom";
@@ -10,7 +10,7 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import { gettingMultiselectValues } from '../Shared/ReauasbleFunctions'
 
 import { connect } from 'react-redux';
-import { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1, updatePropAccData,removedata,resetData, removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 
@@ -42,9 +42,11 @@ class Trip extends Component {
         this.props.getData(action.GET_STAYTYPE, GET_STAYTYPE)
         this.props.getData(action.GET_TRECKLEADERS,GET_TRECKLEADERS)
         this.props.getData(action.GET_STATUS_BYTYPE,GET_STATUS_BYTYPE+"Trip")
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
     }
     componentWillMount() {
         this.props.removeErrormsg()
+        this.props.removedata()
     }
     deleteRecord(id)
     {
@@ -67,10 +69,12 @@ class Trip extends Component {
             deposit: parseInt(this.props.gettripbyid.deposit),
             maxPrice: parseInt(this.props.gettripbyid.maxPrice),
             stayTypeIds: this.props.gettripbyid.stayTypeIds ? this.props.gettripbyid.stayTypeIds : "",
-            couponCode: this.props.gettripbyid.couponCode,
-            couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount*1,
+            couponCode: this.props.gettripbyid.couponCode || this.props.gettripbyid.couponCode === ""?this.props.gettripbyid.couponCode:null,
+            couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount?this.props.gettripbyid.couponUserUsageCount*1:0,
             statusId:parseInt(this.props.gettripbyid.statusId?this.props.gettripbyid.statusId:0),
-            couponExpiryDate: dateFormat(this.props.gettripbyid.couponExpiryDate,"yyyy-mm-dd"),
+            createdBy:this.props.gettripbyid.tripId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
+            modifiedBy:this.props.gettripbyid.tripId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
+            couponExpiryDate: this.props.gettripbyid.couponExpiryDate?dateFormat(this.props.gettripbyid.couponExpiryDate,"yyyy-mm-dd"):null,
             isDeleted: this.props.gettripbyid.tripId ? false : true
 
         };
@@ -110,7 +114,15 @@ class Trip extends Component {
     }
     refresh()
     {
+        if(valuefromurl && valuefromurl !== "0")
+        {
+         valuefromurl = valuefromurl
+         this.props.getData(action.GET_TRIP_BYPACKAGEID,GET_TRIP_BYPACKAGEID+valuefromurl)
+        }
+        else{
+            valuefromurl="0"
         this.props.getData(action.GET_TRIP,GET_TRIP)
+        }
     }
     editReacord(id) {
         this.props.getData(action.GET_TRAVELTYPE, GET_TRAVELTYPE)
@@ -145,7 +157,7 @@ class Trip extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span> Trip
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -163,16 +175,7 @@ class Trip extends Component {
                                             <h4 class="card-title">Trip</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Name</label>
-                                                            <div class="col-sm-9">
-                                                                <input required type="text" value={this.props.gettripbyid.tripName ? this.props.gettripbyid.tripName : ""}
-                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "tripName")} />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
+                                                <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label class="col-sm-3 col-form-label">Package</label>
                                                             <div class="col-sm-9">
@@ -185,6 +188,16 @@ class Trip extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label class="col-sm-3 col-form-label">Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input required type="text" value={this.props.gettripbyid.tripName ? this.props.gettripbyid.tripName : ""}
+                                                                    class="form-control" onChange={(e) => this.updateTrip(e, "tripName")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                   
                                                     {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label class="col-sm-3 col-form-label">Package</label>
@@ -221,7 +234,7 @@ class Trip extends Component {
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "treckLeaderId")} >
                                                                         <option value={0}>Select</option>
                                                                         {this.props.gettreckleaders.map(obj=>(
-                                                                            <option value={obj.userId}>{`${obj.firstName} ${obj.middleName} ${obj.lastName}`}</option>
+                                                                            <option value={obj.userId}>{`${obj.firstName} ${obj.lastName}`}</option>
                                                                         ))}
                                                                         </select>
                                                             </div>
@@ -358,6 +371,8 @@ class Trip extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
 
                                             </Form>
                                         </div>
@@ -440,6 +455,15 @@ class Trip extends Component {
 
                                                 },
                                                 {
+                                                    Header: "Bookings",
+                                                    accessor: "confirmedBookings",
+                                                    headerStyle: {
+                                                        textAlign: 'left',
+                                                        fontWeight: 'bold'
+                                                    }
+
+                                                },
+                                                {
                                                     id: 'id', // Required because our accessor is not a string
                                                     Header: '',
                                                     accessor: d => d.tripId,
@@ -464,7 +488,7 @@ class Trip extends Component {
                                             ]}
                                                 data={this.props.gettrip}
                                                 showPagination={true}
-                                                defaultPageSize={5}
+                                                defaultPageSize={25}
                                             />
                                         </div>
                                     </div>
@@ -489,8 +513,9 @@ const mapStateToProps = (state) => {
         gettreckleaders:state.goAdvStore.gettreckleaders,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
         getstatusbytype:state.goAdvStore.getstatusbytype
     }
 }
-export default connect(mapStateToProps, { getData, postData1, putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(Trip);
+export default connect(mapStateToProps, { getData,postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(Trip);
     //export default Trip

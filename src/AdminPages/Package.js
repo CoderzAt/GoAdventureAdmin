@@ -3,11 +3,11 @@ import { Form } from 'react-bootstrap';
 import ReactTable from 'react-table-v6';
 import { Link} from "react-router-dom";
 import 'react-table-v6/react-table.css';
-import {GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION,DELETE_PACKAGE,PLACETOVISIT_BYDESTINATION,GET_EVENTTYPE,PACKAGEPLACES,GET_EVENTLEVEL} from '../Shared/Services'
+import {GET_ALL_PACKAGES,GET_PACKAGE_BYID,POST_PACKAGE,PUT_PACKAGE,GET_DESTINATION,GET_USER_BYID,DELETE_PACKAGE,PLACETOVISIT_BYDESTINATION,GET_EVENTTYPE,PACKAGEPLACES,GET_EVENTLEVEL} from '../Shared/Services'
 import Sidebar from './Sidebar'
 import { Multiselect } from 'multiselect-react-dropdown';
 import { connect } from 'react-redux';
-import { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile ,deleteRecord} from '../Adminstore/actions/goAdvActions';
+import { getData, postData1, putData1,updatePropAccData,resetData,removedata,removeErrormsg, putDataWithFile,postDataWithFile ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 //import { Editor } from 'react-draft-wysiwyg';
@@ -23,7 +23,8 @@ import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-j
 var editorstate='<div>hi<div>';
 class Package extends Component {
     constructor(props) {
-        super(props);
+       super(props);
+       this.multiselectRef = React.createRef();
        this.state = {
            validated:false,
           refreshflag:false,
@@ -34,6 +35,7 @@ class Package extends Component {
     componentWillMount()
     {
       this.props.removeErrormsg()
+      this.props.removedata("packagebyid")
     }
     componentDidMount()
     {
@@ -41,13 +43,13 @@ class Package extends Component {
         this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
         this.props.getData(action.GET_EVENTTYPE,GET_EVENTTYPE)
         this.props.getData(action.GET_EVENTLEVEL,GET_EVENTLEVEL)
-      
-
-    }
+        this.props.getData(action.GET_USER_BYID_PROFILE,GET_USER_BYID+localStorage.getItem("userid"))
+  }
 
     refresh(e)
     {
         e.preventDefault();
+        
         this.props.getData(action.GET_ALL_PACKAGES,GET_ALL_PACKAGES)
     }
     packagedescriptionOperation(event)
@@ -174,16 +176,20 @@ class Package extends Component {
         //bodyFormData.set('CouponUserUsageCount', parseInt(this.props.packagebyid.couponuserusagecount));
         //bodyFormData.set('Inclusions', this.props.packagebyid.inclusions);
         bodyFormData.set('Inclusions',draftToHtml(convertToRaw(this.state.InclusionseditorState.getCurrentContent())));
-        //bodyFormData.set('placetovisitIds', this.props.packagebyid.placetovisitIds);
+        bodyFormData.set('places', this.props.packagebyid.placetovisitIds);
+        bodyFormData.set('eventLevel',parseInt(this.props.packagebyid.eventLevel));
         //bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
         bodyFormData.set('Exclusions',draftToHtml(convertToRaw(this.state.ExclusionseditorState.getCurrentContent())));
         bodyFormData.set('thingsTobring',draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())));
         //bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
         bodyFormData.set('PackageDescription',draftToHtml(convertToRaw(this.state.DescriptioneditorState.getCurrentContent())));
-        bodyFormData.set('eventLevel', this.props.packagebyid.eventLevel);
+        bodyFormData.set('rating', parseInt(this.props.packagebyid.rating));
+        bodyFormData.set('ratedUsers', parseInt(this.props.packagebyid.ratedUsers));
+        bodyFormData.set('createdBy',this.props.packagebyid.packageId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName);
+        bodyFormData.set('modifiedBy',this.props.packagebyid.packageId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null);
         bodyFormData.set('IsDeleted',  false );
         bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
-        bodyFormData.append('coverPhotoFormFile', this.state.coverPhotoFormFile?this.state.coverPhotoFormFile:null);
+       bodyFormData.append('coverPhotoFormFile', this.state.coverPhotoFormFile?this.state.coverPhotoFormFile:null);
         let url = PUT_PACKAGE+ this.props.packagebyid.packageId;
         if (this.props.packagebyid.packageId) {
             this.props.putDataWithFile(action.PUT_PACKAGE,url,bodyFormData);
@@ -214,11 +220,13 @@ class Package extends Component {
     else {
         event.preventDefault();
         this.postPackagedata();
+        this.multiselectRef.current.resetSelectedValues();
     }   
 
     }
     handleReset() {
         this.props.resetData(action.RESET_DATA, "packagebyid");
+        this.multiselectRef.current.resetSelectedValues();
         this.setState({ validated: false });
         this.setState({
             editorState: EditorState.createEmpty(),
@@ -247,6 +255,7 @@ class Package extends Component {
         console.log("coeverphoto",e.target.files[0])
     }
     editReacord(id) {
+        this.props.getData(action.PLACETOVISIT_BYDESTINATION,PLACETOVISIT_BYDESTINATION+id)
         this.props.getData(action.GET_PACKAGE_BYID, GET_PACKAGE_BYID+id)
     }
     updatePackage = (e, paramName) => {
@@ -425,8 +434,10 @@ class Package extends Component {
                                                     <label for="duration"
                                                         class="col-sm-3 col-form-label">Places</label>
                                                     <div class="col-sm-9">
-                                                    <Multiselect   options={this.props.packagebyid.destinationId?this.props. placetovisitbydestination:[]} displayValue={"placeName"} 
-                                                    class="form-control" onSelect={(e)=>this.updatePackage(e,"placetovisitIds")} onRemove={(e)=>this.updatePackage(e,"placetovisitIds")} />
+                                                    <Multiselect selectedValues={this.props.placetovisitbydestinationids}  options={this.props.packagebyid.destinationId?this.props. placetovisitbydestination:[]} displayValue={"placeName"} 
+                                                    class="form-control" onSelect={(e)=>this.updatePackage(e,"placetovisitIds")}
+                                                     onRemove={(e)=>this.updatePackage(e,"placetovisitIds")} 
+                                                     ref={this.multiselectRef}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -462,6 +473,26 @@ class Package extends Component {
                                                         </span>
                                                         </div>
                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">Rating</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="number" value={this.props.packagebyid.rating?this.props.packagebyid.rating:""} class="form-control" id="placeTypeName" required
+                                                             onChange={(e)=>this.updatePackage(e,"rating")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">RatedUsers</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="number" value={this.props.packagebyid.ratedUsers?this.props.packagebyid.ratedUsers:""} class="form-control" id="placeTypeName" required
+                                                             onChange={(e)=>this.updatePackage(e,"ratedUsers")}/>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -636,6 +667,8 @@ class Package extends Component {
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
+                                        <br/>
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
 </Form>
                            </div>
                        </div>
@@ -705,7 +738,7 @@ class Package extends Component {
                                 ]}
                                 data={this.props.packages}
                                 showPagination={true}
-                                defaultPageSize={5}
+                                defaultPageSize={25}
                                 
                          />
       
@@ -732,9 +765,11 @@ class Package extends Component {
           geteventtype:state.goAdvStore.geteventtype,
           packagebyid:state.goAdvStore.packagebyid,
           message: state.goAdvStore.message,
-          messageData: state.goAdvStore.messageData
+          messageData: state.goAdvStore.messageData,
+          getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+          placetovisitbydestinationids: state.goAdvStore.placetovisitbydestinationids
         }
       }
-      export default connect(mapStateToProps, { getData, postData1, putData1,updatePropAccData,resetData,removeErrormsg,putDataWithFile,postDataWithFile,deleteRecord })(Package);
+      export default connect(mapStateToProps, { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,putDataWithFile,postDataWithFile,deleteRecord })(Package);
     //export default Package
 
