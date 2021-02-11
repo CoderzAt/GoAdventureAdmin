@@ -64,7 +64,7 @@ class Destination extends Component {
        bodyFormData.set('Title', this.props.getdestinationbyid.title);
        //bodyFormData.set('PromoImage', this.state.formFile.name);
        bodyFormData.set('isDeleted', false);
-       bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
+       //bodyFormData.append('formFile', this.state.formFile?this.state.formFile:null);
     let url = PUT_DESTINATION+this.props.getdestinationbyid.destinationId;
     if (this.props.getdestinationbyid.destinationId) {
         //this.props.putData1(action.PUT_DESTINATION,url,obj);
@@ -174,7 +174,7 @@ deleteRecord(id)
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            {/* <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription"
                                                         class="col-sm-3 col-form-label">Promo Image</label>
@@ -198,9 +198,9 @@ deleteRecord(id)
                                                                     type="button">Upload</button>
                                                             </span>
                                                         </div>
-                                                    </div> */}
+                                                    </div> 
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription"
