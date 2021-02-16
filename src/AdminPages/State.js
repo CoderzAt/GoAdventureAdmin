@@ -60,7 +60,7 @@ debugger
      }
     statebycountryoperation(event) {
      
-      countryfromurl=event.target.value
+    valuefromurl=event.target.value
     let url = GET_STATE_BYCOUNTRYID + (event.target.value);
     this.props.getData(action.GET_STATE_BYCOUNTRYID, url)
     }
@@ -113,14 +113,14 @@ refresh(e)
 {
   
   e.preventDefault()
-  if(valuefromurl)
+  if(valuefromurl && valuefromurl !=="0")
   {
-  countryfromurl=valuefromurl;
+  valuefromurl=valuefromurl;
   this.props.getData(action.GET_STATE_BYCOUNTRYID,GET_STATE_BYCOUNTRYID+(valuefromurl*1))
   }
   else
   {
-    countryfromurl="0"
+    valuefromurl="0"
     this.props.getData(action.GET_STATES,GET_STATES)
   }
 }
@@ -247,7 +247,7 @@ deleteRecord(id)
                         <div class="form-group row">
                           <label class="col-sm-3 col-form-label">Country</label>
                           <div class="col-sm-9">
-                            <select class="form-control travellerMode" value={countryfromurl?countryfromurl:"0"}  onChange={(e) => this.statebycountryoperation(e)}>
+                            <select class="form-control travellerMode" value={valuefromurl?valuefromurl:"0"}  onChange={(e) => this.statebycountryoperation(e)}>
                               <option value={0}>Select</option>
                               {this.props.countries.map(obj =>
                                 <option value={obj.countryId}>{obj.countryName}</option>

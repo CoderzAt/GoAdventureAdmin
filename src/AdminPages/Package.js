@@ -176,7 +176,7 @@ class Package extends Component {
         //bodyFormData.set('CouponUserUsageCount', parseInt(this.props.packagebyid.couponuserusagecount));
         //bodyFormData.set('Inclusions', this.props.packagebyid.inclusions);
         bodyFormData.set('Inclusions',draftToHtml(convertToRaw(this.state.InclusionseditorState.getCurrentContent())));
-        bodyFormData.set('places', this.props.packagebyid.placetovisitIds);
+        //bodyFormData.set('places', this.props.packagebyid.placetovisitIds);
         bodyFormData.set('eventLevel',parseInt(this.props.packagebyid.eventLevel));
         //bodyFormData.set('Exclusions', this.props.packagebyid.exclusions);
         bodyFormData.set('Exclusions',draftToHtml(convertToRaw(this.state.ExclusionseditorState.getCurrentContent())));
@@ -429,7 +429,7 @@ class Package extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                           {/*  <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="duration"
                                                         class="col-sm-3 col-form-label">Places</label>
@@ -440,7 +440,7 @@ class Package extends Component {
                                                      ref={this.multiselectRef}/>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> */}
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription"

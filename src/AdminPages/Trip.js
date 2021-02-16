@@ -19,6 +19,7 @@ var valuefromurl
 class Trip extends Component {
     constructor(props) {
         super(props);
+        this.multiselectRef = React.createRef();
         this.state = {
             validated: false,
             refreshflag: false
@@ -46,7 +47,7 @@ class Trip extends Component {
     }
     componentWillMount() {
         this.props.removeErrormsg()
-        this.props.removedata()
+        this.props.removedata("gettripbyid")
     }
     deleteRecord(id)
     {
@@ -69,8 +70,8 @@ class Trip extends Component {
             deposit: parseInt(this.props.gettripbyid.deposit),
             maxPrice: parseInt(this.props.gettripbyid.maxPrice),
             stayTypeIds: this.props.gettripbyid.stayTypeIds ? this.props.gettripbyid.stayTypeIds : "",
-            couponCode: this.props.gettripbyid.couponCode || this.props.gettripbyid.couponCode === ""?this.props.gettripbyid.couponCode:null,
-            couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount?this.props.gettripbyid.couponUserUsageCount*1:0,
+            couponCode: this.props.gettripbyid.couponCode || this.props.gettripbyid.couponCode !== ""?this.props.gettripbyid.couponCode:null,
+            couponUserUsageCount: this.props.gettripbyid.couponUserUsageCount || this.props.gettripbyid.couponUserUsageCount ===""?this.props.gettripbyid.couponUserUsageCount*1:0,
             statusId:parseInt(this.props.gettripbyid.statusId?this.props.gettripbyid.statusId:0),
             createdBy:this.props.gettripbyid.tripId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
             modifiedBy:this.props.gettripbyid.tripId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
@@ -101,6 +102,7 @@ class Trip extends Component {
         else {
             event.preventDefault();
             this.postTripdata();
+            this.multiselectRef.current.resetSelectedValues()
         }
     }
     tripbypackageOperation(id) {
@@ -110,6 +112,7 @@ class Trip extends Component {
 
     handleReset() {
         this.props.resetData(action.RESET_DATA, "gettripbyid");
+        this.multiselectRef.current.resetSelectedValues();
         this.setState({ validated: false });
     }
     refresh()
@@ -255,7 +258,7 @@ class Trip extends Component {
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Travel Types</label>
                                                             <div class="col-sm-9">
                                                                 <Multiselect selectedValues={this.props.traveltypeids} options={this.props.gettraveltype} displayValue={"travelTypeName"}
-                                                                    onSelect={(e) => this.updateTrip(e, "travelTypeIds")} onRemove={(e) => this.updateTrip(e, "travelTypeIds")} />
+                                                                    onSelect={(e) => this.updateTrip(e, "travelTypeIds")} onRemove={(e) => this.updateTrip(e, "travelTypeIds")} ref={this.multiselectRef} />
                                                             </div>
                                                         </div>
                                                     </div>
@@ -264,7 +267,7 @@ class Trip extends Component {
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Stay Types</label>
                                                             <div class="col-sm-9">
                                                                 <Multiselect selectedValues={this.props.staytypeids} options={this.props.getstaytype}
-                                                                    displayValue={"stayTypeName"} onSelect={(e) => this.updateTrip(e,"stayTypeIds")} onRemove={(e) => this.updateTrip(e,"stayTypeIds")} />
+                                                                    displayValue={"stayTypeName"} onSelect={(e) => this.updateTrip(e,"stayTypeIds")} onRemove={(e) => this.updateTrip(e,"stayTypeIds")} ref={this.multiselectRef} />
                                                             </div>
                                                         </div>
                                                     </div>

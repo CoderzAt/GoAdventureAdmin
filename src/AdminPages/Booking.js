@@ -320,6 +320,7 @@ class Booking extends Component {
             tripId: parseInt(this.props.getbookingbyid.tripId),
             noOfUsers: parseInt(this.props.getbookingbyid.noOfUsers),
             travelTypeId: parseInt(this.props.getbookingbyid.travelTypeId),
+            stayTypeId:parseInt(this.props.getbookingbyid.stayTypeId),
             // accessories:this.props.getbookingbyid.accessories,
             //activityIds:this.props.getbookingbyid.activityIds,
             userId: parseInt(this.props.getbookingbyid.userId),
@@ -329,6 +330,9 @@ class Booking extends Component {
             contactAddress: this.props.getbookingbyid.contactAddress,
             /* primaryContactAadharNo: this.props.getbookingbyid.primaryContactAadharNo, */
             totalAmount: parseInt(this.props.getbookingbyid.totalAmount),
+            paidAmount:this.props.getbookingbyid.paidAmount?parseInt(this.props.getbookingbyid.paidAmount):0,
+            dueAmount:this.props.getbookingbyid.dueAmount?parseInt(this.props.getbookingbyid.dueAmount):0,
+            discountprice:this.props.getbookingbyid.discountprice && this.props.getbookingbyid.discountprice !== ""?this.props.getbookingbyid.discountprice:0,
             appliedCoupon: this.props.getbookingbyid.appliedCoupon,
             bookingDate:dateFormat(this.props.getbookingbyid.bookingDate,"yyyy-mm-dd"),
             cancellationDate:dateFormat(this.props.getbookingbyid.cancellationDate,"yyyy-mm-dd"),
@@ -377,9 +381,16 @@ class Booking extends Component {
         this.setState({ hide: "" })
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
         this.props.getData(action.GET_BOOKING_BYID, GET_BOOKING_BYID + id)
+        
     }
     updateBooking = (e, paramName) => {
         var value
+        debugger
+        
+        if(this.props.getbookingbyid.tripId &&this.props.getbookingbyid.stayTypeId&& this.props.getbookingbyid.travelTypeId)
+        {
+            getamountdata=this.props.getbookingbyid;
+        }
         getamountdata[paramName]=e.target.value
         if (paramName === "accessories") {
             value = Array.prototype.map.call(e, function (item) { return item.accessoriesId; }).join(",");
@@ -404,6 +415,7 @@ class Booking extends Component {
             value = e.target.value
         }
         debugger
+        
         if (getamountdata.stayTypeId && getamountdata.travelTypeId && getamountdata.noOfUsers && getamountdata.tripId) {
             let amounturl
             if (getamountdata.appliedCoupon) {
@@ -428,7 +440,21 @@ class Booking extends Component {
         debugger
         this.props.deleteRecord(action.DELETE_BOOKING, DELETE_BOOKING + id)
     }
+    componentDidUpdate(prevProps)
+    {
+        debugger
+        if(this.props.getbookingbyid.tripId && this.props.getbookingbyid.tripId !== "0")
+        {
+            if(this.props.getbookingbyid.tripId !== prevProps.getbookingbyid.tripId )
+            {
+            let value=this.props.getbookingbyid.tripId
+            this.props.getData(action.GET_STAYTYPE_BYTRIPID, GET_STAYTYPE_BYTRIPID + value)
+            this.props.getData(action.GET_TRAVELTYPE_BYTRIPID, GET_TRAVELTYPE_BYTRIPID + value)
+            }
+        }
+    }
     render() {
+        
         return (
             <div>
 
@@ -444,7 +470,7 @@ class Booking extends Component {
                                         <i class="mdi mdi-wan"></i>
                                     </span>Booking
                         </h3>
-                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData} />
+                                
                                 <nav aria-label="breadcrumb">
                                     <ul class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -634,11 +660,38 @@ class Booking extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-6" hidden={this.state.hide}>
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Paid Amount</label>
+                                                            <div class="col-sm-9" >
+                                                                <input type="number" disabled value={this.props.getbookingbyid.paidAmount ? this.props.getbookingbyid.paidAmount : ""}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "paidAmount")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" hidden={this.state.hide}>
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Due Amount</label>
+                                                            <div class="col-sm-9" >
+                                                                <input type="number" disabled value={this.props.getbookingbyid.dueAmount ? this.props.getbookingbyid.dueAmount : ""}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "dueAmount")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" hidden={this.state.hide}>
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Discount Price</label>
+                                                            <div class="col-sm-9" >
+                                                                <input  type="number"  value={this.props.getbookingbyid.discountprice ? this.props.getbookingbyid.discountprice : ""}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "discountprice")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" >
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription" class="col-sm-3 col-form-label">Deposit Amount</label>
                                                             <div class="col-sm-9" >
-                                                                <input required type="number" disabled value={this.props.getbookingbyid.depositAmount ? this.props.getbookingbyid.depositAmount : ""}
+                                                                <input  type="number" disabled value={this.props.getbookingbyid.depositAmount ? this.props.getbookingbyid.depositAmount : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "depositAmount")} />
                                                             </div>
                                                         </div>
@@ -733,11 +786,13 @@ class Booking extends Component {
                                                     </div>
 
                                                 </div>
-
+                                                 <br/>
+                                                
                                                 <div class="row" style={{ margin: "auto", textAlign: "center"/* marg:auto;text-align: center} */ }}>
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData} />
                                             </Form>
                                         </div>
                                     </div>
@@ -774,11 +829,11 @@ class Booking extends Component {
                                                     accessor: "primaryContact"
 
                                                 },
-                                                {
+                                                /* {
                                                     Header: "SecondaryContact",
                                                     accessor: "secondaryContact"
 
-                                                },
+                                                }, */
                                                 {
                                                     Header: "emailId",
                                                     accessor: "emailId"
@@ -793,6 +848,11 @@ class Booking extends Component {
                                                 {
                                                     Header: "PaidAmount",
                                                     accessor: "paidAmount"
+
+                                                },
+                                                {
+                                                    Header:"BookingDate",
+                                                    accessor:"bookingDate"
 
                                                 },
                                                 {

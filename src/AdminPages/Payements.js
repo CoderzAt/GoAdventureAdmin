@@ -245,6 +245,7 @@ class Payements extends Component {
                                                                     <option value="UPI">UPI</option>
                                                                     <option value="Credit Card">Credit Card</option>
                                                                     <option value="Debit Card">Debit Card</option>
+                                                                    <option value="InstaMojo">InstaMojo</option>
                                                                     <option value="Cash">Cash</option>
                                                                 </select>
                                                                 <div style={{ color: "red" }}>{this.state.errors.paymentMode}</div>

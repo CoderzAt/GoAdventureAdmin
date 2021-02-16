@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
-import {  POST_CITY, GET_COUNTRIES,GET_USER_BYID,GET_STATE_BYCOUNTRYID,PUT_CITY,DELETE_CITY, GET_CITY_STATEID} from "../Shared/Services";
+import {  POST_CITY, GET_COUNTRIES,GET_USER_BYID,GET_STATE_BYCOUNTRYID,PUT_CITY,DELETE_CITY, GET_CITY_STATEID, GET_CITY_BYID} from "../Shared/Services";
 import Sidebar from "./Sidebar";
 import { connect } from "react-redux";
 import { getCities,  getStates,  getCitybyid,  getCitybystate,removedata,
@@ -49,9 +49,16 @@ class City extends Component {
   }
   refresh(e)
   {
-      e.preventDefault();
-      valuefromurl="0"
-      this.props.getCities();
+      if(valuefromurl && valuefromurl !== "0")
+      {
+        valuefromurl=valuefromurl;
+        this.props.getData(action.GET_CITY_STATEID,GET_CITY_STATEID+valuefromurl)
+      }
+      else{
+        valuefromurl="0"
+        this.props.getCities();
+      }
+      
   }
   deleteRecord(id)
     {

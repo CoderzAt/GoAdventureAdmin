@@ -109,7 +109,7 @@ class TripCostCenter extends Component {
     }
     refresh(e)
     {
-       if(valuefromurl)
+       if(valuefromurl && valuefromurl !== "0")
        {
         valuefromurl=valuefromurl
         this.props.getData(action.GET_TRIP_COSTCENTER_BYTRIPID,GET_TRIP_COSTCENTER_BYTRIPID+valuefromurl)

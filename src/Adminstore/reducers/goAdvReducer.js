@@ -1951,7 +1951,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.PUT_STATE}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"Place to visit","added")
+            let msgData=HandlingError(action.payload,"State","Updated")
             return{
                 ...state,
                 isputStateLoading: false,
@@ -3477,7 +3477,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             }
         }
         case `${actions.PUT_TRIP_COSTCENTER}_FULFILLED` : {
-            let msgData=HandlingError(action.payload,"Place to visit","updated ")
+            let msgData=HandlingError(action.payload,"Trip costcentre","updated ")
             return{
                 ...state,
                 isputTripcostcenterLoading: true,

@@ -55,6 +55,7 @@ class User extends Component {
             emailId:this.props.getuserbyid.emailId,
             password:this.props.getuserbyid.password,
             addressInfo:this.props.getuserbyid.addressInfo,
+            loginType:this.props.getuserbyid.loginType,
             createdBy:this.props.getuserbyid.userId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName,
             modifiedBy:this.props.getuserbyid.userId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null,
             isDeleted:this.props.getuserbyid.userId ? false : true
@@ -193,9 +194,9 @@ class User extends Component {
                                                             <select required type="text" value={this.props.getuserbyid.loginType ? this.props.getuserbyid.loginType : ""}
                                                                 class="form-control" onChange={(e) => this.updateUser(e, "loginType")} >
                                                                     <option value={0}>Select</option>
-                                                                    <option value="male">GoAdventure</option>
-                                                                    <option value="female">Google</option>
-                                                                    <option value="others">FaceBook</option>
+                                                                    <option value="goAdventure">GoAdventure</option>
+                                                                    <option value="google">Google</option>
+                                                                    <option value="facebook">FaceBook</option>
                                                             </select>
                                                         </div>
                                                     </div>
