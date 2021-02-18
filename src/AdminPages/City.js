@@ -110,7 +110,7 @@ class City extends Component {
             selectstate: errMsg
         }
     }))
-  }
+  } 
   handleSubmit(event) {
     debugger
     event.preventDefault();

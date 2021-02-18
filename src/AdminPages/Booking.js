@@ -328,6 +328,7 @@ class Booking extends Component {
             secondaryContact: this.props.getbookingbyid.secondaryContact,
             emailId: this.props.getbookingbyid.emailId,
             contactAddress: this.props.getbookingbyid.contactAddress,
+            userName:this.props.getbookingbyid.userName,
             /* primaryContactAadharNo: this.props.getbookingbyid.primaryContactAadharNo, */
             totalAmount: parseInt(this.props.getbookingbyid.totalAmount),
             paidAmount:this.props.getbookingbyid.paidAmount?parseInt(this.props.getbookingbyid.paidAmount):0,
@@ -335,7 +336,7 @@ class Booking extends Component {
             discountprice:this.props.getbookingbyid.discountprice && this.props.getbookingbyid.discountprice !== ""?this.props.getbookingbyid.discountprice:0,
             appliedCoupon: this.props.getbookingbyid.appliedCoupon,
             bookingDate:dateFormat(this.props.getbookingbyid.bookingDate,"yyyy-mm-dd"),
-            cancellationDate:dateFormat(this.props.getbookingbyid.cancellationDate,"yyyy-mm-dd"),
+            cancellationDate:this.props.getbookingbyid.cancellationDate !== "Invalid date"?dateFormat(this.props.getbookingbyid.cancellationDate,"yyyy-mm-dd"):null,
             cancellationFee: parseInt(this.props.getbookingbyid.cancellationFee),
             isAmountReturned: JSON.parse(this.props.getbookingbyid.isAmountReturned?this.props.getbookingbyid.isAmountReturned:true),
             returnedAmount: parseInt(this.props.getbookingbyid.returnedAmount),
@@ -621,6 +622,15 @@ class Booking extends Component {
                                                             <div class="col-sm-9">
                                                                 <input  type="number" value={this.props.getbookingbyid.secondaryContact ? this.props.getbookingbyid.secondaryContact : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "secondaryContact")} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group row">
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Traveller Name</label>
+                                                            <div class="col-sm-9">
+                                                                <input  type="text" value={this.props.getbookingbyid.userName? this.props.getbookingbyid.userName:""}
+                                                                    class="form-control" onChange={(e) => this.updateBooking(e, "userName")} />
                                                             </div>
                                                         </div>
                                                     </div>

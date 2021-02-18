@@ -72,8 +72,7 @@ class Itenary extends Component {
     
     itenarydescriptionOpearation(event)
     {
-        
-           this.setState({iternaryDescription:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))})
+    this.setState({iternaryDescription:draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()))})
            //console.log("editor",data)
     }
     onEditorStateChange = (editorState) => {
@@ -92,11 +91,10 @@ class Itenary extends Component {
             valuefromurl="0"
             this.props.getData(action.GET_ITENARY,GET_ITENARY)
         }
-       }
-   
-    deleteRecord(id)
+    }
+   deleteRecord(id)
     {
-        debugger
+    debugger
     this.props.deleteRecord(action.DELETE_ITENARY,DELETE_ITENARY+id)
     }
     postItenarydata() {
