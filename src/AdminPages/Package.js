@@ -168,6 +168,7 @@ class Package extends Component {
         var bodyFormData = new FormData();
         bodyFormData.set('PackageId', this.props.packagebyid.packageId?this.props.packagebyid.packageId:0);
         bodyFormData.set('PackageName', this.props.packagebyid.packageName);
+        bodyFormData.set('displayName', this.props.packagebyid.displayName);
         bodyFormData.set('PackageType', this.props.packagebyid.packageType);
         bodyFormData.set('duration', this.props.packagebyid.duration);
         bodyFormData.set('DestinationId', parseInt(this.props.packagebyid.destinationId));
@@ -341,10 +342,20 @@ class Package extends Component {
                                <h4 class="card-title">Package</h4>
                                <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                <div class="row">
-                                            <div class="col-md-6">
+                                   <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">Name</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" value={this.props.packagebyid.displayName?this.props.packagebyid.displayName:""} class="form-control" id="placeTypeName" required
+                                                             onChange={(e)=>this.updatePackage(e,"displayName")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">URL</label>
                                                     <div class="col-sm-9">
                                                         <input type="text" value={this.props.packagebyid.packageName?this.props.packagebyid.packageName:""} class="form-control" id="placeTypeName" required
                                                              onChange={(e)=>this.updatePackage(e,"packageName")}/>
@@ -686,6 +697,15 @@ class Package extends Component {
                                         accessor: "packageId"
                                         
                                     },*/
+                                    {
+                                        Header: "Display Name",
+                                        accessor: "displayName",
+                                        headerStyle: {
+                                            textAlign: 'left',
+                                            fontWeight: 'bold'
+                                        }
+                                        
+                                    },
                                   {
                                     Header: "Name",
                                     accessor: "packageName",
