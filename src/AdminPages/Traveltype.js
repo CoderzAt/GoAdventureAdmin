@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { getData, postData1, putData1,updatePropAccData,removedata,resetData,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import Spinner1 from '../Components/Spinner1';
 
 
 
@@ -74,6 +75,10 @@ class Traveltype extends Component {
     if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
         event.preventDefault();
         event.stopPropagation();
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     else {
         event.preventDefault();
@@ -87,6 +92,10 @@ class Traveltype extends Component {
       }
     editReacord(id) {
         this.props.getData(action.GET_TRAVELTYPE_BYID, GET_TRAVELTYPE_BYID+id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
 
     updateTraveltype = (e, paramName) => {
@@ -128,13 +137,14 @@ class Traveltype extends Component {
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
+                            <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                 <div class="card-body">
                                     <h4 class="card-title">Traveltype</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Name</label>
+                                                    <label class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettraveltypebyid.travelTypeName?this.props.gettraveltypebyid.travelTypeName:""} 
                                                         class="form-control" onChange={(e)=>this.updateTraveltype(e,"travelTypeName")}/>
@@ -143,7 +153,7 @@ class Traveltype extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Description</label>
+                                                    <label class="col-sm-3 col-form-label">Description<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <textarea required rows="4" value={this.props.gettraveltypebyid.travelTypeDescription?this.props.gettraveltypebyid.travelTypeDescription:""}  
                                                         class="form-control" onChange={(e)=>this.updateTraveltype(e,"travelTypeDescription")}></textarea>
@@ -154,7 +164,7 @@ class Traveltype extends Component {
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">MaxCapacity</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Max Capacity<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="number" value={this.props.gettraveltypebyid.maxCapacity?this.props.gettraveltypebyid.maxCapacity:""}  
                                                         class="form-control"   onChange={(e)=>this.updateTraveltype(e,"maxCapacity")}/>
@@ -167,8 +177,9 @@ class Traveltype extends Component {
                                         <div class="row" style={{margin:"auto",textAlign:"center"/* marg:auto;text-align: center} */}}>
                                             <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                             <button type="reset" class="btn btn-light">Cancel</button>
-                                        </div>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        </div>{this.props.ispostTraveltypeLoading || this.props.isputTraveltypeLoading?
+                                            <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
     </Form>
                                 </div>
                             </div>
@@ -254,7 +265,9 @@ class Traveltype extends Component {
             gettraveltype:state.goAdvStore.gettraveltype,
          message: state.goAdvStore.message,
           messageData: state.goAdvStore.messageData,
-          getuserbyidprofile:state.goAdvStore.getuserbyidprofile
+          getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+          ispostTraveltypeLoading:state.goAdvStore.ispostTraveltypeLoading,
+          isputTraveltypeLoading:state.goAdvStore.isputTraveltypeLoading
         }
       }
       export default connect(mapStateToProps, { getData,removedata,postData1, putData1,updatePropAccData,resetData,removeErrormsg ,deleteRecord})(Traveltype);

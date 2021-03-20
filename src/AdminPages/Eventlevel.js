@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { getData, postData1, putData1, updatePropAccData,removedata,resetData, removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import Spinner1 from '../Components/Spinner1';
 
 
 
@@ -71,6 +72,10 @@ class Eventlevel extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -83,6 +88,7 @@ class Eventlevel extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_EVENTLEVEL_BYID, GET_EVENTLEVEL_BYID + id)
+        window.scrollTo(0, 0)
     }
     updateEventlevel = (e, paramName) => {
 
@@ -119,13 +125,14 @@ class Eventlevel extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">Eventlevel</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Code</label>
+                                                            <label class="col-sm-3 col-form-label">Code<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.geteventlevelbyid.eventLevelCode ? this.props.geteventlevelbyid.eventLevelCode : ""}
                                                                     class="form-control" onChange={(e) => this.updateEventlevel(e, "eventLevelCode")} />
@@ -134,7 +141,7 @@ class Eventlevel extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Description</label>
+                                                            <label class="col-sm-3 col-form-label">Description<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.geteventlevelbyid.eventLevelDesc ? this.props.geteventlevelbyid.eventLevelDesc : ""}
                                                                     class="form-control" onChange={(e) => this.updateEventlevel(e, "eventLevelDesc")} />
@@ -161,8 +168,9 @@ class Eventlevel extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
-                                                <br/>
-                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                                <br/>{this.props.ispostEventlevelLoading || this.props.isputEventlevelLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
                                             </Form>
                                         </div>
                                     </div>
@@ -242,7 +250,9 @@ const mapStateToProps = (state) => {
         posteventlevel: state.goAdvStore.posteventlevel,
         message: state.goAdvStore.message,
         getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        ispostEventlevelLoading:state.goAdvStore.ispostEventlevelLoading,
+        isputEventlevelLoading:state.goAdvStore.isputEventlevelLoading
 
     }
 }

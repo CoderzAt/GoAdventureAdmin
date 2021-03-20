@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import {getData,putData1,postData1,resetData,removedata,updatePropAccData,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import Spinner1 from '../Components/Spinner1';
 
 
 
@@ -68,6 +69,10 @@ class PlaceActivities extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         } else {
             event.preventDefault();
             this.postPlaceactivitiesdata();
@@ -77,6 +82,10 @@ class PlaceActivities extends Component {
     editReacord(id) {
         let url=GET_PLACEACTIVITIES_BYID+id;
       this.props.getData(action.GET_PLACEACTIVITIES_BYID, url)
+      window.scrollTo({
+        top:100,
+        behavior: 'smooth',
+    })
       this.setState({validated:false})
       }
    handleReset() {
@@ -161,7 +170,9 @@ updateActivity = (e, paramName) => {
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        {this.props.ispostPlaceactivitiesLoading || this.props.isputPlaceactivitiesLoading?
+                                        <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
     </Form>
                                 </div>
                             </div>
@@ -242,7 +253,9 @@ updateActivity = (e, paramName) => {
            postplaceactivities:state.goAdvStore.postplaceactivities,
            putplaceactivities:state.goAdvStore.putplaceactivities,
            message: state.goAdvStore.message,
-           messageData: state.goAdvStore.messageData
+           messageData: state.goAdvStore.messageData,
+           ispostPlaceactivitiesLoading: state.goAdvStore.ispostPlaceactivitiesLoading,
+           isputPlaceactivitiesLoading: state.goAdvStore.isputPlaceactivitiesLoading
          }
     }
     export default connect(mapStateToProps, {getData,postData1,removedata,putData1,resetData,updatePropAccData,removeErrormsg,deleteRecord})(PlaceActivities);

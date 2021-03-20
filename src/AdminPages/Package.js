@@ -17,10 +17,13 @@ import parse from 'html-react-parser'
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw ,ContentState, convertFromHTML} from 'draft-js';
+import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
 
 
 
 var editorstate='<div>hi<div>';
+var errors={}
 class Package extends Component {
     constructor(props) {
        super(props);
@@ -28,7 +31,14 @@ class Package extends Component {
        this.state = {
            validated:false,
           refreshflag:false,
-          errors:{}
+          errors:{
+              selecteventlevel:"",
+              selectpackagetype:"",
+              selectduration:"",
+              selectdestination:"",
+              urltype:"",
+              urlvalidation1:""
+          }
        }
     }
 
@@ -167,7 +177,7 @@ class Package extends Component {
             };
         var bodyFormData = new FormData();
         bodyFormData.set('PackageId', this.props.packagebyid.packageId?this.props.packagebyid.packageId:0);
-        bodyFormData.set('PackageName', this.props.packagebyid.packageName);
+        bodyFormData.set('PackageName',`${this.props.packagebyid.urltype}/${this.props.packagebyid.url}`);
         bodyFormData.set('displayName', this.props.packagebyid.displayName);
         bodyFormData.set('PackageType', this.props.packagebyid.packageType);
         bodyFormData.set('duration', this.props.packagebyid.duration);
@@ -184,8 +194,12 @@ class Package extends Component {
         bodyFormData.set('thingsTobring',draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())));
         //bodyFormData.set('PackageDescription', this.props.packagebyid.packageDescription);
         bodyFormData.set('PackageDescription',draftToHtml(convertToRaw(this.state.DescriptioneditorState.getCurrentContent())));
-        bodyFormData.set('rating', parseInt(this.props.packagebyid.rating));
-        bodyFormData.set('ratedUsers', parseInt(this.props.packagebyid.ratedUsers));
+        bodyFormData.set('rating',this.props.packagebyid.rating?this.props.packagebyid.rating:0);
+        bodyFormData.set('roots',this.props.packagebyid.roots && this.props.packagebyid.roots !== ""?this.props.packagebyid.roots:null);
+        bodyFormData.set('stayTitle',this.props.packagebyid.stayTitle && this.props.packagebyid.stayTitle !==""?this.props.packagebyid.stayTitle:null);
+        bodyFormData.set('height',this.props.packagebyid.height && this.props.packagebyid.height !== ""?this.props.packagebyid.height:null);
+        bodyFormData.set('bestTime', this.props.packagebyid.bestTime && this.props.packagebyid.bestTime !==""?this.props.packagebyid.bestTime:null);
+        bodyFormData.set('ratedUsers',this.props.packagebyid.ratedUsers?this.props.packagebyid.ratedUsers:0);
         bodyFormData.set('createdBy',this.props.packagebyid.packageId?null:this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName);
         bodyFormData.set('modifiedBy',this.props.packagebyid.packageId?this.props.getuserbyidprofile.firstName+" "+this.props.getuserbyidprofile.lastName:null);
         bodyFormData.set('IsDeleted',  false );
@@ -198,36 +212,78 @@ class Package extends Component {
         else {
             this.props.postDataWithFile(action.POST_PACKAGE,POST_PACKAGE,bodyFormData);
         }
-        this.setState({
+        /* this.setState({
             editorState: EditorState.createEmpty(),
             InclusionseditorState:EditorState.createEmpty(),
             ExclusionseditorState:EditorState.createEmpty(),
             DescriptioneditorState:EditorState.createEmpty()
-          });
+          }); */
         this.setState({ validated: false });
     }
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+        let eventlevelid = this.props.packagebyid.eventLevel?this.props.packagebyid.eventLevel:"0";
+        let packagetypeid= this.props.packagebyid.packageType?this.props.packagebyid.packageType:"0";
+        let destinationid= this.props.packagebyid.destinationId?this.props.packagebyid.destinationId:"0";
+        let duration= this.props.packagebyid.duration?this.props.packagebyid.duration:"0";
+        let urltype1=this.props.packagebyid.urltype?this.props.packagebyid.urltype:"0";
+        let url1=this.props.packagebyid.url?this.props.packagebyid.url:"";
+        
+        let eventlevelerror = validation.selectvalidation(eventlevelid);
+        let packagetypeiderror=validation.selectvalidation(packagetypeid);
+        let destinationerror=validation.selectvalidation(destinationid);
+        let durationerror=validation.selectvalidation(duration);
+        let urltypeerror=validation.selectvalidation(urltype1)
+        let urlerror=validation.urlvalidation(url1)
+        this.setState({
+            errors: {
+              selecteventlevel:eventlevelerror,
+              selectpackagetype:packagetypeiderror,
+              selectdestination:destinationerror,
+              selectduration:durationerror,
+              urltype:urltypeerror,
+              urlvalidation1:urlerror
+            }
+        })
+        errors.selecteventlevel=eventlevelerror;
+        errors.selectpackagetype=packagetypeiderror;
+        errors.selectdestination=destinationerror;
+        errors.selectduration=durationerror;
+        errors.urltype=urltypeerror;
+        errors.urlvalidation1=urlerror;
+      }
 
      handleSubmit(event)
     {
         event.preventDefault();
-    //this.handlevalidations();
+    this.handlevalidations();
     const form = event.currentTarget;
     console.log("checkform", form.checkValidity());
     this.setState({ validated: true });
-    if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+    if (form.checkValidity() === false  || this.validateForm(errors) === false) {
         event.preventDefault();
         event.stopPropagation();
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     else {
         event.preventDefault();
         this.postPackagedata();
-        this.multiselectRef.current.resetSelectedValues();
+       
+        //this.multiselectRef.current.resetSelectedValues();
     }   
 
     }
     handleReset() {
         this.props.resetData(action.RESET_DATA, "packagebyid");
-        this.multiselectRef.current.resetSelectedValues();
+      /*   this.multiselectRef.current.resetSelectedValues(); */
         this.setState({ validated: false });
         this.setState({
             editorState: EditorState.createEmpty(),
@@ -258,6 +314,10 @@ class Package extends Component {
     editReacord(id) {
         this.props.getData(action.PLACETOVISIT_BYDESTINATION,PLACETOVISIT_BYDESTINATION+id)
         this.props.getData(action.GET_PACKAGE_BYID, GET_PACKAGE_BYID+id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     updatePackage = (e, paramName) => {
        var value
@@ -323,8 +383,6 @@ class Package extends Component {
                                 <i class="mdi mdi-home-map-marker"></i>
                             </span>Package
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
-
                             <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i> index</a>
@@ -338,14 +396,16 @@ class Package extends Component {
                <div class="row">
                    <div class="col-12 grid-margin stretch-card">
                        <div class="card">
+                       <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                            <div class="card-body">
                                <h4 class="card-title">Package</h4>
+                              
                                <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                <div class="row">
                                    <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
-                                                        class="col-sm-3 col-form-label">Name</label>
+                                                        class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input type="text" value={this.props.packagebyid.displayName?this.props.packagebyid.displayName:""} class="form-control" id="placeTypeName" required
                                                              onChange={(e)=>this.updatePackage(e,"displayName")}/>
@@ -354,18 +414,39 @@ class Package extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeName"
-                                                        class="col-sm-3 col-form-label">URL</label>
+                                                    <label for="type"
+                                                        class="col-sm-3 col-form-label">URL Type<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" value={this.props.packagebyid.packageName?this.props.packagebyid.packageName:""} class="form-control" id="placeTypeName" required
-                                                             onChange={(e)=>this.updatePackage(e,"packageName")}/>
-                                                    </div>
+                                                        <select type="text" value={this.props.packagebyid.urltype?this.props.packagebyid.urltype:"0"} class="form-control" id="type" required
+                                                         onChange={(e)=>this.updatePackage(e,"urltype")}>
+                                                            <option value={0}>Select</option>
+                                                            <option value="event-details">event-details</option>
+                                                            <option value="trips">trips</option>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.urltype}
+                                                                </small>
+                                                            </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">URL<span class="text-danger">*</span></label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text"  value={this.props.packagebyid.url?this.props.packagebyid.url:""} class="form-control" id="placeTypeName" required
+                                                             onChange={(e)=>this.updatePackage(e,"url")}/>
+                                                             <small style={{ color: "red" }}>
+                                                                    {this.state.errors.urlvalidation1}
+                                                                </small>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
                                                     <label for="type"
-                                                        class="col-sm-3 col-form-label">EventLevel</label>
+                                                        class="col-sm-3 col-form-label">EventLevel<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <select type="text" value={this.props.packagebyid.eventLevel?this.props.packagebyid.eventLevel:"0"} class="form-control" id="type" required
                                                          onChange={(e)=>this.updatePackage(e,"eventLevel")}>
@@ -373,14 +454,17 @@ class Package extends Component {
                                                         {this.props.geteventlevel.map(obj=>(
                                                             <option value={obj.eventLevelId}>{obj.eventLevelCode}</option>
                                                         ))}
-                                                        </select>
-                                                    </div>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selecteventlevel}
+                                                                </small>
+                                                            </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="type"
-                                                        class="col-sm-3 col-form-label">Type</label>
+                                                        class="col-sm-3 col-form-label">Type<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <select type="text" value={this.props.packagebyid.packageType?this.props.packagebyid.packageType:"0"} class="form-control" id="type" required
                                                          onChange={(e)=>this.updatePackage(e,"packageType")}>
@@ -388,15 +472,18 @@ class Package extends Component {
                                                         {this.props.geteventtype.map(obj=>(
                                                             <option value={obj.eventTypeCode}>{obj.eventTypeCode}</option>
                                                         ))}
-                                                        </select>
-                                                    </div>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectpackagetype}
+                                                                </small>
+                                                            </div>
                                                 </div>
                                             </div>
                                         
                                            
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Duration</label>
+                                                    <label class="col-sm-3 col-form-label">Duration<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         {/* <input type="text" value={this.props.packagebyid.duration?this.props.packagebyid.duration:""} class="form-control" id="duration" required
                                                           onChange={(e)=>this.updatePackage(e,"duration")} /> */}
@@ -420,15 +507,18 @@ class Package extends Component {
                                                             <option value="16D 15N">16D 15N</option>
                                                             <option value="17D 16N">17D 16N</option>
                                                             <option value="18D 17N">18D 17N</option>
-                                                        </select>
-                                                        <div style={{ color: "red" }}>{this.state.errors.duration}</div>
-                                                    </div>
+                                                                </select>
+
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectduration}
+                                                                </small>
+                                                            </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Destination</label>
+                                                    <label class="col-sm-3 col-form-label">Destination<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" value={this.props.packagebyid.destinationId?this.props.packagebyid.destinationId:"0"} 
                                                     onChange={(e)=>this.updatePackage(e,"destinationId")}>
@@ -437,7 +527,10 @@ class Package extends Component {
                                                       <option value={obj.destinationId}>{obj.destinationName}</option>
                                                       )}
                                                      </select>
-                                                    </div>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectdestination}
+                                                                </small>
+                                                            </div>
                                                 </div>
                                             </div>
                                            {/*  <div class="col-md-6">
@@ -491,7 +584,7 @@ class Package extends Component {
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">Rating</label>
                                                     <div class="col-sm-9">
-                                                        <input type="number" value={this.props.packagebyid.rating?this.props.packagebyid.rating:""} class="form-control" id="placeTypeName" required
+                                                        <input type="number" value={this.props.packagebyid.rating?this.props.packagebyid.rating:""} class="form-control" id="placeTypeName"
                                                              onChange={(e)=>this.updatePackage(e,"rating")}/>
                                                     </div>
                                                 </div>
@@ -501,8 +594,49 @@ class Package extends Component {
                                                     <label for="placeTypeName"
                                                         class="col-sm-3 col-form-label">RatedUsers</label>
                                                     <div class="col-sm-9">
-                                                        <input type="number" value={this.props.packagebyid.ratedUsers?this.props.packagebyid.ratedUsers:""} class="form-control" id="placeTypeName" required
+                                                        <input type="number" value={this.props.packagebyid.ratedUsers?this.props.packagebyid.ratedUsers:""} class="form-control" id="placeTypeName" 
                                                              onChange={(e)=>this.updatePackage(e,"ratedUsers")}/>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">Start-End Point</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" value={this.props.packagebyid.roots?this.props.packagebyid.roots:""} class="form-control" id="placeTypeName" 
+                                                             onChange={(e)=>this.updatePackage(e,"roots")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">Stay Title</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" value={this.props.packagebyid.stayTitle?this.props.packagebyid.stayTitle:""} class="form-control" id="placeTypeName"
+                                                             onChange={(e)=>this.updatePackage(e,"stayTitle")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">Height</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" value={this.props.packagebyid.height?this.props.packagebyid.height:""} class="form-control" id="placeTypeName" 
+                                                             onChange={(e)=>this.updatePackage(e,"height")}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group row">
+                                                    <label for="placeTypeName"
+                                                        class="col-sm-3 col-form-label">Best Time</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" value={this.props.packagebyid.bestTime?this.props.packagebyid.bestTime:""} class="form-control" id="placeTypeName" 
+                                                             onChange={(e)=>this.updatePackage(e,"bestTime")}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -679,7 +813,9 @@ class Package extends Component {
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        {this.props.ispostPackageLoading || this.props.isputPackageLoading?
+                                    <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
 </Form>
                            </div>
                        </div>
@@ -707,7 +843,7 @@ class Package extends Component {
                                         
                                     },
                                   {
-                                    Header: "Name",
+                                    Header: "URL",
                                     accessor: "packageName",
                                     headerStyle: {
                                         textAlign: 'left',
@@ -787,7 +923,9 @@ class Package extends Component {
           message: state.goAdvStore.message,
           messageData: state.goAdvStore.messageData,
           getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-          placetovisitbydestinationids: state.goAdvStore.placetovisitbydestinationids
+          placetovisitbydestinationids: state.goAdvStore.placetovisitbydestinationids,
+          ispostPackageLoading:state.goAdvStore.ispostPackageLoading,
+          isputPackageLoading:state.goAdvStore.isputPackageLoading
         }
       }
       export default connect(mapStateToProps, { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,putDataWithFile,postDataWithFile,deleteRecord })(Package);

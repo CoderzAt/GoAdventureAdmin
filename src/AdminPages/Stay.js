@@ -10,26 +10,14 @@ import { connect } from 'react-redux';
 import {getData,postData1,putData1,updatePropAccData,resetData,removedata,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
-
-
-
-
-
 import {gettingMultiselectValues} from '../Shared/ReauasbleFunctions'
 import { act } from 'react-dom/test-utils';
-/* import './assets/vendors/mdi/css/materialdesignicons.min.css'
-import './assets/vendors/css/vendor.bundle.base.css'
-import './assets/css/style.css' */
-/*import './assets/images/favicon.ico'
-import './assets/vendors/js/vendor.bundle.base.js'
-import './assets/vendors/chart.js/Chart.min.js'
-import './assets/js/off-canvas.js'
-import '././assets/js/hoverable-collapse.js'
-import './assets/js/misc.js'
-import './assets/js/dashboard.js'
-import './assets/js/todolist.js'*/
+import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
+
 
 var condition=false;
+var errors={}
 class Stay extends Component {
     constructor(props) {
         super(props);
@@ -48,7 +36,12 @@ class Stay extends Component {
            cities:[],
            staytypes:[],
            staytypenames:[],
-           errors:{}
+           errors:{
+            selectcity: "",
+            selectcountry:"",
+            selectstate:"",
+            selectrate:""
+           }
            
        }
     }
@@ -191,14 +184,46 @@ class Stay extends Component {
         }
         this.setState({ validated: false });
     }
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+        let countryid = this.props.getstaybyid.countryId?this.props.getstaybyid.countryId:"0";
+        let stateid= this.props.getstaybyid.stateId?this.props.getstaybyid.stateId:"0";
+        let cityid= this.props.getstaybyid.cityId?this.props.getstaybyid.cityId:"0";
+        let rate=this.props.getstaybyid.rateType?this.props.getstaybyid.rateType:"0";
+
+        let countryiderror = validation.selectvalidation(countryid);
+        let stateiderror=validation.selectvalidation(stateid);
+        let cityiderror=validation.selectvalidation(cityid);
+        let rateerror=validation.selectvalidation(rate)
+       
+        this.setState({
+            errors: {
+                selectcountry:countryiderror,
+                selectstate:stateiderror,
+                selectcity:cityiderror,
+                selectrate:rateerror
+               
+            }
+        })
+        errors.selectcountry=countryiderror;
+        errors.selectstate=stateiderror;
+        errors.selectcity=cityiderror;
+        errors.selectrate=rateerror;
+       
+      }
     handleSubmit(event)
     {
     event.preventDefault();
-    //this.handlevalidations();
+    this.handlevalidations();
     const form = event.currentTarget;
     console.log("checkform", form.checkValidity());
     this.setState({ validated: true });
-    if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+    if (form.checkValidity() === false  || this.validateForm(errors) === false ) {
         event.preventDefault();
         event.stopPropagation();
     }
@@ -229,7 +254,10 @@ class Stay extends Component {
         await  this.props.getData(action.GET_STATES,GET_STATES)
         this.props.getData(action.GET_STAY,GET_STAY);
         this.props.getData(action.GET_STAY_BYID, GET_STAY_BYID+id)
-
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
        /*  let staytypeids=(this.props.getstaybyid.stayTypeIds).split(",");
         var staytypenames1=[]
     
@@ -306,13 +334,14 @@ class Stay extends Component {
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
+                            <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                 <div class="card-body">
                                     <h4 class="card-title">Stay Info</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Name</label>
+                                                    <label class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaybyid.stayName?this.props.getstaybyid.stayName:""}  
                                                         class="form-control"  onChange={(e)=>this.updateStay(e,"stayName")}/>
@@ -322,7 +351,7 @@ class Stay extends Component {
                                             
                                             <div class="col-md-6">
                                             <div class="form-group row">
-                                                <label class="col-sm-3 col-form-label">Rate</label>
+                                                <label class="col-sm-3 col-form-label">Rate<span class="text-danger">*</span></label>
 
                                                 <div class="col-sm-9">
                                                     <select class="form-control" value={this.props.getstaybyid.rateType ? this.props.getstaybyid.rateType : "0"} onChange={(e) => this.updateStay(e, "rateType")}>
@@ -331,9 +360,11 @@ class Stay extends Component {
                                                         <option value="4 Star">4 Star</option>
                                                         <option value="3 Star">3 Star</option>
                                                         <option value="2 Star">2 Star</option>
-                                                    </select>
-                                                    <div style={{ color: "red" }}>{this.state.errors.rateType}</div>
-                                                </div>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectrate}
+                                                                </small>
+                                                            </div>
                                             </div>
                                         </div>
                                         </div>
@@ -341,7 +372,7 @@ class Stay extends Component {
                                            
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Stay Type</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Stay Type<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <Multiselect selectedValues={this.props.staytypeids}  options={this.props.getstaytype} displayValue={"stayTypeName"} 
                                                     class="form-control" onSelect={(e)=>this.updateStay(e,"stayTypeIds")} 
@@ -351,16 +382,16 @@ class Stay extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact Number</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact Number<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" value={this.props.getstaybyid.contactInfo?this.props.getstaybyid.contactInfo:""} 
+                                                        <input required type="number" value={this.props.getstaybyid.contactInfo?this.props.getstaybyid.contactInfo:""} 
                                                         class="form-control"  onChange={(e)=>this.updateStay(e,"contactInfo")}/>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Location Details</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Location Details<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaybyid.locationDetails?this.props.getstaybyid.locationDetails:""}  
                                                          class="form-control"  onChange={(e)=>this.updateStay(e,"locationDetails")}/>
@@ -369,7 +400,7 @@ class Stay extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Country</label>
+                                                    <label class="col-sm-3 col-form-label">Country<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" value={this.props.getstaybyid.countryId?this.props.getstaybyid.countryId:"0"} 
                                                     onChange={(e)=>this.updateStay(e,"countryId")}>
@@ -378,12 +409,15 @@ class Stay extends Component {
                                                       <option value={obj.countryId}>{obj.countryName}</option>
                                                         )}
                                                     </select>
+                                                    <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectcountry}
+                                                                </small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">State</label>
+                                                    <label class="col-sm-3 col-form-label">State<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" value={this.props.getstaybyid.stateId?this.props.getstaybyid.stateId:"0"} 
                                                     onChange={(e)=>this.updateStay(e,"stateId")}>
@@ -392,12 +426,15 @@ class Stay extends Component {
                                                       <option value={obj.stateId}>{obj.stateName}</option>
                                                         )}
                                                     </select>
+                                                    <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectstate}
+                                                                </small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">City</label>
+                                                    <label class="col-sm-3 col-form-label">City<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode"  value={this.props.getstaybyid.cityId?this.props.getstaybyid.cityId:"0"} 
                                                     onChange={(e)=>this.updateStay(e,"cityId")}>
@@ -406,6 +443,9 @@ class Stay extends Component {
                                                       <option value={obj.cityId}>{obj.cityName}</option>
                                                         )}
                                                     </select>
+                                                    <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectcity}
+                                                                </small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -417,7 +457,9 @@ class Stay extends Component {
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        {this.props.ispostStayLoading || this.props.isputStayLoading?
+                                            <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
     </Form>
                                 </div>
                             </div>
@@ -500,7 +542,9 @@ class Stay extends Component {
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
         getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-        staytypeids:state.goAdvStore.staytypeids
+        staytypeids:state.goAdvStore.staytypeids,
+        ispostStayLoading:state.goAdvStore.ispostStayLoading,
+        isputStayLoading:state.goAdvStore.isputStayLoading
            //states:state.goAdvStore.getstatebycountry
             //cities:state.goAdvStore.citybyid
             //cities:state.goAdvStore.citybyid

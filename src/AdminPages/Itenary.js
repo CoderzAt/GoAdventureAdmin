@@ -13,18 +13,18 @@ import htmlToDraft from 'html-to-draftjs';
 import parse from 'html-react-parser'
 
 import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { EditorState, convertToRaw, ContentState, convertFromHTML,convertFromRaw } from 'draft-js';
 import { Multiselect } from 'multiselect-react-dropdown';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
-
-
-
+import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
 
 
 var condition = false;
 var editorstate='<div>hi<div>'
 var valuefromurl
+var errors={}
 class Itenary extends Component {
     constructor(props) {
         super(props);
@@ -32,7 +32,10 @@ class Itenary extends Component {
             validated:false,
             
             iternaryDescription: '<div>Hi</div>',
-            editorState: EditorState.createEmpty()
+            editorState: EditorState.createEmpty(),
+            errors:{
+                selectpackageid:""
+            }
         }
     }
    
@@ -83,7 +86,7 @@ class Itenary extends Component {
     refresh(e)
     {
         e.preventDefault();
-        if(valuefromurl)
+        if(valuefromurl && valuefromurl !== "0")
         {
           this.props.getData(action.GET_ITENARY_BYPACKAGEID,GET_ITENARY_BYPACKAGEID+valuefromurl)
         }
@@ -123,16 +126,36 @@ class Itenary extends Component {
           });
         this.setState({ validated: false });
     }
-
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+         let packageid=this.props.getitenarybyid.packageId?this.props.getitenarybyid.packageId:"0";
+         let packageiderror = validation.selectvalidation(packageid);
+       
+        this.setState(prevState=>({
+            errors: {
+               selectpackageid:packageiderror
+            }
+        }))
+        errors.selectpackageid=packageiderror
+        } 
     handleSubmit(event) {
         event.preventDefault();
-        //this.handlevalidations();
+        this.handlevalidations();
         const form = event.currentTarget;
         console.log("checkform", form.checkValidity());
         this.setState({ validated: true });
-        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        if (form.checkValidity() === false  || this.validateForm(errors) === false) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -150,12 +173,10 @@ class Itenary extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_ITENARY_BYID, GET_ITENARY_BYID + id);
-
-       /*  this.setState({editorState:EditorState.createWithContent(
-            ContentState.createFromBlockArray(
-              convertFromHTML('<div>"hi rajendar"<div>')
-            )
-          )}) */
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     itenarybypackage(e)
     {
@@ -236,27 +257,31 @@ class Itenary extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">itenary</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Package</label>
+                                                            <label class="col-sm-3 col-form-label">Package<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getitenarybyid.packageId ? this.props.getitenarybyid.packageId : "0"}
                                                                     onChange={(e) => this.updateItenary(e, "packageId")}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.packages.map(obj =>
-                                                                        <option value={obj.packageId}>{obj.packageName}</option>
+                                                                        <option value={obj.packageId}>{obj.displayName}</option>
                                                                     )}
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectpackageid}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Day Number</label>
+                                                            <label class="col-sm-3 col-form-label">Day Number<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="number" min="0" step="1" oninput="validity.valid||(value='');" value={this.props.getitenarybyid.dayNumber ? this.props.getitenarybyid.dayNumber : ""}
                                                                     class="form-control"
@@ -266,7 +291,7 @@ class Itenary extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Summary</label>
+                                                            <label class="col-sm-3 col-form-label">Summary<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getitenarybyid.summary ? this.props.getitenarybyid.summary : ""}
                                                                     class="form-control" onChange={(e) => this.updateItenary(e, "summary")} />
@@ -295,21 +320,25 @@ class Itenary extends Component {
                                                         </div>
                                                     </div> */}
 
-                                                    <div class="col-md-12">
+                                                    {/* <div class="col-md-12">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description<span class="text-danger">*</span></label>
 
-                                                            <div class="col-sm-12">
+                                                            <div class="col-sm-12"> */}
                                                                 {/*  <textarea required defaultValue={this.state.viewData.countryDesc} class="form-control" id="placeTypeDescription" rows="4" onChange={(e)=>this.countrydescriptionOperation(e)}></textarea> */}
+                                                                <div>
                                                                 <Editor
                                                                    editorState={this.state.editorState}
-                                                                   wrapperClassName="demo-wrapper"
+                                                                   wrapperClassName="rich-editor demo-wrapper"
                                                                    editorClassName="demo-editor"
+                                                                  
                                                                    onEditorStateChange={this.onEditorStateChange}
+                                                                   
                                                                 />
-                                                            </div>
+                                                                 </div>
+                                                          {/*   </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
 
                                                 </div>
 
@@ -319,7 +348,9 @@ class Itenary extends Component {
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
                                                 <br/>
-                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                                {this.props.isputItenaryLoading || this.props.ispostItenaryLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
                                             </Form>
                                         </div>
                                     </div>
@@ -338,7 +369,7 @@ class Itenary extends Component {
                                                                     onChange={(e) => this.itenarybypackage(e)}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.packages.map(obj =>
-                                                                        <option value={obj.packageId}>{obj.packageName}</option>
+                                                                        <option value={obj.packageId}>{obj.displayName}</option>
                                                                     )}
                                                                 </select>
                                                             </div>
@@ -427,7 +458,9 @@ const mapStateToProps = (state) => {
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
         getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-        placetovisitbydestination:state.goAdvStore.placetovisitbydestination
+        placetovisitbydestination:state.goAdvStore.placetovisitbydestination,
+        ispostItenaryLoading:state.goAdvStore.ispostItenaryLoading,
+        isputItenaryLoading:state.goAdvStore.isputItenaryLoading
         //cities:state.goAdvStore.citybyid
         //cities:state.goAdvStore.citybyid
     }

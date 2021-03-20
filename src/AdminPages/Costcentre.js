@@ -70,6 +70,10 @@ class Costcentre extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         } else {
             event.preventDefault();
             this.postCostcentreData();
@@ -86,6 +90,7 @@ class Costcentre extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_COSTCENTRE_BYID, GET_COSTCENTRE_BYID + id)
+        window.scrollTo(0, 0)
     }
     deleteRecord(id)
     {

@@ -10,6 +10,7 @@ import dateFormat from 'dateformat';
 import { getData, postData1, putData1, updatePropAccData,removedata,resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import Spinner1 from '../Components/Spinner1';
 
 var valuefromurl
 class Payements extends Component {
@@ -108,6 +109,10 @@ class Payements extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -120,6 +125,10 @@ class Payements extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_PAYMENT_BYID, GET_PAYMENT_BYID + id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     updatePayement = (e, paramName) => {
 
@@ -268,7 +277,9 @@ class Payements extends Component {
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
                                                 <br/>
-                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                                {this.props.ispostpayementLoading || this.props.isputpayementLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
 
                                             </Form>
                                         </div>
@@ -388,7 +399,9 @@ const mapStateToProps = (state) => {
         getbooking:state.goAdvStore.getbooking,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
-        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+        ispostpayementLoading:state.goAdvStore.ispostpayementLoading,
+        isputpayementLoading:state.goAdvStore.isputpayementLoading
 
     }
 }

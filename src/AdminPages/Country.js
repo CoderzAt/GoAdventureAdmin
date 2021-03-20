@@ -17,8 +17,10 @@ import {getData,postData1,putData1,updatePropAccData,resetData,removeErrormsg,de
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Redirect } from 'react-router'
+import Spinner1 from '../Components/Spinner1'
 var condition=false;
 var editorstate='<div>hi<div>';
+var errors={}
 class Country extends Component {
     constructor(props) {
         super(props);
@@ -29,7 +31,10 @@ class Country extends Component {
            countrycode:null,
            countries:[],
            viewData:[],
-           editorState:EditorState.createEmpty()
+           editorState:EditorState.createEmpty(),
+           errors:{
+               selectcountry:""
+           }
        }
     } 
     componentWillMount()
@@ -99,6 +104,7 @@ class Country extends Component {
           });
         this.setState({ validated: false });
     }
+   
     handleSubmit(event)
     {
         event.preventDefault();
@@ -109,6 +115,10 @@ class Country extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         } else {
             event.preventDefault();
             this.postCountrydata();
@@ -129,6 +139,7 @@ class Country extends Component {
     }
     editReacord(id) {
       this.props.getData(action.GET_COUNTRY_BYID,GET_COUNTRY_BYID+id);
+      window.scrollTo(0, 0)
     }
 
     updateCountry = (e, paramName) => {
@@ -183,20 +194,25 @@ class Country extends Component {
                             </ul>
                         </nav>
                     </div>
+                   
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
+                            <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                 <div class="card-body">
                                     <h4 class="card-title">Country</h4>
-                                    <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)}  onReset={(e)=>this.handleReset(e)} >
+                                    {this.props.countryLoading || this.props.isputCountryLoading?
+                                    <Spinner1/>:
+                                    <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)}  onReset={(e)=>this.handleReset(e)} >
                                     <div class="row">
+                                   
                                         {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
                                         <TextInput value={this.state.country} defaultValue={this.state.viewData.countryCode} type="text" name="countryCode" onChange={(value)=>this.countrycodeOpearation(value)}/>
                                             */}
 
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Name</label>
+                                                    <label class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getcountrybyid.countryName?this.props.getcountrybyid.countryName:""}
                                                         class="form-control" onChange={(e)=>this.updateCountry(e,"countryName")}/>
@@ -205,7 +221,7 @@ class Country extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Code</label>
+                                                    <label class="col-sm-3 col-form-label">Code<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getcountrybyid.countryCode?this.props.getcountrybyid.countryCode:""}
                                                         class="form-control" onChange={(e)=>this.updateCountry(e,"countryCode")} />
@@ -244,7 +260,7 @@ class Country extends Component {
                                         <br/>
                                         
                                         <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
-    </Form>
+    </Form>}
                                 </div>
                             </div>
                         </div>
@@ -344,7 +360,9 @@ class Country extends Component {
             getcountrybyid:state.goAdvStore.getcountrybyid,
             message: state.goAdvStore.message,
             getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-            messageData: state.goAdvStore.messageData
+            messageData: state.goAdvStore.messageData,
+            countryLoading:state.goAdvStore.ispostCountryLoading,
+            isputCountryLoading:state.goAdvStore.isputCountryLoading
             
         }
     }

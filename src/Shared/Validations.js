@@ -36,6 +36,37 @@ else
 
 }
 
+export const multiselectvalidation=(selectedvalue)=>
+{
+    debugger
+if(selectedvalue === "0")
+{
+    return "Please select";
+}
+else if(selectedvalue === "")
+{
+    return "Please select";
+}
+else
+{
+    return "";
+}
+
+}
+
+export const urlvalidation=(url)=>
+{
+    debugger
+    if(url.includes('/') === true)
+    {
+        return "Please remove / from url"
+    }
+    else
+    {
+        return ""
+    }
+
+}
 
 
 

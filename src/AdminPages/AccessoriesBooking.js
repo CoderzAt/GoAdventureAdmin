@@ -95,6 +95,10 @@ class AccessoriesBooking extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();

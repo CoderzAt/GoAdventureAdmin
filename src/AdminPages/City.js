@@ -11,7 +11,11 @@ import { getCities,  getStates,  getCitybyid,  getCitybystate,removedata,
 import * as action from "../Adminstore/actions/actionTypes";
 import "./admin.scss";
 import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
+
+
 var valuefromurl;
+var errors={}
 class City extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +25,7 @@ class City extends Component {
       // cities:[],
       errors: {
         selectstate: "",
+        selectcountry:""
       }
     };
   }
@@ -68,6 +73,10 @@ class City extends Component {
   editRecord(id) {
     this.props.getStates();
     this.props.getCitybyid(id);
+    window.scrollTo({
+      top:100,
+      behavior: 'smooth',
+  })
     this.setState({ validated: false });
   }
   
@@ -103,13 +112,18 @@ class City extends Component {
   }
   handlevalidations() {
     let stateid = this.props.cityData.stateId?this.props.cityData.stateId:"0";
+    let countryid= this.props.cityData.countryId?this.props.cityData.countryId:"0";
     let errMsg = validation.selectvalidation(stateid);
+    let countryerror=validation.selectvalidation(countryid);
     this.setState(prevState=>({
         errors: {
             ...prevState.errors,
-            selectstate: errMsg
+            selectstate: errMsg,
+            selectcountry:countryerror
         }
     }))
+    errors.selectstate=errMsg;
+    errors.selectcountry=countryerror
   } 
   handleSubmit(event) {
     debugger
@@ -119,9 +133,13 @@ class City extends Component {
     console.log("checkform", form.checkValidity());
     this.setState({ validated: true });
     
-    if (form.checkValidity() === false || this.validateForm(this.state.errors) === false) {
+    if (form.checkValidity() === false || this.validateForm(errors) === false) {
       event.preventDefault();
       event.stopPropagation();
+      window.scrollTo({
+        top:100,
+        behavior: 'smooth',
+    })
     } else {
       event.preventDefault();
       this.postCityData();
@@ -175,6 +193,7 @@ class City extends Component {
               <div className="row">
                 <div className="col-12 grid-margin stretch-card">
                   <div className="card">
+                  <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                     <div className="card-body">
                       <h4 className="card-title">City</h4>
                       <Form className="forms-sample" noValidate validated={this.state.validated}
@@ -182,7 +201,7 @@ class City extends Component {
                         <div className="row">
                           <div class="col-md-6">
                             <div class="form-group row">
-                              <label class="col-sm-3 col-form-label">Country</label>
+                              <label class="col-sm-3 col-form-label">Country<span class="text-danger">*</span></label>
                               <div class="col-sm-9">
                                 <select class="form-control travellerMode" value={this.props.cityData.countryId ? this.props.cityData.countryId : "0"}
                                   onChange={(e) => this.updateCity(e, "countryId")}>
@@ -191,12 +210,15 @@ class City extends Component {
                                     <option value={obj.countryId}>{obj.countryName}</option>
                                   )}
                                 </select>
+                                <div style={{ color: "red" }}>
+                                  {this.state.errors.selectstate}
+                                </div>
                               </div>
                             </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group row">
-                              <label className="col-sm-3 col-form-label">State</label>
+                              <label className="col-sm-3 col-form-label">State<span class="text-danger">*</span></label>
                               <div className="col-sm-9">
                                 <select className="form-control travellerMode"  value={this.props.cityData.stateId? this.props.cityData.stateId : "0"}
                                   onChange={(e) => this.updateCity(e, "stateId")}>
@@ -207,15 +229,15 @@ class City extends Component {
                                     </option>
                                   ))}
                                 </select>
-                                <div style={{ color: "red" }}>
+                                <small style={{ color: "red" }}>
                                   {this.state.errors.selectstate}
-                                </div>
+                                </small>
                               </div>
                             </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group row">
-                              <label className="col-sm-3 col-form-label">Name</label>
+                              <label className="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                               <div className="col-sm-9">
                                 <input type="text" required value={this.props.cityData.cityName? this.props.cityData.cityName : ""}
                                   className="form-control" onChange={(e) => this.updateCity(e, "cityName")} />
@@ -225,9 +247,9 @@ class City extends Component {
 
                           <div className="col-md-6">
                             <div className="form-group row">
-                              <label className="col-sm-3 col-form-label">Code</label>
+                              <label className="col-sm-3 col-form-label">Code<span class="text-danger">*</span></label>
                               <div className="col-sm-9">
-                                <input type="text" value={this.props.cityData.cityCode?this.props.cityData.cityCode:""}
+                                <input type="text" required value={this.props.cityData.cityCode?this.props.cityData.cityCode:""}
                                   className="form-control" onChange={(e) => this.updateCity(e, "cityCode")} />
                               </div>
                             </div>
@@ -248,10 +270,13 @@ class City extends Component {
                           <button type="reset" className="btn btn-light">Cancel</button>
                         </div>
                         <br/>
+                        {this.props.isputCityLoading || this.props.ispostCityLoading?
+                                            <Spinner1/>:
+                        <div>
                         {this.props.message?
                   <div className={`message-wrapper ${this.props.messageData.isSuccess? "success":"error"}`}>{this.props.messageData.message.map(obj=>(<li>{obj.message}</li>))}</div> :
                   null
-                }
+                }</div>}
                       </Form>
                     </div>
                   </div>
@@ -367,7 +392,9 @@ const mapStateToProps = (state) => {
     cityData: state.goAdvStore.cityData,
     message: state.goAdvStore.message,
     messageData: state.goAdvStore.messageData,
-    getuserbyidprofile:state.goAdvStore.getuserbyidprofile
+    getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+    ispostCityLoading:state.goAdvStore.ispostCityLoading,
+    isputCityLoading:state.goAdvStore.isputCityLoading
   };
 };
 export default connect(mapStateToProps, {

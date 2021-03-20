@@ -8,15 +8,23 @@ import Sidebar from './Sidebar';
 import { connect } from 'react-redux';
 import { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
-
+import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
 
 var condition=false;
+var errors={}
 class TravelInfo extends Component {
     constructor(props) {
         super(props);
        this.state = {
            validated:false,
-           refreshflag:false
+           refreshflag:false,
+           errors:{
+            selectcity: "",
+            selectcountry:"",
+            selectstate:"",
+            selecttraveltype:""
+           }
             }
     }
     componentWillMount()
@@ -49,7 +57,7 @@ class TravelInfo extends Component {
             vehicleContactNumber:this.props.gettravelinfobyid.vehicleContactNumber,
             agencyName:this.props.gettravelinfobyid.agencyName,
             locationDetails:this.props.gettravelinfobyid.locationDetails,
-            traveltype:this.props.gettravelinfobyid.traveltype,
+            travelTypeId:this.props.gettravelinfobyid.travelTypeId*1,
             cityId:this.props.gettravelinfobyid.cityId*1,
             isDeleted: this.props.gettravelinfobyid.travelInfoId?false:true
        };
@@ -62,16 +70,51 @@ class TravelInfo extends Component {
     }
     this.setState({ validated: false });
     }
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+        let countryid = this.props.gettravelinfobyid.countryId?this.props.gettravelinfobyid.countryId:"0";
+        let stateid= this.props.gettravelinfobyid.stateId?this.props.gettravelinfobyid.stateId:"0";
+        let cityid= this.props.gettravelinfobyid.cityId?this.props.gettravelinfobyid.cityId:"0";
+        let travetype=this.props.gettravelinfobyid.traveltype?this.props.gettravelinfobyid.traveltype:"0";
+
+        let countryiderror = validation.selectvalidation(countryid);
+        let stateiderror=validation.selectvalidation(stateid);
+        let cityiderror=validation.selectvalidation(cityid);
+        let traveltypeerror=validation.selectvalidation(travetype)
+       
+        this.setState({
+            errors: {
+                selectcountry:countryiderror,
+                selectstate:stateiderror,
+                selectcity:cityiderror,
+                selecttraveltype:traveltypeerror
+               
+            }
+        })
+        errors.selectcountry=countryiderror;
+        errors.selectstate=stateiderror;
+        errors.selectcity=cityiderror;
+        errors.selecttraveltype=traveltypeerror
+       }
      handleSubmit(event)
     {
     event.preventDefault();
-    //this.handlevalidations();
+    this.handlevalidations();
     const form = event.currentTarget;
     console.log("checkform", form.checkValidity());
     this.setState({ validated: true });
-    if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+    if (form.checkValidity() === false  || this.validateForm(errors) === false) {
         event.preventDefault();
         event.stopPropagation();
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     else {
         event.preventDefault();
@@ -87,6 +130,10 @@ class TravelInfo extends Component {
         await this.props.getData(action.GET_CITIES,GET_CITIES)
         await  this.props.getData(action.GET_STATES,GET_STATES)
         this.props.getData(action.GET_TRAVELINFO_BYID, GET_TRAVELINFO_BYID+id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     updateTravelinfo = (e, paramName) => {
 
@@ -137,13 +184,14 @@ class TravelInfo extends Component {
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
+                            <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                 <div class="card-body">
                                     <h4 class="card-title">Travel Info</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Vehicle Name</label>
+                                                    <label class="col-sm-3 col-form-label">Vehicle Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettravelinfobyid.vehicleName?this.props.gettravelinfobyid.vehicleName:""}
                                                          class="form-control" onChange={(e)=>this.updateTravelinfo(e,"vehicleName")}/>
@@ -153,21 +201,24 @@ class TravelInfo extends Component {
                                             <div class="col-md-6">
                                                 <div class="form-group row">
 
-                                                    <label class="col-sm-3 col-form-label">TravelType</label>
+                                                    <label class="col-sm-3 col-form-label">TravelType<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
-                                                        <select required type="text" value={this.props.gettravelinfobyid.traveltype?this.props.gettravelinfobyid.traveltype:""}
-                                                         class="form-control" onChange={(e)=>this.updateTravelinfo(e,"traveltype")}>
+                                                        <select required type="text" value={this.props.gettravelinfobyid.travelTypeId?this.props.gettravelinfobyid.travelTypeId:""}
+                                                         class="form-control" onChange={(e)=>this.updateTravelinfo(e,"travelTypeId")}>
                                                              <option value={0}>Select</option>
                                                              {this.props.gettraveltype.map(obj=>(
                                                                  <option value={obj.travelTypeId}>{obj.travelTypeName}</option>
                                                              ))}
-                                                        </select>
-                                                    </div>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selecttraveltype}
+                                                                </small>
+                                                            </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Vehicle Number</label>
+                                                    <label class="col-sm-3 col-form-label">Vehicle Number<span class="text-danger">*</span></label>
 
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettravelinfobyid.vehicleNumber?this.props.gettravelinfobyid.vehicleNumber:""} 
@@ -178,7 +229,7 @@ class TravelInfo extends Component {
                                        
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehicle Owner</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Vehicle Owner<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text"  value={this.props.gettravelinfobyid.vehicleOwner?this.props.gettravelinfobyid.vehicleOwner:""} 
                                                         class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"vehicleOwner")}/>
@@ -187,7 +238,7 @@ class TravelInfo extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact number</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact number<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="number" value={this.props.gettravelinfobyid.vehicleContactNumber?this.props.gettravelinfobyid.vehicleContactNumber:""} 
                                                          class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"vehicleContactNumber")}/>
@@ -198,14 +249,14 @@ class TravelInfo extends Component {
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription" class="col-sm-3 col-form-label">Agency Name</label>
                                                     <div class="col-sm-9">
-                                                        <input required type="text" value={this.props.gettravelinfobyid.agencyName?this.props.gettravelinfobyid.agencyName:""}  class="form-control"  
+                                                        <input  type="text" value={this.props.gettravelinfobyid.agencyName?this.props.gettravelinfobyid.agencyName:""}  class="form-control"  
                                                         onChange={(e)=>this.updateTravelinfo(e,"agencyName")}/>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Location Details</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Location Details<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.gettravelinfobyid.locationDetails?this.props.gettravelinfobyid.locationDetails:""}  
                                                         class="form-control"  onChange={(e)=>this.updateTravelinfo(e,"locationDetails")}/>
@@ -214,7 +265,7 @@ class TravelInfo extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Country</label>
+                                                    <label class="col-sm-3 col-form-label">Country<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" value={this.props.gettravelinfobyid.countryId?this.props.gettravelinfobyid.countryId:"0"} 
                                                     onChange={(e)=>this.updateTravelinfo(e,"countryId")}>
@@ -223,12 +274,15 @@ class TravelInfo extends Component {
                                                       <option value={obj.countryId}>{obj.countryName}</option>
                                                         )}
                                                     </select>
+                                                    <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectcountry}
+                                                                </small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">State</label>
+                                                    <label class="col-sm-3 col-form-label">State<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" value={this.props.gettravelinfobyid.stateId?this.props.gettravelinfobyid.stateId:"0"} 
                                                     onChange={(e)=>this.updateTravelinfo(e,"stateId")}>
@@ -237,12 +291,15 @@ class TravelInfo extends Component {
                                                       <option value={obj.stateId}>{obj.stateName}</option>
                                                         )}
                                                     </select>
+                                                    <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectstate}
+                                                                </small>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">City</label>
+                                                    <label class="col-sm-3 col-form-label">City<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                     <select class="form-control travellerMode" value={this.props.gettravelinfobyid.cityId?this.props.gettravelinfobyid.cityId:"0"} 
                                                     onChange={(e)=>this.updateTravelinfo(e,"cityId")}>
@@ -251,6 +308,9 @@ class TravelInfo extends Component {
                                                       <option value={obj.cityId}>{obj.cityName}</option>
                                                         )}
                                                     </select>
+                                                    <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectcity}
+                                                                </small>
                                                     </div>
                                                 </div>
                                             </div>
@@ -262,10 +322,14 @@ class TravelInfo extends Component {
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
+                                        {this.props.isposttTravelinfoLoading || this.props.isputTravelinfoLoading?
+                                            <Spinner1/>:
+                                        <div>
                                         {this.props.message ?
                                     <div className={`message-wrapper ${this.props.messageData.isSuccess ? "success" : "error"}`}>{this.props.messageData.message}</div> :
                                     null
                         }
+                        </div>}
     </Form>
                                 </div>
                             </div>
@@ -371,8 +435,10 @@ class TravelInfo extends Component {
           gettravelinfo:state.goAdvStore.gettravelinfo,
           message: state.goAdvStore.message,
           messageData: state.goAdvStore.messageData,
-          cities:state.goAdvStore.cities
-         
+          cities:state.goAdvStore.cities,
+          isposttTravelinfoLoading:state.goAdvStore.isposttTravelinfoLoading,
+          isputTravelinfoLoading:state.goAdvStore.isputTravelinfoLoading
+       
         }
       }
       export default connect(mapStateToProps, { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg,deleteRecord})(TravelInfo);

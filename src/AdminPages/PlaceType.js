@@ -78,6 +78,10 @@ class PlaceType extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -91,6 +95,10 @@ class PlaceType extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_PLACETYPE_BYID, GET_PLACETYPE_BYID + id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     updatePlacetype = (e, paramName) => {
         this.props.updatePropAccData(paramName, e.target.value, "getplacetypebyid");
@@ -129,13 +137,14 @@ class PlaceType extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">Place Type</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeName" class="col-sm-3 col-form-label">Name</label>
+                                                            <label for="placeTypeName" class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input type="text" required value={this.props.getplacetypebyid.placeTypeName ? this.props.getplacetypebyid.placeTypeName : ""}
                                                                     class="form-control" id="placeTypeName" onChange={(e) => this.updatePlacetype(e, "placeTypeName")} placeholder="Name" />
@@ -145,7 +154,7 @@ class PlaceType extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Description<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <textarea class="form-control" required value={this.props.getplacetypebyid.placeTypeDescription ? this.props.getplacetypebyid.placeTypeDescription : ""} id="placeTypeDescription" rows="4"
                                                                     onChange={(e) => this.updatePlacetype(e, "placeTypeDescription")}></textarea>

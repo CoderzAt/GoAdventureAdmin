@@ -2,6 +2,12 @@
   text-align: center;
 }
 
+.app {	  text-align: center;	  background-color: #2a2a2ab5;	  height: 100vh;	}	.app .rich-editor {	  padding: 10rem;	}	
+.rich-editor .rdw-editor-main {	  background-color: #fff;	}	
+.rich-editor .DraftEditor-editorContainer {	  padding: 1rem;	}	
+.draft-editor-wrapper {	  border: 1px solid #ccc;	}
+
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

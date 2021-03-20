@@ -13,10 +13,12 @@ import { Multiselect } from 'multiselect-react-dropdown';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
 import { Link } from "react-router-dom";
 import dateFormat from 'dateformat';
+import Spinner1 from '../Components/Spinner1';
 
 var condition = false;
 var valuefromurl
 var getamountdata={}
+var errors={}
 class Booking extends Component {
     constructor(props) {
         super(props);
@@ -47,8 +49,13 @@ class Booking extends Component {
             activities: [],
             users: [],
             hide: "true",
-            errors: {},
-            bookimgoptionvalue: "0"
+            bookimgoptionvalue: "0",
+            errors:{
+                selecttripid:"",
+                selecttraveltypeid:"",
+                selectstaytypeid:"",
+                selectusertypeid:""
+            }
         }
     }
     componentWillMount() {
@@ -197,36 +204,7 @@ class Booking extends Component {
         })
     }
 
-    async editReacord(id) {
-
-        let url = getbookingbyid + id;
-        let editdata = await loadData(url)
-        this.setState({
-            editData: editdata
-        })
-
-        this.setState({
-            tripId: editdata.tripId,
-            noOfUsers: parseInt(editdata.noOfUsers),
-            travelTypeId: parseInt(editdata.travelTypeId),
-            accessories: editdata.accessories,
-            activityIds: this.state.activityIds,
-            userId: parseInt(editdata.userId),
-            primaryContact: editdata.primaryContact,
-            secondaryContact: editdata.secondaryContact,
-            emailId: editdata.emailId,
-            contactAddress: editdata.contactAddress,
-            primaryContactAadharNo: editdata.primaryContactAadharNo,
-            totalAmount: parseInt(editdata.totalAmount),
-            appliedCoupon: editdata.appliedCoupon,
-            bookingDate: editdata.bookingDate,
-            cancellationDate: editdata.cancellationDate,
-            cancellationFee: parseInt(editdata.cancellationDate),
-            isAmountReturned: editdata.isAmountReturned,
-            returnedAmount: parseInt(editdata.returnedAmount)
-
-        })
-    }
+    
     /* deleteRecord(id)
     {
         alert("in delete id no is"+id)
@@ -299,19 +277,7 @@ class Booking extends Component {
         alert(message);
         window.location.reload();//page refresh
     }
-    handlevalidation() {
-        let state = this.state;
-        this.setState({
-            errors: {
-                trip: validation.selectvalidation(state.tripId),
-                traveltype: validation.selectvalidation(state.travelTypeId),
-                accessory: validation.selectvalidation(state.accessoryId),
-                //activity:validation.selectvalidation(state.activityIds),
-                user: validation.selectvalidation(state.userId)
-
-            }
-        })
-    }
+   
     postBookingData() {
         debugger
 
@@ -357,15 +323,50 @@ class Booking extends Component {
         }
         this.setState({ validated: false });
     }
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+        let tripid = this.props.getbookingbyid.tripId?this.props.getbookingbyid.tripId:"0";
+        let traveltypeid= this.props.getbookingbyid.travelTypeId?this.props.getbookingbyid.travelTypeId:"0";
+        let staytypeid= this.props.getbookingbyid.stayTypeId?this.props.getbookingbyid.stayTypeId:"0";
+        let userid= this.props.getbookingbyid.userId?this.props.getbookingbyid.userId:"0";
+       
+        let tripiderror = validation.selectvalidation(tripid);
+        let traveltypeiderror=validation.selectvalidation(traveltypeid);
+        let staytypeiderror=validation.selectvalidation(staytypeid);
+        let useriderror=validation.selectvalidation(userid);
+        
+        this.setState({
+            errors: {
+             selecttripid: tripiderror,
+             selecttraveltypeid:traveltypeiderror,
+             selectstaytypeid:staytypeiderror,
+             selectusertypeid:useriderror
+            }
+        })
+        errors.selecttripid= tripiderror;
+        errors.selecttraveltypeid=traveltypeiderror;
+        errors.selectstaytypeid=staytypeiderror;
+        errors.selectusertypeid=useriderror;
+        }
+
     handleSubmit(event) {
         event.preventDefault();
-        //this.handlevalidations();
+        this.handlevalidations()
         const form = event.currentTarget;
         console.log("checkform", form.checkValidity());
         this.setState({ validated: true });
-        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        if (form.checkValidity() === false  || this.validateForm(errors) === false ) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             this.setState({ hide: "true" })
@@ -382,7 +383,10 @@ class Booking extends Component {
         this.setState({ hide: "" })
         this.props.getData(action.GET_ALL_ACCESSORIES, GET_ALL_ACCESSORIES)
         this.props.getData(action.GET_BOOKING_BYID, GET_BOOKING_BYID + id)
-        
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     updateBooking = (e, paramName) => {
         var value
@@ -485,13 +489,14 @@ class Booking extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">Booking</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Trip</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Trip<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getbookingbyid.tripId ? this.props.getbookingbyid.tripId : "0"}
                                                                     onChange={(e) => this.updateBooking(e, "tripId")}>
@@ -500,13 +505,15 @@ class Booking extends Component {
                                                                         <option value={obj.tripId}>{obj.tripName}</option>
                                                                     )}
                                                                 </select>
-                                                                <div style={{ color: "red" }}>{this.state.errors.trip}</div>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selecttripid}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">No.of Users</label>
+                                                            <label class="col-sm-3 col-form-label">No.of Users<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="number" value={this.props.getbookingbyid.noOfUsers ? this.props.getbookingbyid.noOfUsers : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "noOfUsers")} />
@@ -517,7 +524,7 @@ class Booking extends Component {
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">TravelType</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">TravelType<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getbookingbyid.travelTypeId ? this.props.getbookingbyid.travelTypeId : "0"}
                                                                     onChange={(e) => this.updateBooking(e, "travelTypeId")}>
@@ -526,13 +533,15 @@ class Booking extends Component {
                                                                         <option value={obj.travelTypeId}>{obj.travelTypeName}</option>
                                                                     )}
                                                                 </select>
-                                                                <div style={{ color: "red" }}>{this.state.errors.traveltype}</div>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selecttraveltypeid}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayType</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayType<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getbookingbyid.stayTypeId ? this.props.getbookingbyid.stayTypeId : "0"}
                                                                     onChange={(e) => this.updateBooking(e, "stayTypeId")}>
@@ -541,7 +550,9 @@ class Booking extends Component {
                                                                         <option value={obj.stayTypeId}>{obj.stayTypeName}</option>
                                                                     )}
                                                                 </select>
-                                                                <div style={{ color: "red" }}>{this.state.errors.traveltype}</div>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectstaytypeid}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -594,7 +605,7 @@ class Booking extends Component {
 
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">User</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">User<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getbookingbyid.userId ? this.props.getbookingbyid.userId : "0"}
                                                                     onChange={(e) => this.updateBooking(e, "userId")}>
@@ -603,13 +614,15 @@ class Booking extends Component {
                                                                         <option value={obj.userId}>{obj.firstName}</option>
                                                                     )}
                                                                 </select>
-                                                                <div style={{ color: "red" }}>{this.state.errors.user}</div>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectusertypeid}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Primary Contact</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Primary Contact<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="number" value={this.props.getbookingbyid.primaryContact ? this.props.getbookingbyid.primaryContact : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "primaryContact")} />
@@ -627,16 +640,16 @@ class Booking extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Traveller Name</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Traveller Name<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <input  type="text" value={this.props.getbookingbyid.userName? this.props.getbookingbyid.userName:""}
+                                                                <input  type="text" required value={this.props.getbookingbyid.userName? this.props.getbookingbyid.userName:""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "userName")} />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Email Id</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Email Id<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getbookingbyid.emailId ? this.props.getbookingbyid.emailId : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "emailId")} />
@@ -645,7 +658,7 @@ class Booking extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact Address</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Contact Address<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getbookingbyid.contactAddress ? this.props.getbookingbyid.contactAddress : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "contactAddress")} />
@@ -709,7 +722,7 @@ class Booking extends Component {
 
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Booking Date</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Booking Date<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="date" value={this.props.getbookingbyid.bookingDate ? this.props.getbookingbyid.bookingDate : ""}
                                                                     class="form-control" onChange={(e) => this.updateBooking(e, "bookingDate")} />
@@ -802,7 +815,10 @@ class Booking extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
-                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData} />
+                                                <br/>
+                                                {this.props.ispostBookingLoading || this.props.isputBookingLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData} />}
                                             </Form>
                                         </div>
                                     </div>
@@ -922,7 +938,10 @@ const mapStateToProps = (state) => {
         getbookingtotatamount: state.goAdvStore.getbookingtotatamount,
         getstatusbytype: state.goAdvStore.getstatusbytype,
         getbookingoptions: state.goAdvStore.getbookingoptions,
-        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+        ispostBookingLoading:state.goAdvStore.ispostBookingLoading,
+        isputBookingLoading:state.goAdvStore. isputBookingLoading
+    
     }
 }
 export default connect(mapStateToProps, { getData, postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg, deleteRecord })(Booking);

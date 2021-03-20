@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { getAccessories, getData,removedata,postData1, putData1, updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import Spinner1 from '../Components/Spinner1';
 
 
 
@@ -118,6 +119,10 @@ class Accessories extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         } else {
             event.preventDefault();
             this.postAccessoryData();
@@ -145,6 +150,10 @@ class Accessories extends Component {
     editReacord(id)
     {
         this.props.getData(action.GET_ACCESSORIES_BYID,GET_ACCESSORIES_BYID+id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     deleteRecord(id)
     {
@@ -178,18 +187,20 @@ class Accessories extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">Accessories</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
-                                                    {/* <TextInput value={this.state.countryname} defaultValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
+                                                    {/* <TextInput value={this.state.countryname} defaul
+                                                    tValue={this.state.viewData.countryName} type="text" name="countryName" onChange={(e)=>this.countrynamenameOperation(e)}/>
                                         <TextInput value={this.state.country} defaultValue={this.state.viewData.countryCode} type="text" name="countryCode" onChange={(value)=>this.countrycodeOpearation(value)}/>
                                             */}
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Name</label>
+                                                            <label class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" value={this.props.getaccessorybyid.accessoryName ? this.props.getaccessorybyid.accessoryName : ""}
+                                                                <input type="text" required value={this.props.getaccessorybyid.accessoryName ? this.props.getaccessorybyid.accessoryName : ""}
                                                                     className="form-control" onChange={(e) => this.updateAccessory(e, "accessoryName")} />
                                                                 <div style={{ color: "red" }}>{this.state.errors.accessoryName}</div>
                                                             </div>
@@ -197,18 +208,18 @@ class Accessories extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Code</label>
+                                                            <label class="col-sm-3 col-form-label">Code<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" value={this.props.getaccessorybyid.accessoryCode ? this.props.getaccessorybyid.accessoryCode: ""}
+                                                                <input type="text" required value={this.props.getaccessorybyid.accessoryCode ? this.props.getaccessorybyid.accessoryCode: ""}
                                                                     className="form-control" onChange={(e) => this.updateAccessory(e, "accessoryCode")} />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Type</label>
+                                                            <label class="col-sm-3 col-form-label">Type<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <select type="text" value={this.props.getaccessorybyid.type ? this.props.getaccessorybyid.type: ""}
+                                                                <select type="text"  value={this.props.getaccessorybyid.type ? this.props.getaccessorybyid.type: ""}
                                                                     className="form-control" onChange={(e) => this.updateAccessory(e, "type")} >
                                                                    <option>Select</option>
                                                                    {this.props.getaccessarytype.map(obj=>(
@@ -235,7 +246,7 @@ class Accessories extends Component {
                                                     </div> */}
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">sale Or Rent</label>
+                                                            <label class="col-sm-3 col-form-label">Sale Or Rent<span class="text-danger">*</span></label>
 
                                                             <div class="col-sm-9">
                                                                 <select class="form-control" value={this.props.getaccessorybyid.saleOrRent ? this.props.getaccessorybyid.saleOrRent : "0"} onChange={(e) => this.updateAccessory(e, "saleOrRent")}>
@@ -250,18 +261,18 @@ class Accessories extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row" >
-                                                            <label class="col-sm-3 col-form-label">Sale Price</label>
+                                                            <label class="col-sm-3 col-form-label">Sale Price<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9" >
-                                                                <input type="number" value={this.props.getaccessorybyid.salePrice ? this.props.getaccessorybyid.salePrice : ""}
+                                                                <input type="number" required value={this.props.getaccessorybyid.salePrice ? this.props.getaccessorybyid.salePrice : ""}
                                                                     class="form-control" onChange={(e) => this.updateAccessory(e, "salePrice")} />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Rent Price</label>
+                                                            <label class="col-sm-3 col-form-label">Rent Price<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <input type="number" value={this.props.getaccessorybyid.rentPrice ? this.props.getaccessorybyid.rentPrice : ""}
+                                                                <input type="number" required value={this.props.getaccessorybyid.rentPrice ? this.props.getaccessorybyid.rentPrice : ""}
                                                                     class="form-control" onChange={(e) => this.updateAccessory(e, "rentPrice")} />
                                                             </div>
                                                         </div>
@@ -296,7 +307,7 @@ class Accessories extends Component {
                                                 </div>
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Available</label>
+                                                            <label class="col-sm-3 col-form-label">Available<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control" value={this.props.getaccessorybyid.isAvailable?`${this.props.getaccessorybyid.isAvailable}`:"0"} onChange={(e) => this.updateAccessory(e, "isAvailable")}>
                                                                     <option value={0}>Select</option>
@@ -326,6 +337,10 @@ class Accessories extends Component {
                                                     <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
+                                                <br/>
+                                                {this.props.ispostAccessoryLoading || this.props.isputAccessoryLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
                                             </Form>
                                         </div>
                                     </div>
@@ -417,7 +432,9 @@ const mapStateToProps = (state) => {
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
         getstatusbytype:state.goAdvStore.getstatusbytype,
-         getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+        ispostAccessoryLoading:state.goAdvStore.ispostAccessoryLoading,
+        isputAccessoryLoading:state.goAdvStore.isputAccessoryLoading
     }
 }
 export default connect(mapStateToProps, { getData, postData1, putData1,removedata,updatePropAccData, resetData,deleteRecord,postDataWithFile,putDataWithFile })(Accessories);

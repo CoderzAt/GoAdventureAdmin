@@ -62,6 +62,10 @@ class Activity extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         } else {
             event.preventDefault();
             this.postActivityData();
@@ -71,6 +75,7 @@ class Activity extends Component {
     editReacord(id) {
         let url=GET_ACTIVITY_BYID+id;
       this.props.getData(action.GET_ACTIVITY_BYID, url)
+      window.scrollTo(0, 0)
       this.setState({validated:false})
       }
    handleReset() {
@@ -118,13 +123,14 @@ updateActivity = (e, paramName) => {
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
+                            <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                 <div class="card-body">
                                     <h4 class="card-title">Activity</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Name</label>
+                                                    <label class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getactivitybyid.activityName?this.props.getactivitybyid.activityName:""}  
                                                         class="form-control" onChange={(e)=>this.updateActivity(e,"activityName")}/>
@@ -133,7 +139,7 @@ updateActivity = (e, paramName) => {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Genre</label>
+                                                    <label class="col-sm-3 col-form-label">Genre<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getactivitybyid.activityGenre?this.props.getactivitybyid.activityGenre:""} 
                                                         class="form-control" onChange={(e)=>this.updateActivity(e,"activityGenre")} />

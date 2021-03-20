@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { getData, postData1, putData1,updatePropAccData,resetData,removedata,removeErrormsg ,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
-
+import Spinner1 from '../Components/Spinner1';
 
 
 class StayType extends Component {
@@ -66,6 +66,10 @@ class StayType extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -79,6 +83,10 @@ class StayType extends Component {
     } 
     editReacord(id) {
         this.props.getData(action.GET_STAYTYPE_BYID, GET_STAYTYPE_BYID+id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
 
     updateStaytype = (e, paramName) => {
@@ -106,7 +114,7 @@ class StayType extends Component {
                                 <i class="mdi mdi-wan"></i>
                             </span> Staytype
                         </h3>
-                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                        
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="index.html"><i class="mdi mdi-home"></i>index</a>
@@ -120,13 +128,14 @@ class StayType extends Component {
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
+                            <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                 <div class="card-body">
                                     <h4 class="card-title">Staytype</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">StayType Name</label>
+                                                    <label class="col-sm-3 col-form-label">StayType Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaytypebyid.stayTypeName?this.props.getstaytypebyid.stayTypeName:""} 
                                                         class="form-control" onChange={(e)=>this.updateStaytype(e,"stayTypeName")}/>
@@ -137,7 +146,7 @@ class StayType extends Component {
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayType Description</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">StayType Description<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.getstaytypebyid.stayTypeDescription?this.props.getstaytypebyid.stayTypeDescription:""} 
                                                          class="form-control"  onChange={(e)=>this.updateStaytype(e,"stayTypeDescription")}/>
@@ -146,7 +155,7 @@ class StayType extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">MaxCapacity</label>
+                                                    <label for="placeTypeDescription" class="col-sm-3 col-form-label">Max Capacity<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="number" value={this.props.getstaytypebyid.maxCapacity?this.props.getstaytypebyid.maxCapacity:""}  
                                                         class="form-control"  onChange={(e)=>this.updateStaytype(e,"maxCapacity")}/>
@@ -159,7 +168,9 @@ class StayType extends Component {
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        {this.props.ispostStaytypeLoading || this.props.isputStaytypeLoading?
+                                            <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
     </Form>
                                 </div>
                             </div>
@@ -241,7 +252,10 @@ class StayType extends Component {
          getstaytype:state.goAdvStore.getstaytype,
           message: state.goAdvStore.message,
           getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-          messageData: state.goAdvStore.messageData
+          messageData: state.goAdvStore.messageData,
+          ispostStaytypeLoading: state.goAdvStore.ispostStaytypeLoading,
+          isputStaytypeLoading: state.goAdvStore.isputStaytypeLoading
+      
           
         }
       }

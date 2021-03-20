@@ -8,14 +8,20 @@ import { connect } from 'react-redux';
 import { getData, postData1, putData1, updatePropAccData,removedata,resetData,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
 
 var condition = false;
+var errors={}
 class Coupon extends Component {
     constructor(props) {
         super(props);
         this.state = {
             validated: false,
-            refreshflag: false
+            refreshflag: false,
+            errors:{
+                selectpercentageorvalue:""
+            }
         }
     }
     componentWillMount()
@@ -57,16 +63,38 @@ class Coupon extends Component {
         }
         this.setState({ validated: false });
     }
-
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+        let percentageorvalue = this.props.couponbyid.parcentageorvalue?this.props.couponbyid.parcentageorvalue:"0";
+        let errMsg = validation.selectvalidation(percentageorvalue);
+       
+        this.setState(prevState=>({
+            errors: {
+                ...prevState.errors,
+               selectpercentageorvalue:errMsg
+            }
+        }))
+        errors.selectpercentageorvalue=errMsg
+      
+      } 
     handleSubmit(event) {
         event.preventDefault();
-        //this.handlevalidations();
+        this.handlevalidations();
         const form = event.currentTarget;
         console.log("checkform", form.checkValidity());
         this.setState({ validated: true });
-        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        if (form.checkValidity() === false  || this.validateForm(this.state.errors) === false) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         } else {
             event.preventDefault();
             this.postCouponData();
@@ -74,6 +102,10 @@ class Coupon extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_COUPON_BYID, GET_COUPON_BYID + id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
 
     handleReset() {
@@ -131,13 +163,14 @@ class Coupon extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">Coupon</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Code</label>
+                                                            <label class="col-sm-3 col-form-label">Code<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.couponbyid.couponCode ? this.props.couponbyid.couponCode : ""}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "couponCode")} />
@@ -146,7 +179,7 @@ class Coupon extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Parcentage or Value</label>
+                                                            <label class="col-sm-3 col-form-label">Parcentage or Value<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select value={this.props.couponbyid.parcentageorvalue ? this.props.couponbyid.parcentageorvalue : "0"}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "parcentageorvalue")} >
@@ -154,15 +187,18 @@ class Coupon extends Component {
                                                                     <option value="percentage">Percentage</option>
                                                                     <option value="value">Value</option>
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectpercentageorvalue}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-6" hidden={this.props.couponbyid.hidepercentage ===""?this.props.couponbyid.hidepercentage:'true'}>
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Percentage</label>
+                                                            <label class="col-sm-3 col-form-label">Percentage<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <input type="number" value={this.props.couponbyid.couponPercentage ? this.props.couponbyid.couponPercentage : ""}
+                                                                <input type="number"  value={this.props.couponbyid.couponPercentage ? this.props.couponbyid.couponPercentage : ""}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "couponPercentage")} />
                                                             </div>
                                                         </div>
@@ -170,7 +206,7 @@ class Coupon extends Component {
                                                
                                                     <div class="col-md-6" hidden={this.props.couponbyid.hidevalue===""?this.props.couponbyid.hidevalue:"true"}>
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Value</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Value<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input type="number" value={this.props.couponbyid.couponValue ? this.props.couponbyid.couponValue : ""}
                                                                     class="form-control" onChange={(e) => this.updateCoupon(e, "couponValue")} />
@@ -185,7 +221,9 @@ class Coupon extends Component {
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
                                                 <br/>
-                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                                {this.props.ispostCouponLoading || this.props.isputCouponLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
                                             </Form>
                                         </div>
                                     </div>
@@ -265,7 +303,9 @@ const mapStateToProps = (state) => {
         couponbyid: state.goAdvStore.couponbyid,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
-        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+        ispostCouponLoading:state.goAdvStore.ispostCouponLoading,
+        isputCouponLoading:state.goAdvStore.isputCouponLoading
     }
 }
 export default connect(mapStateToProps, { getData, postData1,removedata,putData1, updatePropAccData, resetData,removeErrormsg,deleteRecord })(Coupon);

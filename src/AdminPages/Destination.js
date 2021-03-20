@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import { getData, postData1,removedata,putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import Spinner1 from '../Components/Spinner1';
+
 
 class Destination extends Component {
     constructor(props) {
@@ -87,6 +89,10 @@ class Destination extends Component {
       if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
           event.preventDefault();
           event.stopPropagation();
+          window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
       }
       else {
           event.preventDefault();
@@ -111,6 +117,10 @@ debugger
 }
 editReacord(id) {
   this.props.getData(action.GET_DESTINATION_BYID, GET_DESTINATION_BYID+id)
+  window.scrollTo({
+    top:100,
+    behavior: 'smooth',
+})
 }
 updateDestination = (e, paramName) => {
   this.props.updatePropAccData(paramName,e.target.value,"getdestinationbyid");
@@ -150,6 +160,7 @@ deleteRecord(id)
                <div class="row">
                    <div class="col-12 grid-margin stretch-card">
                        <div class="card">
+                       <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                            <div class="card-body">
                                <h4 class="card-title">Destination</h4>
                                <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
@@ -157,7 +168,7 @@ deleteRecord(id)
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
-                                                        class="col-sm-3 col-form-label">Name</label>
+                                                        class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input type="text" required value={this.props.getdestinationbyid.destinationName?this.props.getdestinationbyid.destinationName:""} class="form-control" id="placeTypeName"
                                                            onChange={(e)=>this.updateDestination(e,"destinationName")} placeholder="Name"/>
@@ -167,7 +178,7 @@ deleteRecord(id)
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeName"
-                                                        class="col-sm-3 col-form-label">Title</label>
+                                                        class="col-sm-3 col-form-label">Title<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input type="text" required value={this.props.getdestinationbyid.title?this.props.getdestinationbyid.title:""} class="form-control" id="placeTypeName"
                                                            onChange={(e)=>this.updateDestination(e,"title")} placeholder="Title"/>
@@ -204,7 +215,7 @@ deleteRecord(id)
                                             <div class="col-md-6">
                                                 <div class="form-group row">
                                                     <label for="placeTypeDescription"
-                                                        class="col-sm-3 col-form-label">Description</label>
+                                                        class="col-sm-3 col-form-label">Description<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <textarea class="form-control" required value={this.props.getdestinationbyid.description?this.props.getdestinationbyid.description:""} id="placeTypeDescription"
                                                           onChange={(e)=>this.updateDestination(e,"description")}  rows="4"></textarea>
@@ -219,7 +230,9 @@ deleteRecord(id)
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        {this.props.ispostDestinationLoading || this.props.isputDestinationLoading?
+                                            <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
 </Form>
                            </div>
                        </div>
@@ -315,7 +328,9 @@ deleteRecord(id)
           /* gettraveltypebyid:state.goAdvStore.gettraveltypebyid,
           gettraveltype:state.goAdvStore.gettraveltype,*/
        message: state.goAdvStore.message,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        ispostDestinationLoading:state.goAdvStore.ispostDestinationLoading,
+        isputDestinationLoading:state.goAdvStore.isputDestinationLoading
       }
     }
     export default connect(mapStateToProps, { getData,removedata,postData1, putData1,updatePropAccData,resetData,removeErrormsg, putDataWithFile,postDataWithFile,deleteRecord })(Destination);

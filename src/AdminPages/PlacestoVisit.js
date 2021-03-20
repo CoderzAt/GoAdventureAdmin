@@ -10,10 +10,13 @@ import { connect } from 'react-redux';
 import { getDestination, getActivity,getData, postData1, putData1,removedata,updatePropAccData, resetData, removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
+
 var valuefromurl
 var selectcitymsg
 var selectstatemsg
 var selectcountrymsg
+var errors={}
 class PlacestoVisit extends Component {
     constructor(props) {
         super(props);
@@ -39,7 +42,11 @@ class PlacestoVisit extends Component {
             selectcountry: "",
             selectstate: "",
             errors: {
-                selectcity: ""
+                selectcity: "",
+                selectcountry:"",
+                selectstate:"",
+                selectplacetype:"",
+                selectdestination:""
             }
 
         }
@@ -132,23 +139,40 @@ class PlacestoVisit extends Component {
         })
         this.setState({ validated: false });
     }
+    
     validateForm(errors) {
         debugger
-        let valid = errors.length > 0 ? false : true;
-        /*  Object.values(errors).forEach((val) => val.length > 0 && (valid = false));*/
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
         return valid;
-    }
-    handlevalidations() {
-        let cityd = this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0";
-        let errMsg = validation.selectvalidation(cityd);
-        /* this.setState(prevState => ({
+      }
+      handlevalidations() {
+        let countryid = this.props.getplacetovisitbyid.countryId?this.props.getplacetovisitbyid.countryId:"0";
+        let stateid= this.props.getplacetovisitbyid.stateId?this.props.getplacetovisitbyid.stateId:"0";
+        let cityid= this.props.getplacetovisitbyid.cityId?this.props.getplacetovisitbyid.cityId:"0";
+        let placetypeid= this.props.getplacetovisitbyid.placeTypeId?this.props.getplacetovisitbyid.placeTypeId:"0";
+        let destinationid= this.props.getplacetovisitbyid.destinationId?this.props.getplacetovisitbyid.destinationId:"0";
+        let countryiderror = validation.selectvalidation(countryid);
+        let stateiderror=validation.selectvalidation(stateid);
+        let cityiderror=validation.selectvalidation(cityid);
+        let placetypeiderror=validation.selectvalidation(placetypeid);
+        let destinationiderror=validation.selectvalidation(destinationid);
+        this.setState({
             errors: {
-                ...prevState.errors,
-                selectcity: errMsg
+                selectcountry:countryiderror,
+                selectstate:stateiderror,
+                selectcity:cityiderror,
+                selectplacetype:placetypeiderror,
+                selectdestination:destinationiderror
             }
-        })) */
-        selectcitymsg = errMsg;
-    }
+        })
+        errors.selectcountry=countryiderror;
+        errors.selectstate=stateiderror;
+        errors.selectcity=cityiderror;
+        errors.selectplacetype=placetypeiderror;
+        errors.selectdestination=destinationiderror
+      }
+
 
     handleSubmit(event) {
         debugger
@@ -157,9 +181,13 @@ class PlacestoVisit extends Component {
         const form = event.currentTarget;
         console.log("checkform", form.checkValidity());
         this.setState({ validated: true });
-        if (form.checkValidity() === false || this.validateForm(selectcitymsg) === false) {
+        if (form.checkValidity() === false || this.validateForm(errors) === false) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -188,6 +216,10 @@ class PlacestoVisit extends Component {
         this.props.getData(action.GET_CITIES, GET_CITIES)
         this.props.getData(action.GET_STATES,GET_STATES)
         this.props.getData(action.GET_PLACETOVISIT_BYID, GET_PLACETOVISIT_BYID + id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
    /*  getstates(e) {
         this.setState({
@@ -318,6 +350,7 @@ class PlacestoVisit extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">Place To Visit</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
@@ -325,18 +358,18 @@ class PlacestoVisit extends Component {
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeName"
-                                                                class="col-sm-3 col-form-label">Name</label>
+                                                                class="col-sm-3 col-form-label">Name<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" value={this.props.getplacetovisitbyid.placeName ? this.props.getplacetovisitbyid.placeName : ""} class="form-control" id="placeTypeName"
+                                                                <input type="text" required value={this.props.getplacetovisitbyid.placeName ? this.props.getplacetovisitbyid.placeName : ""} class="form-control" id="placeTypeName"
                                                                     onChange={(e) => this.updatePlacetovisit(e, "placeName")} placeholder="Name" />
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="genre" class="col-sm-3 col-form-label">Genre</label>
+                                                            <label for="genre" class="col-sm-3 col-form-label">Genre<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" value={this.props.getplacetovisitbyid.placeGenre ? this.props.getplacetovisitbyid.placeGenre : ""} class="form-control" id="genre"
+                                                                <input type="text" required value={this.props.getplacetovisitbyid.placeGenre ? this.props.getplacetovisitbyid.placeGenre : ""} class="form-control" id="genre"
                                                                     onChange={(e) => this.updatePlacetovisit(e, "placeGenre")} placeholder="Genre" />
                                                             </div>
                                                         </div>
@@ -345,7 +378,7 @@ class PlacestoVisit extends Component {
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Destination</label>
+                                                            <label class="col-sm-3 col-form-label">Destination<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.destinationId ? this.props.getplacetovisitbyid.destinationId : "0"}
                                                                     onChange={(e) => this.updatePlacetovisit(e, "destinationId")}>
@@ -354,13 +387,16 @@ class PlacestoVisit extends Component {
                                                                         <option value={obj.destinationId}>{obj.destinationName}</option>
                                                                     )}
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectdestination}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Place Type</label>
+                                                            <label class="col-sm-3 col-form-label">Place Type<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.placeTypeId ? this.props.getplacetovisitbyid.placeTypeId : "0"}
                                                                     onChange={(e) => this.updatePlacetovisit(e, "placeTypeId")}>
@@ -369,13 +405,16 @@ class PlacestoVisit extends Component {
                                                                         <option value={obj.placeTypeId}>{obj.placeTypeName}</option>
                                                                     )}
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectplacetype}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="duration"
-                                                                class="col-sm-3 col-form-label">Activities</label>
+                                                                class="col-sm-3 col-form-label">Activities<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <Multiselect selectedValues={this.props.activityids} options={this.props.activities} displayValue={"activityName"}
                                                                     class="form-control" onSelect={(e) => this.updatePlacetovisit(e, "activityIds")}
@@ -386,7 +425,7 @@ class PlacestoVisit extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Country</label>
+                                                            <label class="col-sm-3 col-form-label">Country<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.countryId ? this.props.getplacetovisitbyid.countryId : "0"}
                                                                     onChange={(e) => this.updatePlacetovisit(e,"countryId")}>
@@ -395,13 +434,16 @@ class PlacestoVisit extends Component {
                                                                         <option value={obj.countryId}>{obj.countryName}</option>
                                                                     )}
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectcountry}
+                                                                </small>
                                                                 {/* <div style={{ color: "red" }}>{this.state.selectcountry}</div> */}
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">State</label>
+                                                            <label class="col-sm-3 col-form-label">State<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.stateId ? this.props.getplacetovisitbyid.stateId : "0"}
                                                                     onChange={(e) => this.updatePlacetovisit(e,"stateId")}>
@@ -410,6 +452,9 @@ class PlacestoVisit extends Component {
                                                                         <option value={obj.stateId}>{obj.stateName}</option>
                                                                     )}
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectstate}
+                                                                </small>
                                                                {/*  <div style={{ color: "red" }}>{this.state.selectstate}</div> */}
                                                             </div>
                                                         </div>
@@ -417,7 +462,7 @@ class PlacestoVisit extends Component {
 
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">City</label>
+                                                            <label class="col-sm-3 col-form-label">City<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.getplacetovisitbyid.cityId ? this.props.getplacetovisitbyid.cityId : "0"}
                                                                     onChange={(e) => this.updatePlacetovisit(e, "cityId")}>
@@ -427,7 +472,9 @@ class PlacestoVisit extends Component {
                                                                         <option value={obj.cityId}>{obj.cityName}</option>
                                                                     )}
                                                                 </select>
-                                                                <div style={{ color: "red" }}>{selectcitymsg}</div>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectcity}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -446,9 +493,9 @@ class PlacestoVisit extends Component {
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
                                                             <label for="placeTypeDescription"
-                                                                class="col-sm-3 col-form-label">Description</label>
+                                                                class="col-sm-3 col-form-label">Description<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
-                                                                <textarea class="form-control" value={this.props.getplacetovisitbyid.description ? this.props.getplacetovisitbyid.description : ""} id="placeTypeDescription"
+                                                                <textarea class="form-control" required value={this.props.getplacetovisitbyid.description ? this.props.getplacetovisitbyid.description : ""} id="placeTypeDescription"
                                                                     onChange={(e) => this.updatePlacetovisit(e, "description")} rows="4"></textarea>
                                                             </div>
                                                         </div>
@@ -459,7 +506,9 @@ class PlacestoVisit extends Component {
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
                                                 <br/>
-                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                                {this.props.ispostPlacetovisitLoading || this.props.isputPlacetovisitLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
                                             </Form>
                                         </div>
                                     </div>
@@ -580,7 +629,9 @@ const mapStateToProps = (state) => {
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
         getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-        activityids: state.goAdvStore.activityids
+        activityids: state.goAdvStore.activityids,
+        ispostPlacetovisitLoading:state.goAdvStore.ispostPlacetovisitLoading,
+        isputPlacetovisitLoading:state.goAdvStore.isputPlacetovisitLoading
     }
 }
 export default connect(mapStateToProps, { getData,getActivity,postData1,removedata,putData1, getDestination, updatePropAccData, resetData, removeErrormsg, deleteRecord })(PlacestoVisit);

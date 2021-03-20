@@ -10,14 +10,21 @@ import dateFormat from 'dateformat';
 import { getData, postData1, putData1, updatePropAccData,resetData,removedata,removeErrormsg, deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes';
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
 
-
+var errors={}
 class User extends Component {
     constructor(props) {
         super(props);
         this.state = {
             validated: false,
-            refreshflag: false
+            refreshflag: false,
+            errors: {
+                selectusertype: "",
+                selectgender:"",
+                selectlogintype:""
+              }
         }
     }
     componentWillMount() {
@@ -69,16 +76,44 @@ class User extends Component {
         }
         this.setState({ validated: false });
     }
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+        let usertypeid = this.props.getuserbyid.userTypeId?this.props.getuserbyid.userTypeId:"0";
+        let logintype= this.props.getuserbyid.loginType?this.props.getuserbyid.loginType:"0";
+        let gender= this.props.getuserbyid.gender?this.props.getuserbyid.gender:"0";
+        let usertypeiderror = validation.selectvalidation(usertypeid);
+        let logintypeerror=validation.selectvalidation(logintype);
+        let gendertypeerror=validation.selectvalidation(gender);
+        this.setState({
+            errors: {
+                selectusertype:usertypeiderror,
+                selectlogintype:logintypeerror,
+                selectgender:gendertypeerror
+            }
+        })
+        errors.selectusertype= usertypeiderror;
+        errors.selectlogintype=logintypeerror;
+        errors.selectgender=gendertypeerror
+      }
 
     handleSubmit(event) {
         event.preventDefault();
-        //this.handlevalidations();
+        this.handlevalidations();
         const form = event.currentTarget;
         console.log("checkform", form.checkValidity());
         this.setState({ validated: true });
-        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        if (form.checkValidity() === false  || this.validateForm(errors) === false ) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:0,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -91,6 +126,10 @@ class User extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_USER_BYID, GET_USER_BYID + id)
+        window.scrollTo({
+            top:0,
+            behavior: 'smooth',
+        })
     }
     updateUser = (e, paramName) => {
 
@@ -127,13 +166,14 @@ class User extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">User</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Type</label>
+                                                            <label class="col-sm-3 col-form-label">Type<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select required type="text" value={this.props.getuserbyid.userTypeId ? this.props.getuserbyid.userTypeId : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "userTypeId")} >
@@ -141,13 +181,16 @@ class User extends Component {
                                                                         {this.props.usertypes.map(obj=>(
                                                                             <option value={obj.userTypeId}>{obj.userTypeCode}</option>
                                                                         ))}
-                                                                 </select>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectusertype}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">First Name</label>
+                                                            <label class="col-sm-3 col-form-label">First Name<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.firstName ? this.props.getuserbyid.firstName : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "firstName")} />
@@ -166,7 +209,7 @@ class User extends Component {
                                                 
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label">Last Name</label>
+                                                        <label class="col-sm-3 col-form-label">Last Name<span class="text-danger">*</span></label>
                                                         <div class="col-sm-9">
                                                             <input required type="text" value={this.props.getuserbyid.lastName ? this.props.getuserbyid.lastName : ""}
                                                                 class="form-control" onChange={(e) => this.updateUser(e, "lastName")} />
@@ -175,7 +218,7 @@ class User extends Component {
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label">Gender</label>
+                                                        <label class="col-sm-3 col-form-label">Gender<span class="text-danger">*</span></label>
                                                         <div class="col-sm-9">
                                                             <select required type="text" value={this.props.getuserbyid.gender ? this.props.getuserbyid.gender : ""}
                                                                 class="form-control" onChange={(e) => this.updateUser(e, "gender")} >
@@ -183,13 +226,16 @@ class User extends Component {
                                                                     <option value="male">Male</option>
                                                                     <option value="female">Female</option>
                                                                     <option value="others">Others</option>
-                                                            </select>
-                                                        </div>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectgender}
+                                                                </small>
+                                                            </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label">Login Type</label>
+                                                        <label class="col-sm-3 col-form-label">Login Type<span class="text-danger">*</span></label>
                                                         <div class="col-sm-9">
                                                             <select required type="text" value={this.props.getuserbyid.loginType ? this.props.getuserbyid.loginType : ""}
                                                                 class="form-control" onChange={(e) => this.updateUser(e, "loginType")} >
@@ -197,13 +243,16 @@ class User extends Component {
                                                                     <option value="goAdventure">GoAdventure</option>
                                                                     <option value="google">Google</option>
                                                                     <option value="facebook">FaceBook</option>
-                                                            </select>
-                                                        </div>
+                                                                </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectlogintype}
+                                                                </small>
+                                                            </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group row">
-                                                        <label class="col-sm-3 col-form-label">Date Of Birth</label>
+                                                        <label class="col-sm-3 col-form-label">Date Of Birth<span class="text-danger">*</span></label>
                                                         <div class="col-sm-9">
                                                             <input required type="date" value={this.props.getuserbyid.dateOfBirth ? this.props.getuserbyid.dateOfBirth : ""}
                                                                 class="form-control" onChange={(e) => this.updateUser(e, "dateOfBirth")} />
@@ -212,7 +261,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Phone Number</label>
+                                                            <label class="col-sm-3 col-form-label">Phone Number<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.phoneNumber ? this.props.getuserbyid.phoneNumber : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "phoneNumber")} />
@@ -221,7 +270,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Email ID</label>
+                                                            <label class="col-sm-3 col-form-label">Email ID<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.emailId ? this.props.getuserbyid.emailId : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "emailId")} />
@@ -230,7 +279,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Password</label>
+                                                            <label class="col-sm-3 col-form-label">Password<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.password?this.props.getuserbyid.password:""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "password")} />
@@ -239,7 +288,7 @@ class User extends Component {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Address</label>
+                                                            <label class="col-sm-3 col-form-label">Address<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="text" value={this.props.getuserbyid.addressInfo ? this.props.getuserbyid.addressInfo : ""}
                                                                     class="form-control" onChange={(e) => this.updateUser(e, "addressInfo")} />
@@ -253,7 +302,9 @@ class User extends Component {
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        {this.props.ispostUserLoading || this.props.isputUserLoading?
+                                            <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
                                             </Form>
                                 </div>
                             </div>
@@ -351,7 +402,9 @@ const mapStateToProps = (state) => {
         usertypes:state.goAdvStore.usertypes,
         message: state.goAdvStore.message,
         getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-        messageData: state.goAdvStore.messageData
+        messageData: state.goAdvStore.messageData,
+        ispostUserLoading:state.goAdvStore.ispostUserLoading,
+        isputUserLoading:state.goAdvStore.isputUserLoading
     }
 }
 

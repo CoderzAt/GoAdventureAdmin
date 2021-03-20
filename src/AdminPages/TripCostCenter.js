@@ -8,13 +8,14 @@ import { connect } from 'react-redux';
 import { getData, postData1, putData1, updatePropAccData, resetData,removedata,removeErrormsg,deleteRecord } from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
-
-
+import * as validation from "../Shared/Validations";
+import Spinner1 from '../Components/Spinner1';
 
 
 var condition = false;
 
 var valuefromurl
+var errors={}
 class TripCostCenter extends Component {
     constructor(props) {
         super(props);
@@ -22,7 +23,12 @@ class TripCostCenter extends Component {
             validated: false,
             refreshflag: false,
             hidestaytype:"true",
-            hidetraveltype:"true"
+            hidetraveltype:"true",
+            errors:{
+                selectpackageid:"",
+                selecttripid:"",
+                selecttype:""
+            }
         }
 
     }
@@ -82,16 +88,47 @@ class TripCostCenter extends Component {
         }
         this.setState({ validated: false });
     }
+    validateForm(errors) {
+        debugger
+        let valid = true;
+        Object.values(errors).forEach((val) => val.length > 0 && (valid = false));
+        return valid;
+      }
+      handlevalidations() {
+        let packageid = this.props.gettripcostcenterbyid.packageId?this.props.gettripcostcenterbyid.packageId:"0";
+        let tripid= this.props.gettripcostcenterbyid.tripId?this.props.gettripcostcenterbyid.tripId:"0";
+        let type= this.props.gettripcostcenterbyid.type?this.props.gettripcostcenterbyid.type:"0";
+       
+        let packageiderror = validation.selectvalidation(packageid);
+        let tripiderror=validation.selectvalidation(tripid);
+        let typeerror=validation.selectvalidation(type);
+       
+        
+        this.setState({
+            errors: {
+             selectpackageid:packageiderror,
+             selecttripid:tripiderror,
+             selecttype:typeerror
+            }
+        })
+       errors.selectpackageid=packageiderror;
+       errors.selecttripid=tripiderror;
+       errors.selecttype=typeerror;
+     }
 
     handleSubmit(event) {
         event.preventDefault();
-        //this.handlevalidations();
+        this.handlevalidations();
         const form = event.currentTarget;
         console.log("checkform", form.checkValidity());
         this.setState({ validated: true });
-        if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
+        if (form.checkValidity() === false  || this.validateForm(errors) === false) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -123,8 +160,12 @@ class TripCostCenter extends Component {
     }
     editReacord(id) {
         debugger
+        this.props.getData(action.GET_TRIP, GET_TRIP)
         this.props.getData(action.GET_TRIP_COSTCENTERBYID, GET_TRIP_COSTCENTERBYID + id)
-        
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     updateTrip = (e, paramName) => 
     {
@@ -214,27 +255,31 @@ class TripCostCenter extends Component {
                             <div class="row">
                                 <div class="col-12 grid-margin stretch-card">
                                     <div class="card">
+                                    <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                         <div class="card-body">
                                             <h4 class="card-title">Trip Cost Center</h4>
                                             <Form className="forms-sample" noValidate validated={this.state.validated} onSubmit={(e) => this.handleSubmit(e)} onReset={(e) => this.handleReset(e)}>
                                                 <div class="row">
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Package</label>
+                                                            <label class="col-sm-3 col-form-label">Package<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.packageId? this.props.gettripcostcenterbyid.packageId : "0"} 
                                                                 onChange={(e) => this.updateTrip(e,"packageId")}>
                                                                     <option value={0}>Select</option>
                                                                     {this.props.packages.map(obj =>
-                                                                        <option value={obj.packageId}>{obj.packageName}</option>
+                                                                        <option value={obj.packageId}>{obj.displayName}</option>
                                                                     )}
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selectpackageid}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Trip</label>
+                                                            <label class="col-sm-3 col-form-label">Trip<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.tripId? this.props.gettripcostcenterbyid.tripId : "0"} 
                                                                 onChange={(e) => this.updateTrip(e,"tripId")}>
@@ -243,25 +288,31 @@ class TripCostCenter extends Component {
                                                                         <option value={obj.tripId}>{obj.tripName}</option>
                                                                     )}
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selecttripid}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Type</label>
+                                                            <label class="col-sm-3 col-form-label">Type<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.type?this.props.gettripcostcenterbyid.type :"0"} onChange={(e) => this.updateTrip(e,"type")}>
                                                                     <option value={0}>Select</option>
                                                                    <option value="Stay">StayType</option>
                                                                    <option value="Travel">TravelType</option>
                                                                 </select>
+                                                                <small style={{ color: "red" }}>
+                                                                    {this.state.errors.selecttype}
+                                                                </small>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-6"  hidden={this.props.gettripcostcenterbyid.hidetraveltype === ""?this.props.gettripcostcenterbyid.hidetraveltype:"true"}>
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Travel Type</label>
+                                                            <label class="col-sm-3 col-form-label">Travel Type<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.travelTypeId?this.props.gettripcostcenterbyid.travelTypeId:"0"} onChange={(e) => this.updateTrip(e,"travelTypeId")}>
                                                                     <option value={0}>Select</option>
@@ -274,7 +325,7 @@ class TripCostCenter extends Component {
                                                     </div>
                                                     <div class="col-md-6"  hidden={this.props.gettripcostcenterbyid.hidestaytype === ""?this.props.gettripcostcenterbyid.hidestaytype:"true"}>
                                                         <div class="form-group row">
-                                                            <label class="col-sm-3 col-form-label">Staytype</label>
+                                                            <label class="col-sm-3 col-form-label">Staytype<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <select class="form-control travellerMode" value={this.props.gettripcostcenterbyid.stayTypeId?this.props.gettripcostcenterbyid.stayTypeId:"0"} onChange={(e) => this.updateTrip(e,"stayTypeId")}>
                                                                     <option value={0}>Select</option>
@@ -300,7 +351,7 @@ class TripCostCenter extends Component {
                                                     </div> */}
                                                 <div class="col-md-6">
                                                         <div class="form-group row">
-                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Price</label>
+                                                            <label for="placeTypeDescription" class="col-sm-3 col-form-label">Price<span class="text-danger">*</span></label>
                                                             <div class="col-sm-9">
                                                                 <input required type="number" value={this.props.gettripcostcenterbyid.price ? this.props.gettripcostcenterbyid.price : ""}
                                                                     class="form-control" onChange={(e) => this.updateTrip(e, "price")} />
@@ -317,7 +368,9 @@ class TripCostCenter extends Component {
                                                     <button type="reset" class="btn btn-light">Cancel</button>
                                                 </div>
                                                 <br/>
-                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                                {this.props.ispostTripcostcenterLoading || this.props.isputTripcostcenterLoading?
+                                            <Spinner1/>:
+                                                <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
 
                                             </Form>
                                         </div>
@@ -425,7 +478,9 @@ const mapStateToProps = (state) => {
         packages:state.goAdvStore.packages,
         message: state.goAdvStore.message,
         messageData: state.goAdvStore.messageData,
-        getuserbyidprofile:state.goAdvStore.getuserbyidprofile
+        getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
+        ispostTripcostcenterLoading:state.goAdvStore.ispostTripcostcenterLoading,
+        isputTripcostcenterLoading:state.goAdvStore.isputTripcostcenterLoading
     }
 }
 export default connect(mapStateToProps, {getData,postData1,removedata,putData1, updatePropAccData, resetData, removeErrormsg,deleteRecord })(TripCostCenter);

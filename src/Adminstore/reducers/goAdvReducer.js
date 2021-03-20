@@ -205,7 +205,49 @@ const initalState ={
     getbookingoptions:[],
     getuserbyidprofile:[],
     placetovisitbydestinationids:[],
-    getbookingbyidtri:[]
+    getbookingbyidtri:[],
+    ispostCountryLoading:false,
+    isputCountryLoading:false,
+    ispostPackageLoading:false,
+    isputPackageLoading:false,
+    ispostTripLoading:false,
+    isputTripLoading:false,
+    ispostItenaryLoading:false,
+    isputItenaryLoading:false,
+    ispostTripcostcenterLoading:false,
+    isputTripcostcenterLoading:false,
+    ispostAccessoryLoading:false,
+    isputAccessoryLoading:false,
+    ispostBookingLoading:false,
+    isputBookingLoading:false,
+    ispostCityLoading:false,
+    isputCityLoading:false,
+    ispostCouponLoading:false,
+    isputCouponLoading:false,
+    ispostDestinationLoading:false,
+    isputDestinationLoading:false,
+    ispostEventlevelLoading:false,
+    isputEventlevelLoading:false,
+    ispostEventtypeLoading:false,
+    isputEventtypeLoading:false,
+    ispostpayementLoading:false,
+    isputpayementLoading:false,
+    ispostPlaceactivitiesLoading:false,
+    isputPlaceactivitiesLoading:false,
+    ispostPlacetovisitLoading:false,
+    isputPlacetovisitLoading:false,
+    ispostStateLoading:false,
+    isputStateLoading:false,
+    ispostStayLoading:false,
+    isputStayLoading:false,
+    ispostStaytypeLoading:false,
+    isputStaytypeLoading:false,
+    isposttTravelinfoLoading:false,
+    isputTravelinfoLoading:false,
+    ispostTraveltypeLoading:false,
+    isputTraveltypeLoading:false,
+    ispostUserLoading:false,
+    isputUserLoading:false
 }
 const goAdvReducer = (state =initalState, action) => {
     console.log(action.type);
@@ -560,8 +602,15 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_PACKAGE_BYID}_FULFILLED` : {
-            
+            debugger
             var places1=[]
+            var packagebyid1=action.payload.data;
+            let packagename=action.payload.data.packageName
+            var urlarray=packagename.split('/')
+            var urltype=urlarray[0]
+            var url =urlarray[1]
+             packagebyid1.url=url;
+             packagebyid1.urltype=urltype;
             if(action.payload.data.places)
             {
                 let placetovisitids=(action.payload.data.places).split(",");
@@ -573,10 +622,11 @@ const goAdvReducer = (state =initalState, action) => {
                 }))
             }
 
+
             return{
                 ...state,
                 isPkgbidLoading: false,
-                packagebyid: action.payload.data,
+                packagebyid: packagebyid1,
                 placetovisitbydestinationids:places1
             }
         }
@@ -612,6 +662,7 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_TRIP_BYID}_FULFILLED` : {
+              
             let staytypeids=(action.payload.data.stayTypeIds).split(",");
             var staytypenames1=[]
 
@@ -640,6 +691,7 @@ const goAdvReducer = (state =initalState, action) => {
             if(getTripDet.couponExpiryDate) {
                 getTripDet.couponExpiryDate = moment(getTripDet.couponExpiryDate).format('YYYY-MM-DD');
               }
+              
             console.log(getTripDet);
             return{
                 ...state,
@@ -650,6 +702,59 @@ const goAdvReducer = (state =initalState, action) => {
             }
         }
         case `${actions.GET_TRIP_BYID}_REJECTED` : {
+            return{
+                ...state,
+                isTrbidLoading: false,
+            }
+        }
+        case `${actions.REPLICATE_TRIP_BYID}_PENDING` : {
+            return{
+                ...state,
+                isTrbidLoading: true
+            }
+        }
+        case `${actions.REPLICATE_TRIP_BYID}_FULFILLED` : {
+            debugger
+            let staytypeids=(action.payload.data.stayTypeIds).split(",");
+            var staytypenames1=[]
+
+            staytypeids.map(obj=>
+                state.getstaytype.map((item)=>{
+                    if(parseInt(obj) == item.stayTypeId) {
+                      staytypenames1.push({stayTypeName:item.stayTypeName,stayTypeId:item.stayTypeId}); //reusability
+                    }
+                }))
+
+                let traveltypeids=(action.payload.data.travelTypeIds).split(",")
+                var traveltypenames=[]
+                traveltypeids.map(obj=>
+                    state.gettraveltype.map((item)=>{
+                        if(parseInt(obj) == item.travelTypeId) {
+                          traveltypenames.push({travelTypeName:item.travelTypeName,travelTypeId:item.travelTypeId}); //reusability
+                        }
+                    }))
+            let getTripDet = action.payload.data;
+            if(getTripDet.startDate) {
+              getTripDet.startDate = moment(getTripDet.startDate).format('YYYY-MM-DD');
+            }
+            if(getTripDet.endDate) {
+              getTripDet.endDate = moment(getTripDet.endDate).format('YYYY-MM-DD');
+            }
+            if(getTripDet.couponExpiryDate) {
+                getTripDet.couponExpiryDate = moment(getTripDet.couponExpiryDate).format('YYYY-MM-DD');
+              }
+              getTripDet.tripId=undefined;
+              getTripDet.statusId=undefined;
+            console.log(getTripDet);
+            return{
+                ...state,
+                isTrbidLoading: false,
+                gettripbyid: getTripDet,
+                staytypeids:staytypenames1,
+                traveltypeids:traveltypenames
+            }
+        }
+        case `${actions.REPLICATE_TRIP_BYID}_REJECTED` : {
             return{
                 ...state,
                 isTrbidLoading: false,
@@ -737,7 +842,7 @@ const goAdvReducer = (state =initalState, action) => {
             let msgData=HandlingError(action.payload,"Country","added")
             return{
                 ...state,
-                ispostCoutryLoading: false,
+                ispostCountryLoading: false,
                 postcountry: action.payload.data,
                 message: true,
                 messageData: msgData,
@@ -990,7 +1095,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.PUT_COUPON}_REJECTED` : {
             return{
                 ...state,
-                ispuCouponLoading: false,
+                isputCouponLoading: false,
             }
         }
         case `${actions.POST_CITY}_PENDING` : {
@@ -1461,7 +1566,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.PUT_EVENTTYPE}_PENDING` : {
             return{
                 ...state,
-                isputEventtypeLoading: true
+                isputEventtypeLoading:true
             }
         }
         case `${actions.PUT_EVENTTYPE}_FULFILLED` : {
@@ -1643,7 +1748,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.POST_PLACETOVISIT}_PENDING` : {
             return{
                 ...state,
-                ispostPlacetovisitbyidLoading: true
+                ispostPlacetovisitLoading: true
             }
         }
         case `${actions.POST_PLACETOVISIT}_FULFILLED` : {
@@ -1666,7 +1771,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.PUT_PLACETOVISIT}_PENDING` : {
             return{
                 ...state,
-                isputPlacetovisitbyidLoading: true
+                isputPlacetovisitLoading: true
             }
         }
         case `${actions.PUT_PLACETOVISIT}_FULFILLED` : {
@@ -2251,7 +2356,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.POST_TRAVELINFO}_REJECTED` : {
             return{
                 ...state,
-                ispostTravelinfoLoading: false,
+                isposttTravelinfoLoading: false,
             }
         }
 
@@ -2416,7 +2521,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.POST_TRAVELTYPE}_PENDING` : {
             return{
                 ...state,
-                isposttTraveltypeLoading: true
+                ispostTraveltypeLoading: true
             }
         }
         case `${actions.POST_TRAVELTYPE}_FULFILLED` : {
@@ -2433,7 +2538,7 @@ const goAdvReducer = (state =initalState, action) => {
         case `${actions.POST_TRAVELTYPE}_REJECTED` : {
             return{
                 ...state,
-                isposttTraveltypeLoading: false,
+                ispostTraveltypeLoading: false,
             }
         }
         case `${actions.GET_TRIP}_PENDING` : {
@@ -2491,7 +2596,7 @@ const goAdvReducer = (state =initalState, action) => {
             let msgData=HandlingError(action.payload,"Trip","updated")
             return{
                 ...state,
-                ispostTripLoading: false,
+                isputTripLoading: false,
                 putrip: action.payload.data,
                 message: true,
                 messageData: msgData,
@@ -3480,7 +3585,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             let msgData=HandlingError(action.payload,"Trip costcentre","updated ")
             return{
                 ...state,
-                isputTripcostcenterLoading: true,
+                isputTripcostcenterLoading:false,
                 puttripcostcenter:action.payload.data,
                 gettripcostcenterbyid:action.payload.statusText === "error"?state.gettripcostcenterbyid:{},
                 message: true,
@@ -3504,7 +3609,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             let msgData=HandlingError(action.payload,"Place activities","added")
              return{
                 ...state,
-                ispostPlaceactivitiesLoading: true,
+                ispostPlaceactivitiesLoading:false,
                 postplaceactivities: action.payload.data,
                 message: true,
                 messageData: msgData,
@@ -3527,7 +3632,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
           let msgData=HandlingError(action.payload,"Trip costcentre","added")
             return{
                 ...state,
-                isposttripcostcentreLoading: false,
+                ispostTripcostcenterLoading: false,
                 posttripcostcenter:action.payload.data,
                 message: true,
                 messageData: msgData,
@@ -3637,9 +3742,9 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
                 gettripcostcenterbyid["hidetraveltype"]=""
             }
             let tripid=gettripcostcenterbyid.tripId;
-            
-            state.packages.map(obj=>{
-                if(obj.packageId === tripid)
+            debugger
+            state.gettrip.map(obj=>{
+                if(obj.tripId === tripid)
                 {
                     gettripcostcenterbyid["packageId"]=obj.packageId
                 }
@@ -3961,7 +4066,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             let msgData=HandlingError(action.payload,"Payement details","updated")
             return{
                 ...state,
-                isputpayementLoading: true,
+                isputpayementLoading:false,
                 putpayement:action.payload.data,
                 getpayementbyid:action.payload.statusText === "error"?state.getpayementbyid:{},
                 message: true,
@@ -3984,7 +4089,7 @@ case `${actions.DELETE_ACCESSORIES}_PENDING` : {
             let msgData=HandlingError(action.payload,"Payement details","added")
             return{
                 ...state,
-                ispostpayementLoading: true,
+                ispostpayementLoading:false,
                 postpayement:action.payload.data,
                 getpayementbyid:action.payload.statusText === "error"?state.getpayementbyid:{},
                 message: true,

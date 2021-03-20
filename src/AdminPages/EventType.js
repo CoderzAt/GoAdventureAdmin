@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import {getData,postData1,putData1,updatePropAccData,resetData,removedata,removeErrormsg,deleteRecord} from '../Adminstore/actions/goAdvActions';
 import * as action from '../Adminstore/actions/actionTypes'
 import Displayerrormsg from '../Shared/DisplayErrorMsg'
+import Spinner1 from '../Components/Spinner1';
+
 
 
 class EventType extends Component {
@@ -73,6 +75,10 @@ class EventType extends Component {
         if (form.checkValidity() === false /* || this.validateForm(this.state.errors) === false */) {
             event.preventDefault();
             event.stopPropagation();
+            window.scrollTo({
+                top:100,
+                behavior: 'smooth',
+            })
         }
         else {
             event.preventDefault();
@@ -86,6 +92,10 @@ class EventType extends Component {
     }
     editReacord(id) {
         this.props.getData(action.GET_EVENTTYPE_BYID, GET_EVENTTYPE_BYID+id)
+        window.scrollTo({
+            top:100,
+            behavior: 'smooth',
+        })
     }
     updateEventtype = (e, paramName) => {
         this.props.updatePropAccData(paramName, e.target.value,"geteventtypebyid");
@@ -121,13 +131,14 @@ class EventType extends Component {
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
+                            <div class="col-12 text-right"><span class="text-danger">*</span> <small class="very-small"> Fields Are Mandatory</small></div>
                                 <div class="card-body">
                                     <h4 class="card-title">EventType</h4>
                                     <Form className="forms-sample"  noValidate validated={this.state.validated} onSubmit={(e)=>this.handleSubmit(e)} onReset={(e)=>this.handleReset(e)}>
                                     <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Code</label>
+                                                    <label class="col-sm-3 col-form-label">Code<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.geteventtypebyid.eventTypeCode?this.props.geteventtypebyid.eventTypeCode:""}  
                                                         class="form-control" onChange={(e)=>this.updateEventtype(e,"eventTypeCode")}/>
@@ -136,7 +147,7 @@ class EventType extends Component {
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group row">
-                                                    <label class="col-sm-3 col-form-label">Description</label>
+                                                    <label class="col-sm-3 col-form-label">Description<span class="text-danger">*</span></label>
                                                     <div class="col-sm-9">
                                                         <input required type="text" value={this.props.geteventtypebyid.eventTypeDesc?this.props.geteventtypebyid.eventTypeDesc:""} 
                                                         class="form-control" onChange={(e)=>this.updateEventtype(e,"eventTypeDesc")} />
@@ -164,7 +175,9 @@ class EventType extends Component {
                                             <button type="reset" class="btn btn-light">Cancel</button>
                                         </div>
                                         <br/>
-                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>
+                                        {this.props.ispostEventtypeLoading || this.props.isputEventtypeLoading?
+                                            <Spinner1/>:
+                                        <Displayerrormsg message={this.props.message} messageData={this.props.messageData}/>}
     </Form>
                                 </div>
                             </div>
@@ -242,7 +255,9 @@ class EventType extends Component {
            getstatus:state.goAdvStore.getstatus,
            message: state.goAdvStore.message,
            getuserbyidprofile:state.goAdvStore.getuserbyidprofile,
-           messageData: state.goAdvStore.messageData
+           messageData: state.goAdvStore.messageData,
+           ispostEventtypeLoading:state.goAdvStore.ispostEventtypeLoading,
+           isputEventtypeLoading:state.goAdvStore.ispostEventtypeLoading
            }
     }
     
